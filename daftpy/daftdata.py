@@ -8,6 +8,8 @@ import re
 from os import listdir
 from os.path import isfile, join
 
+from datetime import timedelta
+
 
 def get_db(dbname, query='''SELECT * FROM buy;'''):
 
@@ -63,10 +65,41 @@ def sale_dict_daily(dictionary):
     return sale_dict_daily
 
 
+def drop_renewed(old_data, new_data):
+    print(f'Shape before dropping: {new_data.shape}')
+    for url in new_data['url']:
+
+        condition_1 = old_data['url'].str.contains(url).sum() != 0
+        condition_2 = (new_data.loc[
+                           new_data['url'].str.contains(url), ['url', 'price']].values ==
+                       old_data.loc[old_data['url'].str.contains(url), ['url',
+                                                                        'price']].values).all()  # axis=1
+
+        if condition_1 and condition_2:
+            index_to_drop = new_data[new_data['url'].str.contains(url)].index[0]
+            new_data.drop(index=[index_to_drop], inplace=True)
+    print(f'Shape after dropping: {new_data.shape}')
+    print('-' * 10)
+    return new_data
 
 
+def concatenate_dropping_renewed(initial_key, dictionary):
 
+    full_data = dictionary[initial_key]
+    print(f'Initial shape: {full_data.shape}')
+    print('-'*30)
+    dictionary.pop('2021-09-25')
 
+    for i, key in enumerate(dictionary):
+        #if key == '2021-09-29': ####
+         #   break
+        print(f'Key: {key}')
+        data_to_concat = drop_renewed(full_data, dictionary[key])
+        full_data = pd.concat([data_to_concat, full_data], axis=0)
+        print(f'Shape after concatenation {1}: {full_data.shape}')
+        print('-'*20)
+    print(f'Final shape: {full_data.shape}')
+    return full_data
 
 
 
