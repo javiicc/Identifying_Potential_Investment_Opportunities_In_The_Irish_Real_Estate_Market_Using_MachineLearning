@@ -80,14 +80,14 @@ def metrics_regression(y_test, y_pred, squared=False):
     r2_score = metrics.r2_score(y_test, y_pred)
     mae = metrics.mean_absolute_error(y_test, y_pred)
     mape = metrics.mean_absolute_percentage_error(y_test, y_pred)
-    mse = metrics.mean_squared_error(y_test, y_pred)
+    # mse = metrics.mean_squared_error(y_test, y_pred)
     rmse = metrics.mean_squared_error(y_test, y_pred, squared=squared)
 
     print(f'R²: {r2_score}')
     print(f'MAE: {mae}')
     print(f'MAPE: {mape}')
     # print(f'MSE: {mse}')
-    print(f'RMSE: {rmse}')
+    print(f'RMSE: {rmse}\n')
 
 def cross_validate_custom(estimator, scoring_dict, X_train, y_train, cv=10, return_train_score=False):
     estimator = estimator
