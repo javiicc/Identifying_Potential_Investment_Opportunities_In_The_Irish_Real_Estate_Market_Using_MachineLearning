@@ -14,7 +14,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn import metrics
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import cross_validate
-
+from sklearn.metrics import mean_absolute_percentage_error, r2_score
 
 def split_train_test(df, test_ratio=.15):
 
@@ -131,7 +131,50 @@ def scores_statistics(estimator, scoring_dict, X_train, y_train, cv=10,
     return scores, scores_resume
 
 
+def plot_learning_curves(model, X_train, y_train, X_test, y_test, metric):
+    #   X_train, X_val, y_train, y_val =
+    # X_val, y_val = X_test.copy(), y_test.copy()
+    #    X_train, y_train = X_train[:250].copy(), y_train[:250].copy()
 
+    train_errors, test_errors = [], []
+    train_r2, test_r2 = [], []
+    for i in range(1, len(X_train)):
+        # fit model on the training dataset
+        model.fit(X_train[:i], y_train[:i])
+
+        y_train_pred = model.predict(X_train[:i])
+        y_test_pred = model.predict(X_test)
+
+        train_errors.append(mean_absolute_percentage_error(y_train[:i], y_train_pred))
+        test_errors.append(mean_absolute_percentage_error(y_test, y_test_pred))
+
+        train_r2.append(r2_score(y_train[:i], y_train_pred))
+        test_r2.append(r2_score(y_test, y_test_pred))
+
+
+    if metric == 'r2':
+        print(f'Train R2: {train_r2[-1]}')
+        print(f'Test R2: {test_r2[-1]}')
+
+        fig, ax = plt.subplots(1, 1, figsize=(14, 6))
+        plt.plot(train_r2, 'r-+', linewidth=2, label='Train', alpha=.4)
+        plt.plot(test_r2, 'b-', linewidth=3, label='Test', alpha=.4)
+        ax.set_ylim(0, 1)
+        plt.axhline(y=train_r2[-1], color='black', linestyle='--', alpha=.8)
+        plt.axhline(y=test_r2[-1], color='black', linestyle='--', alpha=.8)
+        ax.legend()
+
+    elif metric == 'mape':
+        print(f'Train MAPE: {train_errors[-1]}')
+        print(f'Test MAPE: {test_errors[-1]}')
+
+        fig, ax = plt.subplots(1, 1, figsize=(14, 6))
+        plt.plot(train_errors, 'r-+', linewidth=2, label='Train', alpha=.4)
+        plt.plot(test_errors, 'b-', linewidth=3, label='Test', alpha=.4)
+        ax.set_ylim(0, 1)
+        plt.axhline(y=train_errors[-1], color='black', linestyle='--', alpha=.8)
+        plt.axhline(y=test_errors[-1], color='black', linestyle='--', alpha=.8)
+        ax.legend()
 
 
 
