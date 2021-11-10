@@ -177,10 +177,29 @@ def plot_learning_curves(model, X_train, y_train, X_test, y_test, metric):
         ax.legend()
 
 
+def compare_models(estimator, X_train, y_train,
+                   scoring_dict,
+                   cv, return_train_score=False,
+                   ):
 
+    scores = cross_validate(estimator,
+                            X=X_train, y=y_train,
+                            scoring=scoring_dict,
+                            cv=cv,
+                            return_train_score=return_train_score)
+    scores_resume = {}
+    for key in scoring_dict:
+        try:
+            mean = np.mean(scores['test_' + key])
+            std = np.std(scores['test_' + key])
+            print(key, 'mean:', mean)
+            #print(key, 'std:', std, '\n')
+            scores_resume[key] = (mean, std)
 
-
-
+        except:
+            continue
+    print('-' * 10)
+    return scores, scores_resume
 
 
 
