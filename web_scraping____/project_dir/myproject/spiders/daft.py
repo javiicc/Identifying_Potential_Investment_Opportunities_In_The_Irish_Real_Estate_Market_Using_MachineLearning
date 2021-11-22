@@ -52,7 +52,7 @@ class DaftSpider(CrawlSpider, ABC):
     # Each `Rule` defines a certain behaviour for crawling the site
     # A link extractor is an object that extracts links from responses
     # `allow` are regular expressions that the urls must match in order to be executed
-    # `callback` indicates the method from the spider object to be called for each link
+    # `callback` indicates the method from the spider object to parse the response
     # extracted with the specified link extractor
     rules = (
         # Pagination from `start_urls`
@@ -193,7 +193,7 @@ class DaftSpider(CrawlSpider, ABC):
         item_loader.add_value('type', 'buy')
 
         # Add scraping date
-        item_loader.add_value('scraping_date', date.today())
+        item_loader.add_value('scraping_date', str(date.today()))
 
         yield item_loader.load_item()
     
@@ -311,7 +311,9 @@ class DaftSpider(CrawlSpider, ABC):
                         loader=item_loader)
 
         # Add scraping date
-        item_loader.add_value('scraping_date', date.today())
+        # We have to convert the date object to a string to avoid issues in the
+        # Item Loader
+        item_loader.add_value('scraping_date', str(date.today()))
 
         # Add ad's type info
         if '/share/' in response.url:
