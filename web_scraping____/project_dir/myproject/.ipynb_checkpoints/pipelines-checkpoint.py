@@ -40,7 +40,7 @@ class DatabasePipeline(object):
     def create_connection(self):
         # Connect to a database
         today = date.today()
-        data_path = '/home/javier/Desktop/potential-investments/A_Study_Of_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/data/lasttt{}.db'.format(str(today))
+        data_path = '/home/javier/Desktop/TFM/Fraud_Detection_In_The_Irish_Rental_Market/data/{}.db'.format(str(today))
         #data_path = '/home/javier/Desktop/TFM/Fraud_Detection_In_The_Irish_Rental_Market/data/hola.db'
         self.conn = sqlite3.connect(data_path)
         # Create a cursor

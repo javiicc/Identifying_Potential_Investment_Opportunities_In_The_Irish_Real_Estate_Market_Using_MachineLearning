@@ -1,9 +1,9 @@
 from scrapy import signals
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
-from myproject.spiders.rent import RentIeSpider
+#from myproject.spiders.rent import RentIeSpider
 from myproject.spiders.daft import DaftSpider
-from myproject.spiders.property import PropertySpider
+#from myproject.spiders.property import PropertySpider
 
 from scrapy.signalmanager import dispatcher
 
