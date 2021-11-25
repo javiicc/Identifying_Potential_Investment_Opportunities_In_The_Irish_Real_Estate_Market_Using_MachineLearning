@@ -44,10 +44,10 @@ def num_perc(df, feature, pattern):
         
         return example
     
-    if pattern == '£':
+    if pattern == '£' or pattern == 'ac' or pattern == 'm²':
         # Number of ads with pattern
         pattern_num = df.dropna(subset=[feature]).loc[
-                      df.dropna(subset=[feature])[feature].str.contains('£')].shape[0]
+                      df.dropna(subset=[feature])[feature].str.contains(pattern)].shape[0]
         print(f'Ads with "{pattern}": {pattern_num}')
         
         # % of ads with pattern
@@ -55,7 +55,7 @@ def num_perc(df, feature, pattern):
         print(f'Ads with "{pattern}": {round(pattern_perc * 100, 2)}%')
         
         example = df.dropna(subset=[feature]).loc[
-                  df.dropna(subset=[feature])[feature].str.contains('£')].sample()
+                  df.dropna(subset=[feature])[feature].str.contains(pattern)].sample()
         
         return example
     
@@ -70,6 +70,7 @@ def num_perc(df, feature, pattern):
     example = df[df[feature] == pattern].sample()
     
     return example
+
 
 def process_price(df):
     """Takes a dataframe, and does wrangling and cleaning task over the 
@@ -127,19 +128,32 @@ def process_coordinates(df):
     The dataframe processed.
     """
     print(f'Shape before process: {df.shape}')
+    
     df['latitude'] = df['coordinates'].str.split('+').str[0].astype(float)
     df['longitude'] = df['coordinates'].str.split('+').str[1].astype(float)
+    
     df.drop(columns=['coordinates'], inplace=True)
     print(f'Shape after process: {df.shape}')
     return df
 
 def drop_coord_outliers(df):
+    """Takes a dataframe and drop coordinates outliers.
     
+    Parameters
+    ----------
+    df : 
+        The dataframe to search.
+ 
+    Returns
+    -------
+    The dataframe processed.
+    """
     before = df.shape[0]
     print(f'Rows after dropping: {before}')
     
     df.drop(index=df[(df['latitude'] < 51.3) | (df['latitude'] > 55.4) | \
                      (df['longitude'] > -5.9) | (df['longitude'] < -10.6)].index, inplace=True)
+    # Drop ads from Nothern Ireland
     df.drop(index=df[(df['latitude'] > 54.5) & (df['longitude'] > -7.9) & \
                      (df['latitude'] < 54.6)].index, inplace=True)
     
@@ -150,15 +164,17 @@ def drop_coord_outliers(df):
 
 
 def drop_floor_area(df):
-    index_to_drop = df[(df['floor_area'].str.contains('m²') == False) |
-                       (df['floor_area'].isna())].index
-    print(f'index_to_drop: {len(index_to_drop)}\n')  # esta diferenci de 8 se debe a missing values
-
-    shape_before = df.shape[0]
-    print(f'Before dropping: {df.shape}')
-    df.drop(index=index_to_drop, inplace=True)
-    print(f'After dropping: {df.shape}\n----------')
-    print(f'Diference: {shape_before - df.shape[0]} rows')
+    before = df.shape[0]
+    print(f'Rows after dropping: {before}')
+    
+    df = df.dropna(subset=['floor_area']).loc[
+         df.dropna(subset=['floor_area'])['floor_area'].str.contains('m²')
+                                             ].copy()
+    
+    after = df.shape[0]
+    print(f'Rows after dropping: {after}\n' + '-' * 10)
+    print(f'Difference: {after - before}')
+    
     return df
 
 
@@ -167,8 +183,8 @@ def floor_area_wragling(df):
     return df
 
 def process_floor_area(df):
-    df_dropped = drop_floor_area(df)
-    df_wrangled = floor_area_wragling(df_dropped)
+    df_dropped = drop_floor_area(df=df)
+    df_wrangled = floor_area_wragling(df=df_dropped)
     return df_wrangled
 
 
