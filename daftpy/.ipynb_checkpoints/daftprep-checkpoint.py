@@ -10,7 +10,7 @@ from datetime import timedelta
 
 
 ###########################################################################
-#
+# DATA CLEANSING AND WRANGLING
 ###########################################################################
 
 def num_perc(df, feature, pattern):
@@ -113,18 +113,39 @@ def process_price(df):
 
 
 def process_coordinates(df):
-    print(df.shape)
+    """Takes a dataframe and make a column for `latitude` and another one
+    for `longitude` with data from `coordinates` column. The new columns 
+    will be float dtype.
+    
+    Parameters
+    ----------
+    df : 
+        The dataframe to search.
+ 
+    Returns
+    -------
+    The dataframe processed.
+    """
+    print(f'Shape before process: {df.shape}')
     df['latitude'] = df['coordinates'].str.split('+').str[0].astype(float)
     df['longitude'] = df['coordinates'].str.split('+').str[1].astype(float)
     df.drop(columns=['coordinates'], inplace=True)
-    print(df.shape)
+    print(f'Shape after process: {df.shape}')
     return df
 
 def drop_coord_outliers(df):
-    print(df.shape)
+    
+    before = df.shape[0]
+    print(f'Rows after dropping: {before}')
+    
     df.drop(index=df[(df['latitude'] < 51.3) | (df['latitude'] > 55.4) | \
                      (df['longitude'] > -5.9) | (df['longitude'] < -10.6)].index, inplace=True)
-    print(df.shape)
+    df.drop(index=df[(df['latitude'] > 54.5) & (df['longitude'] > -7.9) & \
+                     (df['latitude'] < 54.6)].index, inplace=True)
+    
+    after = df.shape[0]
+    print(f'Rows after dropping: {after}\n' + '-' * 10)
+    print(f'Difference: {after - before}')
     return df
 
 
