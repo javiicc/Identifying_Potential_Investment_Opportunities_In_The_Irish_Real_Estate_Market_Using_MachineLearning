@@ -164,9 +164,21 @@ def drop_coord_outliers(df):
 
 
 def drop_floor_area(df):
+    """Takes a dataframe and clean the `floor_area` column.
+    
+    Parameters
+    ----------
+    df : 
+        The dataframe to search.
+ 
+    Returns
+    -------
+    The dataframe cleaned.
+    """
     before = df.shape[0]
     print(f'Rows after dropping: {before}')
     
+    # Filter missing values and those whitout the pattern `m²`
     df = df.dropna(subset=['floor_area']).loc[
          df.dropna(subset=['floor_area'])['floor_area'].str.contains('m²')
                                              ].copy()
@@ -179,34 +191,70 @@ def drop_floor_area(df):
 
 
 def floor_area_wragling(df):
+    """Takes a dataframe and clean the `floor_area` column.
+    
+    Parameters
+    ----------
+    df : 
+        The dataframe to search.
+ 
+    Returns
+    -------
+    The dataframe whit the column wrangled.
+    """
     df['floor_area'] = df['floor_area'].str.split(' ').str[0]
     return df
 
 def process_floor_area(df):
+    """Takes a dataframe and process it with `drop_floor_area`
+    and `floor_area_wragling` functions.
+    
+    Parameters
+    ----------
+    df : 
+        The dataframe to search.
+ 
+    Returns
+    -------
+    The dataframe processed.
+    """
     df_dropped = drop_floor_area(df=df)
     df_wrangled = floor_area_wragling(df=df_dropped)
     return df_wrangled
 
 
 def drop_info(df):
-    before_dropping = df.shape
-    print(before_dropping)
-    df.dropna(subset=['info'])
+    
+    before = df.shape
+    print(f'Shape after dropping: {before}')
+    
+    #df.dropna(subset=['info'])
     df = df[df['info'].str.split(',').apply(len) == 4]
-    print(df.shape, '\n---------')
-    print(f'Dropped: {before_dropping[0] - df.shape[0]} rows\n')
+    
+    after = df.shape
+    print(f'Shape after dropping: {after}\n' + '-' * 10)
+    print(f'Dropped: {before[0] - after[0]} rows\n')
+    
     return df
 
 
 def process_info(df):
+    
     df = drop_info(df).copy()
-    before_wrangling = df.shape
-    print(df.shape)
+    
+    before = df.shape
+    print(f'Shape after dropping: {before}')
+    
     df['bedroom'] = df['info'].str.split(',').str[0]
     df['bathroom'] = df['info'].str.split(',').str[1]
+    df['plus_info'] = df['info'].str.split(',').str[4]
+    
+    df.drop(columns=['info'], inplace=True)
 
-    print(df.shape, '\n---------')
-    print(f'Dropped: {df.shape[1] - before_wrangling[1]} columns\n')
+    after = df.shape
+    print(f'Shape after dropping: {after}\n' + '-' * 10)
+    print(f'Difference: {after[1] - before[1]} columns')
+    
     return df
 
 
