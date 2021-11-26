@@ -224,7 +224,18 @@ def process_floor_area(df):
 
 
 def drop_info(df):
+    """Takes a dataframe and drop rows whitout an splitted `info`
+    length diferrent than four.
     
+    Parameters
+    ----------
+    df : 
+        The dataframe to search.
+ 
+    Returns
+    -------
+    The dataframe processed.
+    """
     before = df.shape
     print(f'Shape after dropping: {before}')
     
@@ -239,7 +250,19 @@ def drop_info(df):
 
 
 def process_info(df):
+    """Takes a dataframe and process it with `drop_info`
+    and creates three new columns whit info from another one.
+    Also, it drops the other one column.
     
+    Parameters
+    ----------
+    df : 
+        The dataframe to search.
+ 
+    Returns
+    -------
+    The dataframe processed.
+    """
     df = drop_info(df).copy()
     
     before = df.shape
@@ -247,7 +270,7 @@ def process_info(df):
     
     df['bedroom'] = df['info'].str.split(',').str[0]
     df['bathroom'] = df['info'].str.split(',').str[1]
-    df['plus_info'] = df['info'].str.split(',').str[4]
+    df['plus_info'] = df['info'].str.split(',').str[3]
     
     df.drop(columns=['info'], inplace=True)
 
@@ -259,11 +282,33 @@ def process_info(df):
 
 
 def process_views(df):
+    """Takes a dataframe and quits commas.
+    
+    Parameters
+    ----------
+    df : 
+        The dataframe to search.
+ 
+    Returns
+    -------
+    The dataframe processed.
+    """
     df['views'] = df['views'].str.replace(',', '').astype(float)
     return df
 
 
 def process_rooms(df):
+    """Takes a dataframe and isolate the numbers of rooms.
+    
+    Parameters
+    ----------
+    df : 
+        The dataframe to search.
+ 
+    Returns
+    -------
+    The dataframe processed.
+    """
     df['bedroom'] = df['bedroom'].str.split(' ').str[0]
     df['bathroom'] = df['bathroom'].str.split(' ').str[0]
     return df
