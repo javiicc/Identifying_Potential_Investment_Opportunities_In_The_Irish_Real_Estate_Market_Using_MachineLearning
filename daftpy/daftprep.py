@@ -149,7 +149,7 @@ def drop_coord_outliers(df):
     The dataframe processed.
     """
     before = df.shape[0]
-    print(f'Rows after dropping: {before}')
+    print(f'Rows before dropping: {before}')
     
     df.drop(index=df[(df['latitude'] < 51.3) | (df['latitude'] > 55.4) | \
                      (df['longitude'] > -5.9) | (df['longitude'] < -10.6)].index, inplace=True)
@@ -237,7 +237,7 @@ def drop_info(df):
     The dataframe processed.
     """
     before = df.shape
-    print(f'Shape after dropping: {before}')
+    print(f'Shape before dropping: {before}')
     
     #df.dropna(subset=['info'])
     df = df[df['info'].str.split(',').apply(len) == 4]
@@ -266,7 +266,7 @@ def process_info(df):
     df = drop_info(df).copy()
     
     before = df.shape
-    print(f'Shape after dropping: {before}')
+    print(f'Shape before dropping: {before}')
     
     df['bedroom'] = df['info'].str.split(',').str[0]
     df['bathroom'] = df['info'].str.split(',').str[1]
