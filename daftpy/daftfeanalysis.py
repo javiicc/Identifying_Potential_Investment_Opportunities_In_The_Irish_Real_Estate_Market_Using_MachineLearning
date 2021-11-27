@@ -29,6 +29,14 @@ import lxml.html as lh
 # Feature Engineering
 ########################################################################
 
+def missing_values(df):
+    # Check missing values in absolute and relative terms
+    missing_values = pd.DataFrame({
+        'Absolute': df.isna().sum(), 
+        'Relative': df.isna().sum() / df.shape[0]
+    })
+    return missing_values
+
 
 def location_dict(df, latitude='latitude', longitude='longitude'): ## this is so slow   , attempt=1, max_attempts=5
     """Take a dataframe and two columns names for latitude and longitude
@@ -139,6 +147,8 @@ def location_engineering(df, latitude='latitude', longitude='longitude'):
     df = location_dataframe(df, location_dictionary)
     
     return df
+
+
 
 
 def geonames_dict():
