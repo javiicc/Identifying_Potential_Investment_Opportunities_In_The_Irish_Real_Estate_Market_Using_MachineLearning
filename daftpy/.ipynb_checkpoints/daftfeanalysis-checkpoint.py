@@ -30,6 +30,17 @@ import lxml.html as lh
 ########################################################################
 
 def missing_values(df):
+    """Take a dataframe and plot missing values.
+    
+    Parameters
+    ----------
+    df : 
+        The dataframe to work with.
+    
+    Returns
+    -------
+    A DataFrame showing missinga values.
+    """
     # Check missing values in absolute and relative terms
     missing_values = pd.DataFrame({
         'Absolute': df.isna().sum(), 
@@ -38,7 +49,7 @@ def missing_values(df):
     return missing_values
 
 
-def location_dict(df, latitude='latitude', longitude='longitude'): ## this is so slow   , attempt=1, max_attempts=5
+def location_dict(df, latitude='latitude', longitude='longitude'): 
     """Take a dataframe and two columns names for latitude and longitude
     and do reverse geocoding with Nominatin geolocator.
     
@@ -150,7 +161,20 @@ def location_engineering(df, latitude='latitude', longitude='longitude'):
 
 
 def geonames_dict():
+    """Scrape the website from the url. 
     
+    Parameters
+    ----------
+    df : 
+        The dataframe to work with.
+    dictionary :
+        dictionary with location info and values with the same length 
+        than the DataFrame.
+    
+    Returns
+    -------
+    The DataFrame with location info added.
+    """
     url = 'http://www.geonames.org/postalcode-search.html?q=&country=IE'
     page = requests.get(url)
     doc = lh.fromstring(page.content) 
@@ -191,134 +215,180 @@ def geonames_dict():
 
 
 def homogenize(eircode):   # 8, 3, 7, , dublin, 6, 9, 10
-        if eircode is np.nan: 
-            pass
-        elif len(eircode) == 8: 
-            pass
-        elif len(eircode) == 3: 
-            pass
+    """Scrape the website from the url. 
+    
+    Parameters
+    ----------
+    
+    Returns
+    -------
+
+    """
+    if eircode is np.nan: 
+        pass
+    elif len(eircode) == 8: 
+        pass
+    elif len(eircode) == 3: 
+        pass
         
-        elif len(eircode) == 7:
-            if re.match(r'\w{3} \w{3}', eircode):
-                eircode = eircode[:3]
-            else:            
-                routing_key = re.search(r'(\b\w{3})', eircode)[0]
-                unique_identifier = re.search(r'(\w{4}\b)', eircode)[0]
-                eircode = f'{routing_key} {unique_identifier}'
-                
-        elif eircode == 'DUBLIN':
-            pass
-                
-        elif re.match(r'DUBLIN', eircode):
-            num = eircode[-2:]
-            try:
-                if int(num) < 10:
-                    eircode = f'D0{int(num)}'
-                elif int(num) < 25:
-                    eircode = f'D{num}'
-                else:
-                    eircode = np.nan
-            except:  # 6w
-                eircode = f'D{num}'
-                
-        elif len(eircode) == 6: 
+    elif len(eircode) == 7:
+        if re.match(r'\w{3} \w{3}', eircode):
             eircode = eircode[:3]
-            
-        elif (len(eircode) == 9) or (len(eircode) == 10):
-            if eircode == 'CO. CLARE':
-                eircode = np.nan
-            elif eircode == 'CO WICKLOW':
-                eircode = np.nan 
-            elif eircode == 'CO.ATHLONE':
-                eircode = np.nan 
-            elif re.match(r'\b\w{3}\b \b\w{2}\b \b\w{2}\b', eircode):   #D20 HK 69
-                eircode = eircode[:3]
-            else:
-                print(f'"{eircode}"', 'not processed -> np.nan')
-                #for i in eircode:
-                 #   print(i)
-                #print(len(eircode))
-                eircode = np.nan
-                #print(eircode)
+        else:            
+            routing_key = re.search(r'(\b\w{3})', eircode)[0]
+            unique_identifier = re.search(r'(\w{4}\b)', eircode)[0]
+            eircode = f'{routing_key} {unique_identifier}'
                 
-        elif len(eircode) == 1: 
-            eircode = 'D0' + eircode
-            
-        elif len(eircode) == 2: 
-            if eircode == 'D5':
-                eircode = 'D05'
-            else:
-                eircode = 'D' + eircode
-            
-        
+    elif eircode == 'DUBLIN':
+        pass
                 
-        elif re.match(r'CO WESTMEATH', eircode) or \
-             re.match(r'CO. WICKLOW', eircode) or \
-             re.match(r'CO. ROSCOMMON', eircode) or \
-             re.match(r'CO. KILKENNY', eircode) or \
-             re.match(r'0000', eircode) or \
-             re.match(r'CO WICKLOW', eircode): #re.match(r'nan', eircode)
-                        
-            print(f'"{eircode}"', 'not processed -> np.nan')
+    elif re.match(r'DUBLIN', eircode):
+        num = eircode[-2:]
+        try:
+            if int(num) < 10:
+                eircode = f'D0{int(num)}'
+            elif int(num) < 25:
+                eircode = f'D{num}'
+            else:
+                eircode = np.nan
+        except:  # 6w
+            eircode = f'D{num}'
+                
+    elif len(eircode) == 6: 
+        eircode = eircode[:3]
+            
+    elif (len(eircode) == 9) or (len(eircode) == 10):
+        if eircode == 'CO. CLARE':
             eircode = np.nan
-        
+        elif eircode == 'CO WICKLOW':
+            eircode = np.nan 
+        elif eircode == 'CO.ATHLONE':
+            eircode = np.nan 
+        elif re.match(r'\b\w{3}\b \b\w{2}\b \b\w{2}\b', eircode):   #D20 HK 69
+            eircode = eircode[:3]
         else:
-            print('--------------------') 
-            print(f'"{eircode}"')
-            #eircode = np.nan
-        return eircode
+            #print(f'"{eircode}"', 'not processed -> np.nan')
+            #for i in eircode:
+             #   print(i)
+            #print(len(eircode))
+            eircode = np.nan
+            #print(eircode)
+                
+    elif len(eircode) == 1: 
+        eircode = 'D0' + eircode
+            
+    elif len(eircode) == 2: 
+        if eircode == 'D5':
+            eircode = 'D05'
+        else:
+            eircode = 'D' + eircode
+            
+        
+                
+    elif re.match(r'CO WESTMEATH', eircode) or \
+         re.match(r'CO. WICKLOW', eircode) or \
+         re.match(r'CO. ROSCOMMON', eircode) or \
+         re.match(r'CO. KILKENNY', eircode) or \
+         re.match(r'0000', eircode) or \
+         re.match(r'CO WICKLOW', eircode): #re.match(r'nan', eircode)
+                        
+        #print(f'"{eircode}"', 'not processed -> np.nan')
+        eircode = np.nan
+        
+    return eircode
     
     
 def eircode_homogenize(df):
+    """Apply the `homogenize` function to the `postcode` column. 
+    
+    Parameters
+    ----------
+    df : 
+        The dataframe to work with.
+    
+    Returns
+    -------
+    The DataFrame with location info added.
+    """
     df['postcode'] = df['postcode'].str.strip().apply(homogenize)
     #df['postcode'] = df['postcode'].apply(homogenize)
     return df
 
 
 def add_location(df, geonames_df):
-    #count = 0
+    """Take two DataFrames and . 
     
+    Parameters
+    ----------
+    df : 
+        The dataframe to work with.
+    
+    Returns
+    -------
+    The DataFrame with location info added.
+    """
     before = df.shape
     print(f'Shape before dropping: {before}')
     
     for row in df.iterrows():
-        #print(type(row[1]))
+
         row_index = row[0]
-        #print(row_index)
+
         if row[1]['postcode'] is not np.nan:
-            #routing_key = row[1]['postcode'].split(' ')[0]
             routing_key = row[1]['postcode'][:3]
         elif row[1]['postcode'] is np.nan:
             continue
-        #else:
-         #   routing_key = row[1]['postcode'].split(' ')[0]
-        #print(routing_key)
-        #try:
+
         geonames_row = geonames_df[geonames_df['code'].str.contains(routing_key)]
         if len(geonames_row) != 0:
             for column in geonames_df:
-                #print(column)
-                #print(df.loc[row_index, column])
-                #print(geonames_row[column].values)
                 df.loc[row_index, column] = geonames_row[column].values[0]
-        #print(geonames_row)
-        #except:
-         #   print(geonames_row.index, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        else: continue
-        
-        
-        #for column in geonames_df:
-         #   #print(column)
-          #  #print(df.loc[row_index, column])
-           # #print(geonames_row[column].values)
-            #df.loc[row_index, column] = geonames_row[column].values#[0]
-        
-        #count += 1
-        #print(count) 
-    #print(count)    
+        else: 
+            continue  
     
     after = df.shape
     print(f'Shape after dropping: {after}\n' + '-' * 10)
     print(f'Difference: {after[1] - before[1]} columns')
     
     return df
+
+
+########################################################################
+# Data Analysis
+########################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
