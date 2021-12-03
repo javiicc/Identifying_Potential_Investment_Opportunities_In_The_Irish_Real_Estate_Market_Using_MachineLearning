@@ -494,10 +494,12 @@ def outlier_bool(df, feature, level=1, continuous=False, log=False):
             #print('no')
             low_limit = np.min([pct_range[0],
                                 iqr_range[0],
-                                std_range[0]])
+                                #std_range[0]
+                               ])
     high_limit = np.max([pct_range[1],
                          iqr_range[1],
-                         std_range[1]])
+                         #std_range[1]
+                        ])
         
     print(f'Limits: {[low_limit, high_limit]}')
     # Restrict the data with the minimum and maximum
@@ -525,6 +527,9 @@ def drop_outliers(df, feature, level=1, continuous=False, log=False, inplace=Fal
     outlier_boolean = outlier_bool(df=df, feature=feature, level=1, continuous=continuous,
                                    log=False)
     rows_before = df.shape[0]
+    
+    # Filter data to get outliers
+    outliers = df[outlier_boolean==False]
     # Filter data to drop outliers
     df = df[outlier_boolean]
     
@@ -533,7 +538,7 @@ def drop_outliers(df, feature, level=1, continuous=False, log=False, inplace=Fal
     print(f'Range after: {[df[feature].min(), df[feature].max()]}')
     print(f'Outliers dropped: {rows_before - rows_after}')
     
-    return df
+    return df, outliers
 
 def print_limits(df, variable, level=1):
     """Classify outliers based on. 
@@ -553,7 +558,7 @@ def print_limits(df, variable, level=1):
     
     print(f'Percentile based method: {pct_range}')
     print(f'Interquartile range method: {iqr_range}')
-    print(f'Standard deviation method: {std_range}')
+    #print(f'Standard deviation method: {std_range}')
 
 
 def common_ix(index_list):
@@ -591,6 +596,31 @@ def common_ix(index_list):
     print('-' * 10)
     return data_ix
 
+def drop_outliers_ix(df, index_list):
+    """Classify outliers based on. 
+    
+    Parameters
+    ----------
+    data : 
+        .
+    
+    Returns
+    -------
+    .
+    """
+    outliers_rep = []
+    for list_ in index_list:
+        outliers_rep += list(list_)
+        #print(len(outliers_rep))
+    
+    outliers = pd.Series(outliers_rep).unique()
+    print('Outliers dropped:', len(outliers))
+    
+    df_without_outliers = df.drop(index=outliers).copy()
+    
+    return df_without_outliers
+
+
 def drop_all_outliers(df, index_list):
     """Classify outliers based on. 
     
@@ -604,7 +634,7 @@ def drop_all_outliers(df, index_list):
     .
     """
     # Get ads index which are not outliers
-    data_ix = common_ix(index_list)
+    data_ix = outliers_ix(index_list)
     
     before = df.shape
     print(f'Shape before dropping: {before}')
@@ -619,7 +649,7 @@ def drop_all_outliers(df, index_list):
     return sale_out
 
 
-def check_transformations(df1, df2, feature):
+def check_transformations(feature, df, df_no_out):
     """Classify outliers based on. 
     
     Parameters
@@ -631,29 +661,102 @@ def check_transformations(df1, df2, feature):
     -------
     .
     """
-    fig, axs = plt.subplots(6, 2, figsize=(12, 22))
+    fig, ax = plt.subplots(6, 2, figsize=(12, 26))
 
+    #ax[0,0] = outplots(feature='price', df=df, df_no_out=df_no_out)
+    df[feature].min()
+    df[feature].max()
+    
+    df_no_out[feature].min()
+    df_no_out[feature].max()
+    
+    feature_name = feature.replace('_', ' ').capitalize()
+    
     # No restricted (with outliers)
-    sns.histplot(data=df1[feature], bins=30, color='blue', ax=axs[0, 0]) 
-    stats.probplot(df1[feature], plot=axs[0,1])
+    sns.histplot(data=df[feature], bins=30, color='blue', ax=ax[0, 0]) 
+    ### Highlihting the peak of the crisis
+    ax[0,0].axvspan(df_no_out[feature].max(), df[feature].max(),
+           alpha=0.3, color="crimson")
+    ax[0,0].set_ylabel('Unrestricted')
+    ax[0,0].set_xlabel(feature_name)
+    
+    stats.probplot(df[feature], plot=ax[0,1])
+    
 
     # Restrictec (without outliers)
-    sns.histplot(data=df2[feature], bins=30, color='blue', ax=axs[1, 0]) 
-    stats.probplot(df2[feature], plot=axs[1,1])
+    sns.histplot(data=df_no_out[feature], bins=30, color='blue', ax=ax[1, 0]) 
+    ax[1,0].set_ylabel('Unrestricted NO outliers')
+    ax[1,0].set_xlabel(feature_name)
+    stats.probplot(df_no_out[feature], plot=ax[1,1])
+    
     # No restricted and logarithmic transformation
-    sns.histplot(data=np.log(df1[feature]), bins=30, color='red', ax=axs[2, 0]) 
-    stats.probplot(np.log(df1[feature]), plot=axs[2,1])
+    sns.histplot(data=np.log(df[feature]), bins=30, color='red', ax=ax[2, 0]) 
+    ax[2,0].set_ylabel('Unrestricted')
+    ax[2,0].set_xlabel(f'{feature_name} logarithmic transformation')
+    stats.probplot(np.log(df[feature]), plot=ax[2,1])
+    ax[2,0].axvspan(np.log(df_no_out[feature].max()), np.log(df[feature].max()),
+           alpha=0.3, color="crimson")
+    
     # Restrictec and logarithmic transformation
-    sns.histplot(data=np.log(df2[feature]), bins=30, color='red', ax=axs[3, 0]) 
-    stats.probplot(np.log(df2[feature]), plot=axs[3,1])
+    sns.histplot(data=np.log(df_no_out[feature]), bins=30, color='red', ax=ax[3, 0]) 
+    ax[3,0].set_ylabel('Unrestricted NO outliers')
+    ax[3,0].set_xlabel(f'{feature_name} logarithmic transformation')
+    stats.probplot(np.log(df_no_out[feature]), plot=ax[3,1])
     # No restricted and boxcox transformation
-    sns.histplot(data=stats.boxcox(df1[feature])[0], bins=30, color='green', ax=axs[4, 0]) 
-    stats.probplot(stats.boxcox(df1[feature])[0], plot=axs[4,1])
+    sns.histplot(data=stats.boxcox(df[feature])[0], bins=30, color='green', ax=ax[4, 0]) 
+    ax[4,0].set_ylabel('Unrestricted')
+    ax[4,0].set_xlabel(f'{feature_name} coxbox transformation')
+    stats.probplot(stats.boxcox(df[feature])[0], plot=ax[4,1])
+    #ax[4,0].axvspan(stats.boxcox(df_no_out[feature].max())[0], 
+     #               stats.boxcox(df[feature].max())[0],
+      #     alpha=0.3, color="crimson")
+    
     # Restrictec and boxcox transformation
-    sns.histplot(data=stats.boxcox(df2[feature])[0], bins=30, color='green', ax=axs[5, 0]) 
-    stats.probplot(stats.boxcox(df2[feature])[0], plot=axs[5,1])
+    sns.histplot(data=stats.boxcox(df_no_out[feature])[0], bins=30, color='green', ax=ax[5, 0]) 
+    ax[5,0].set_ylabel('Unrestricted NO outliers')
+    ax[5,0].set_xlabel(f'{feature_name} coxbox transformation')
+    stats.probplot(stats.boxcox(df_no_out[feature])[0], plot=ax[5,1])
+    fig.tight_layout()
+    
+    
+def tchebycheff(df, num_features, k=2):
+    """Classify outliers based on. 
+    
+    Parameters
+    ----------
+    data : 
+        .
+    
+    Returns
+    -------
+    .
+    """
+    skew = df[num_features].skew()
+    
+    # Tchebycheff bounds
+    lim_inf = df[num_features].mean() - (k * df[num_features].std())
+    lim_sup = df[num_features].mean() + (k * df[num_features].std())
+
+    print(f'k = {k} -> {(1 - (1 / (k**2))) * 100}%')
+    
+    return pd.DataFrame({'skewness': skew, 
+                  'lim_inf': lim_inf,
+                  'lim_sup': lim_sup
+                 })
 
 
+def outplots(df, df_no_out, feature):
+
+    df[feature].min()
+    df[feature].max()
+    
+    df_no_out[feature].min()
+    df_no_out[feature].max()
+    
+    fig, ax = plt.subplots()
+    sns.histplot(data=df[feature], bins=30, color='blue')
+    ax.axvspan(df_no_out[feature].max(), df[feature].max(), color="crimson", alpha=0.3)
+    
 
 
 
