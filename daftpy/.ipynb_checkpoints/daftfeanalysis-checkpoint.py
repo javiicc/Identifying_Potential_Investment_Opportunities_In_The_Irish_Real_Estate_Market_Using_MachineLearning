@@ -23,7 +23,12 @@ import time
 
 import requests
 import lxml.html as lh
+import seaborn as sns
 
+import pylab
+from scipy.stats import kstest
+import scipy.stats as stats
+from scipy.stats import normaltest
 
 ########################################################################
 # Feature Engineering
@@ -357,32 +362,286 @@ def add_location(df, geonames_df):
 # Data Analysis
 ########################################################################
 
+def frequencies(df, variable):
+    """Take a DataFrame and a variable name and return the frquencies. 
+    
+    Parameters
+    ----------
+    df : 
+        The dataframe to work with.
+    variable : 
+        Variable name we want know the frequency.
+    
+    Returns
+    -------
+    The DataFrame with frequencies.
+    """
+    freq = pd.DataFrame(data=df[variable].value_counts())
+    freq.rename(columns={'cities':'freq_abs'}, inplace=True)
+    # Calculate relative frequencies
+    freq['freq_rel'] = freq.freq_abs / df.shape[0]
+    return freq
+
+# Percentile based method
+def pct_method(data, level, lower=True):
+    """Classify outliers based on percentiles. 
+    
+    Parameters
+    ----------
+    data : 
+        Column.
+    level : 
+        Punto de corte a partir del cual se considera outlier.
+    lower :
+        To indicate whether there should be ...
+    
+    Returns
+    -------
+    .
+    """
+    # Upper and lower limits by percentiles
+    upper = np.percentile(data, 100 - level)
+    if lower:
+        lower = np.percentile(data, level)
+        # Returning the upper and lower limits
+        return [lower, upper]
+    else:
+        return [upper]
+
+# Interquartile range method
+def iqr_method(data):
+    """Classify outliers based on. 
+    
+    Parameters
+    ----------
+    data : 
+        .
+    
+    Returns
+    -------
+    .
+    """
+    # Calculating the IQR
+    perc_75 = np.percentile(data, 75)
+    perc_25 = np.percentile(data, 25)
+    iqr_range = perc_75 - perc_25
+    
+    # Obtaining the lower and upper bound
+    iqr_upper = perc_75 + (1.5 * iqr_range)
+    iqr_lower = perc_25 - (1.5 * iqr_range)
+    
+    # Returning the upper and lower limits
+    return [iqr_lower, iqr_upper]
 
 
+# This approach only works if the data is approximately Gaussian
+def std_method(data):
+    """Classify outliers based on. 
+    
+    Parameters
+    ----------
+    data : 
+        .
+    
+    Returns
+    -------
+    .
+    """
+    # Creating three standard deviations away boundaries
+    std = np.std(data)
+    upper_3std = np.mean(data) + 3 * std
+    lower_3std = np.mean(data) - 3 * std
+    # Returning the upper and lower limits
+    return [lower_3std, upper_3std]
 
 
+def outlier_bool(df, feature, level=1, continuous=False, log=False):
+    """Classify outliers based on. 
+    
+    Parameters
+    ----------
+    data : 
+        .
+    
+    Returns
+    -------
+    .
+    """
+    data = df[feature]
+
+    # Taking logs is specified
+    if log is True:
+        data = np.log(data + 1)
+        
+    # Obtaining the ranges
+    pct_range = pct_method(data, level)
+    iqr_range = iqr_method(data)
+    std_range = std_method(data)
+    
+    if continuous is False:
+        # Setting the lower limit fixed for discrete variables
+        low_limit = np.min(data)
+        #high_limit = np.max([pct_range[1],
+         #                    iqr_range[1],
+          #                   std_range[1]])
+        
+    elif continuous:
+        if feature is 'floor_area':
+            # Percentile based method is the onlu oney that return a 
+            # positive value
+            low_limit = pct_range[0]
+        else:
+            #print('no')
+            low_limit = np.min([pct_range[0],
+                                iqr_range[0],
+                                std_range[0]])
+    high_limit = np.max([pct_range[1],
+                         iqr_range[1],
+                         std_range[1]])
+        
+    print(f'Limits: {[low_limit, high_limit]}')
+    # Restrict the data with the minimum and maximum
+    outlier = data.between(low_limit, high_limit)
+    print(f'No outliers: {outlier.sum()}')
+    print(f'Outliers: {(outlier==False).sum()}\n')
+    
+    # Return boolean
+    return outlier
+
+def drop_outliers(df, feature, level=1, continuous=False, log=False, inplace=False):
+    """Classify outliers based on. 
+    
+    Parameters
+    ----------
+    data : 
+        .
+    
+    Returns
+    -------
+    .
+    """
+    print(f'Range before: {[df[feature].min(), df[feature].max()]}\n')
+    
+    outlier_boolean = outlier_bool(df=df, feature=feature, level=1, continuous=continuous,
+                                   log=False)
+    rows_before = df.shape[0]
+    # Filter data to drop outliers
+    df = df[outlier_boolean]
+    
+    rows_after = df.shape[0]
+    
+    print(f'Range after: {[df[feature].min(), df[feature].max()]}')
+    print(f'Outliers dropped: {rows_before - rows_after}')
+    
+    return df
+
+def print_limits(df, variable, level=1):
+    """Classify outliers based on. 
+    
+    Parameters
+    ----------
+    data : 
+        .
+    
+    Returns
+    -------
+    .
+    """
+    pct_range = pct_method(df[variable], level=level)
+    iqr_range = iqr_method(df[variable])
+    std_range = std_method(df[variable])
+    
+    print(f'Percentile based method: {pct_range}')
+    print(f'Interquartile range method: {iqr_range}')
+    print(f'Standard deviation method: {std_range}')
 
 
+def common_ix(index_list):
+    """Classify outliers based on. 
+    
+    Parameters
+    ----------
+    data : 
+        .
+    
+    Returns
+    -------
+    .
+    """
+    data_ix = []
+    for i, elem in enumerate(index_list):
+        # First index list
+        if i == 0:
+            # initial_ix = sd_out_price.index
+            initial_ix = elem 
+            for ix in initial_ix:
+                # If ix is in the next index list then por el momento
+                # cumple la condicion y por tanto se une a la lista
+                if ix in index_list[i+1]:
+                    data_ix.append(ix)
+            print(f'1st and 2nd index lists: {len(data_ix)} rows')
+    
+        elif i < 4:
+            for ix in data_ix:
+                # Check whether index from data_ix are in the next list, 
+                # if not -> remove it
+                if ix not in index_list[i+1]:
+                    data_ix.remove(ix)
+            print(f'{i + 2}{"rd" if i + 2 == 3 else "th"} index list: {len(data_ix)} rows')
+    print('-' * 10)
+    return data_ix
+
+def drop_all_outliers(df, index_list):
+    """Classify outliers based on. 
+    
+    Parameters
+    ----------
+    data : 
+        .
+    
+    Returns
+    -------
+    .
+    """
+    # Get ads index which are not outliers
+    data_ix = common_ix(index_list)
+    
+    before = df.shape
+    print(f'Shape before dropping: {before}')
+    
+    # Filter data to drop outliers
+    sale_out = df.iloc[data_ix]
+    
+    after = sale_out.shape
+    print(f'Shape after dropping: {after}')
+    print(f'{before[0] - after[0]} rows/outliers dropped')
+    
+    return sale_out
 
 
+def check_transformations(df1, df2, feature):
+    
+    fig, axs = plt.subplots(6, 2, figsize=(12, 22))
 
+    # No restricted (with outliers)
+    sns.histplot(data=df1[feature], bins=30, color='blue', ax=axs[0, 0]) 
+    stats.probplot(df1[feature], plot=axs[0,1])
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    # Restrictec (without outliers)
+    sns.histplot(data=df2[feature], bins=30, color='blue', ax=axs[1, 0]) 
+    stats.probplot(df2[feature], plot=axs[1,1])
+    # No restricted and logarithmic transformation
+    sns.histplot(data=np.log(df1[feature]), bins=30, color='red', ax=axs[2, 0]) 
+    stats.probplot(np.log(df1[feature]), plot=axs[2,1])
+    # Restrictec and logarithmic transformation
+    sns.histplot(data=np.log(df2[feature]), bins=30, color='red', ax=axs[3, 0]) 
+    stats.probplot(np.log(df2[feature]), plot=axs[3,1])
+    # No restricted and boxcox transformation
+    sns.histplot(data=stats.boxcox(df1[feature])[0], bins=30, color='green', ax=axs[4, 0]) 
+    stats.probplot(stats.boxcox(df1[feature])[0], plot=axs[4,1])
+    # Restrictec and boxcox transformation
+    sns.histplot(data=stats.boxcox(df2[feature])[0], bins=30, color='green', ax=axs[5, 0]) 
+    stats.probplot(stats.boxcox(df2[feature])[0], plot=axs[5,1])
 
 
 
