@@ -30,6 +30,16 @@ from scipy.stats import kstest
 import scipy.stats as stats
 from scipy.stats import normaltest
 
+import ppscore as pps
+import random
+from sklearn.tree import DecisionTreeRegressor
+
+from sklearn.linear_model import LinearRegression
+from sklearn.feature_selection import (RFE, 
+                                       SequentialFeatureSelector)
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+
 ########################################################################
 # Feature Engineering
 ########################################################################
@@ -767,7 +777,53 @@ def outplots(df, df_no_out, feature):
     ax.axvspan(df_no_out[feature].max(), df[feature].max(), color="crimson", alpha=0.3)
     
 
+def wrapper_methods(estimators_dict, method, 
+                    X_train, y_train, X_test, y_test):
 
+    #scores_dict = {}
+    for key in estimators_dict:
+        print(key, '\n' + '-' * 10)
+        estimator = estimators_dict[key]
+
+        scores = [] 
+        for i in range(1, X_train.shape[1]):  # + 1
+
+            # Choose selector
+            if method is 'rfe':
+                selector = RFE(estimator=estimator, 
+                               n_features_to_select=i, # i = 1feature, 2features...
+                               step=1) 
+            elif method is 'sfs_forward':
+                selector = SequentialFeatureSelector(estimator=estimator, 
+                                                     n_features_to_select=i, 
+                                                     direction='forward')
+            elif method is 'sfs_backward':
+                selector = SequentialFeatureSelector(estimator=estimator, 
+                                                     n_features_to_select=i, 
+                                                     direction='backward') 
+                
+            # Select variables
+            selector.fit(X_train, y_train)    
+
+            #print(sfs.support_)
+            #print(sfs.ranking_)
+            print(X_train.columns[selector.support_].values, '\n')
+
+            estimator.fit(X_train.loc[:, selector.support_], y_train)
+            scores.append(estimator.score(X_test.loc[:, selector.support_], 
+                                       y_test)) 
+
+        print(scores, '\n')
+        #scores_dict[key] = scores
+        
+        fig, ax = plt.subplots(1, 1, figsize=(6, 3))
+        ax.scatter(range(1, X_train.shape[1]), scores) #  + 1
+        ax.set_title(f'{key} Scores')
+        ax.set_xlabel('Number of Features')
+        ax.set_ylabel('R^2')
+        plt.tight_layout()
+  
+        #return scores_dict
 
 
 
