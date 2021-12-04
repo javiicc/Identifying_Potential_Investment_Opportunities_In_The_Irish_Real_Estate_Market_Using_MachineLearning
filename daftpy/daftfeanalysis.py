@@ -677,6 +677,8 @@ def check_transformations(feature, df, df_no_out):
     ### Highlihting the peak of the crisis
     ax[0,0].axvspan(df_no_out[feature].max(), df[feature].max(),
            alpha=0.3, color="crimson")
+    ax[0,0].axvspan(df[feature].min(), df_no_out[feature].min(),
+           alpha=0.3, color="crimson")
     ax[0,0].set_ylabel('Unrestricted')
     ax[0,0].set_xlabel(feature_name)
     
@@ -695,6 +697,8 @@ def check_transformations(feature, df, df_no_out):
     ax[2,0].set_xlabel(f'{feature_name} logarithmic transformation')
     stats.probplot(np.log(df[feature]), plot=ax[2,1])
     ax[2,0].axvspan(np.log(df_no_out[feature].max()), np.log(df[feature].max()),
+           alpha=0.3, color="crimson")
+    ax[2,0].axvspan(np.log(df[feature].min()), np.log(df_no_out[feature].min()),
            alpha=0.3, color="crimson")
     
     # Restrictec and logarithmic transformation
@@ -716,6 +720,11 @@ def check_transformations(feature, df, df_no_out):
     ax[5,0].set_ylabel('Unrestricted NO outliers')
     ax[5,0].set_xlabel(f'{feature_name} coxbox transformation')
     stats.probplot(stats.boxcox(df_no_out[feature])[0], plot=ax[5,1])
+    
+    
+    
+    
+    
     fig.tight_layout()
     
     
