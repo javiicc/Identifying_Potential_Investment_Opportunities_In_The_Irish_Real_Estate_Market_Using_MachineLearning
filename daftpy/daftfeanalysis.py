@@ -40,6 +40,9 @@ from sklearn.feature_selection import (RFE,
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 
+from sklearn.preprocessing import (StandardScaler, OneHotEncoder,
+                                   PolynomialFeatures, PowerTransformer)
+
 ########################################################################
 # Feature Engineering
 ########################################################################
