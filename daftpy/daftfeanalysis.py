@@ -731,14 +731,12 @@ def check_transformations(feature, df, df_no_out):
     ax[5,0].set_xlabel(f'{feature_name} coxbox transformation')
     stats.probplot(stats.boxcox(df_no_out[feature])[0], plot=ax[5,1])
     
-    
-    
-    
-    
     fig.tight_layout()
     
     
-def tchebycheff(df, num_features, k=2):
+    
+    
+def tchebycheff(df, num_features, k=2, transformation=None):
     """Classify outliers based on. 
     
     Parameters
@@ -750,7 +748,15 @@ def tchebycheff(df, num_features, k=2):
     -------
     .
     """
-    skew = df[num_features].skew()
+    if transformation == None:
+        skew = df[num_features].skew()
+        kurtosis = df[num_features].kurtosis()
+    elif transformation == 'log':
+        skew = np.log(df[num_features].dropna()).skew()
+        kurtosis = df[num_features].kurtosis()
+    elif transformation == 'coxbox':
+        skew = stats.boxcox(df[num_features].dropna()).skew()
+        kurtosis = df[num_features].kurtosis()
     
     # Tchebycheff bounds
     lim_inf = df[num_features].mean() - (k * df[num_features].std())
@@ -758,7 +764,8 @@ def tchebycheff(df, num_features, k=2):
 
     print(f'k = {k} -> {(1 - (1 / (k**2))) * 100}%')
     
-    return pd.DataFrame({'skewness': skew, 
+    return pd.DataFrame({'skewness': skew,
+                         'kurtosis': kurtosis,
                   'lim_inf': lim_inf,
                   'lim_sup': lim_sup
                  })
@@ -827,5 +834,12 @@ def wrapper_methods(estimators_dict, method,
 
 
 
+def normality_test(df, feature):
+    # D'Agostino's K-squared test
+    # ==============================================================================
+    k2, p_value = stats.normaltest(np.log(df[feature]))
+    print(f"Logarithmic transformation\n -----\n Estadístico = {k2}, p-value = {p_value}\n")
 
+    k2, p_value = stats.normaltest(stats.boxcox(df[feature])[0])
+    print(f"Coxbox transformation\n -----\n Estadístico = {k2}, p-value = {p_value}")
 
