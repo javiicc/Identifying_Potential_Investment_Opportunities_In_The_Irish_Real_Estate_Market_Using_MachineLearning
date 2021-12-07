@@ -9,7 +9,7 @@ def create_pipeline(**kwargs):
         [
             node(
                 func=location_feature_engineering,
-                inputs="preprocessed_ads",
+                inputs="df_without_outliers",
                 outputs="ads_with_location_features",
                 name="location_feature_engineering_node",
             ),
