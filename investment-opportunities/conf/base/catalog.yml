@@ -9,23 +9,20 @@ advertisements:
   filepath: data/01_raw/2021-11-25.csv
   layer: raw
 
-
 preprocessed_ads:
   type: pandas.CSVDataSet
   filepath: data/02_intermediate/preprocessed_ads.csv
   layer: intermediate
 
+drop_outliers_ix:
+  type: pandas.CSVDataSet
+  filepath: data/02_intermediate/df_no_outliers.csv
+  layer: intermediate
 
 ads_with_location_features:
   type: pandas.CSVDataSet
   filepath: data/04_feature/ads_with_location_features.csv
   layer: feature
-
-
-#temporal_input_data:
-#  type: pandas.CSVDataSet
-#  filepath: data/05_model_input/temporal_input_data.csv
-#  layer: model_input
 
 regressor:
   type: pickle.PickleDataSet

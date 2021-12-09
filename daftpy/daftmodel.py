@@ -9,12 +9,14 @@ from sklearn.linear_model import LinearRegression
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import (StandardScaler, OneHotEncoder,
-                                   PolynomialFeatures)
+                                   PolynomialFeatures, PowerTransformer)
 from sklearn.compose import ColumnTransformer
 from sklearn import metrics
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import cross_validate
 from sklearn.metrics import mean_absolute_percentage_error, r2_score
+
+from yellowbrick.regressor import ResidualsPlot
 
 def split_train_test(df, test_ratio=.15):
 
@@ -45,6 +47,17 @@ def split_x_y(train_set, test_set, features, target='price'):
 
 def split_data(data, target='price', test_size=.15, output='X_y_train_test',
                random_state=None):
+    """Take a dataframe and plot missing values.
+    
+    Parameters
+    ----------
+    df : 
+        The dataframe to work with.
+    
+    Returns
+    -------
+    A DataFrame showing missinga values.
+    """
     features = list(data.columns)
     features.remove(target)
 
@@ -77,6 +90,17 @@ def split_data(data, target='price', test_size=.15, output='X_y_train_test',
 
 
 def metrics_regression(y_test, y_pred, squared=False):
+    """Take a dataframe and plot missing values.
+    
+    Parameters
+    ----------
+    df : 
+        The dataframe to work with.
+    
+    Returns
+    -------
+    A DataFrame showing missinga values.
+    """
     r2_score = metrics.r2_score(y_test, y_pred)
     mae = metrics.mean_absolute_error(y_test, y_pred)
     mape = metrics.mean_absolute_percentage_error(y_test, y_pred)
@@ -202,7 +226,57 @@ def compare_models(estimator, X_train, y_train,
     return scores, scores_resume
 
 
+def transformer_estimator(num_transformation, regressor, 
+                          levels_code, 
+                          levels_type_house, 
+                          poly_degree=1):
 
+    if num_transformation is 'std_scaler':
+        num_pipe = Pipeline([
+            ('std_scaler', StandardScaler())
+            ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
+            ])
+    elif num_transformation is 'power_transformer':
+        num_pipe = Pipeline([
+            ('power_transformer', PowerTransformer(method='yeo-johnson')), #, standardize=False
+            ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
+            ])    
+        
+
+    cat_pipe = Pipeline([
+        ('one_hot_encoder', OneHotEncoder(categories=[levels_code, levels_type_house]))  # No hace nada si ya transformadas
+                                          #handle_unknown='ignore'
+        ])
+    # Las transforme antes para evitar problemas no las variables a la hora de predecir e el test_set...
+
+    preprocessor = ColumnTransformer([
+        ('num', num_pipe, num_features),
+        ('cat', cat_pipe, cat_features),
+        ]) #, remainder='passthrough'
+
+
+    pipe_estimator = Pipeline(steps=[
+        ('preprocessor', preprocessor),
+        ('imputer', SimpleImputer(strategy='constant', # esto lo puedo agnadir en los otros pipes
+                                  fill_value=None)),
+        ('regressor', regressor)
+        ])
+    
+    return pipe_estimator
+
+
+def residuals(estimator, X_train, X_test, y_train, y_test):
+
+    fig, ax =plt.subplots(1,2,figsize=(14,6))
+
+    sns.regplot(x=y_test, y=estimator.fit(X_train, y_train).predict(X_test), 
+                scatter_kws={"color": "cornflowerblue"}, line_kws={"color": "red"}, ax=ax[0])\
+               .set_title('Actual vs Predicted')
+
+    visualizer = ResidualsPlot(estimator, ax=ax[1])
+    visualizer.fit(X_train, y_train)
+    visualizer.score(X_test, y_test)
+    visualizer.show();
 
 
 

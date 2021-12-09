@@ -34,7 +34,6 @@ from kedro.pipeline import Pipeline
 
 from .pipelines import data_processing as dp
 from .pipelines import feature_engineering_geospatial_data as fegd
-#from .pipelines import temporal_processing as tp
 from .pipelines import data_science as ds
 
 
@@ -47,13 +46,11 @@ def register_pipelines() -> Dict[str, Pipeline]:
     """
     data_processing_pipeline = dp.create_pipeline()
     feature_engineering_pipeline = fegd.create_pipeline()
-    #temporal_processing_pipeline = tp.create_pipeline()
     data_science_pipeline = ds.create_pipeline()
 
     return {
         "__default__": data_processing_pipeline,
         "dp": data_processing_pipeline,
         "fegd": feature_engineering_pipeline,
-        #"tp": temporal_processing_pipeline,
         "ds": data_science_pipeline,
     }

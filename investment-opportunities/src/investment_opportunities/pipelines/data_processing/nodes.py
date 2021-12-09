@@ -521,7 +521,7 @@ def drop_outliers(df: pd.DataFrame,
 
         outliers_dict[feature] = outliers.index
 
-    return outliers_dict   #df,
+    return outliers_dict
 
 def drop_outliers_ix(df: pd.DataFrame, index_dict):
     """Classify outliers based on.
@@ -550,7 +550,7 @@ def drop_outliers_ix(df: pd.DataFrame, index_dict):
     df_without_outliers = df.drop(index=outliers).copy()
     print(df_without_outliers.shape)
 
-    return df_without_outliers
+    return df
 
 
 

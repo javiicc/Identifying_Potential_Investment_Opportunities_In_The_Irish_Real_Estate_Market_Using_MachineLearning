@@ -357,7 +357,7 @@ def location_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
     # Esto puedo hacerlo antes o ponerlo en data directamente
     geonames_df = pd.DataFrame(geonames_dict())
 
-    df = eircode_homogenize(df)
+    df_loc = eircode_homogenize(df)
 
     df = add_location(df=df, geonames_df=geonames_df)
 

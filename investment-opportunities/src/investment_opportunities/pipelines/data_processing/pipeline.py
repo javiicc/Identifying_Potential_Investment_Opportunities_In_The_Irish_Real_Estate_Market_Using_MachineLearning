@@ -22,7 +22,7 @@ def create_pipeline(**kwargs):
             node(
                 func=drop_outliers_ix,
                 inputs=["preprocessed_ads", "outliers_dict"],
-                outputs="df_without_outliers",
+                outputs="df_no_outliers",
                 name="drop_outliers_node",
             ),
         ]
