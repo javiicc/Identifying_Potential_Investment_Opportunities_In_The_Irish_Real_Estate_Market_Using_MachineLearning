@@ -267,13 +267,20 @@ def transformer_estimator(num_transformation, regressor,
 
 def residuals(estimator, X_train, X_test, y_train, y_test):
 
-    fig, ax =plt.subplots(1,2,figsize=(14,6))
+    fig, ax =plt.subplots(2,2,figsize=(14,10))
 
+    
+    sns.regplot(x=y_train, y=estimator.fit(X_train, y_train).predict(X_train), 
+                scatter_kws={"color": "cornflowerblue"}, line_kws={"color": "red"}, ax=ax[0,0])\
+               .set_title('Actual vs Predicted')
     sns.regplot(x=y_test, y=estimator.fit(X_train, y_train).predict(X_test), 
-                scatter_kws={"color": "cornflowerblue"}, line_kws={"color": "red"}, ax=ax[0])\
+                scatter_kws={"color": "cornflowerblue"}, line_kws={"color": "red"}, ax=ax[0,1])\
                .set_title('Actual vs Predicted')
 
-    visualizer = ResidualsPlot(estimator, ax=ax[1])
+    visualizer = ResidualsPlot(estimator, ax=ax[1,0], 
+                               train_color='b', test_color='r', 
+                               train_alpha=.3, test_alpha=.3,
+                              )
     visualizer.fit(X_train, y_train)
     visualizer.score(X_test, y_test)
     visualizer.show();
