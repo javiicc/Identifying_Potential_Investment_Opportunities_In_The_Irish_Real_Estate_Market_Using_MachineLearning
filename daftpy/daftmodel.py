@@ -18,6 +18,7 @@ from sklearn.metrics import mean_absolute_percentage_error, r2_score
 
 from yellowbrick.regressor import ResidualsPlot
 
+'''
 def split_train_test(df, test_ratio=.15):
 
     shuffled_indices = np.random.permutation(len(df))
@@ -43,7 +44,7 @@ def split_x_y(train_set, test_set, features, target='price'):
           'y_test:', y_test.shape, '\n')
 
     return X_train, X_test, y_train, y_test
-
+'''
 
 def split_data(data, target='price', test_size=.15, output='X_y_train_test',
                random_state=None):
@@ -226,39 +227,47 @@ def compare_models(estimator, X_train, y_train,
     return scores, scores_resume
 
 
-def transformer_estimator(num_transformation, regressor, 
-                          levels_code, 
-                          levels_type_house, 
-                          poly_degree=1):
+def transformer_estimator(num_transformation, regressor, levels_list, poly_degree=1):
 
     if num_transformation is 'std_scaler':
         num_pipe = Pipeline([
-            ('std_scaler', StandardScaler())
+            ('std_scaler', StandardScaler()),
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
+            ('imputer', SimpleImputer(strategy='median', # 'constant'
+                        #          fill_value=None
+                                 )),
             ])
-    elif num_transformation is 'power_transformer':
+    elif num_transformation is 'yeo-johnson':
         num_pipe = Pipeline([
             ('power_transformer', PowerTransformer(method='yeo-johnson')), #, standardize=False
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
+            ('imputer', SimpleImputer(strategy='median', # 'constant'
+                        #          fill_value=None
+                                 )),
             ])    
         
 
     cat_pipe = Pipeline([
-        ('one_hot_encoder', OneHotEncoder(categories=[levels_code, levels_type_house]))  # No hace nada si ya transformadas
-                                          #handle_unknown='ignore'
+        ('one_hot_encoder', OneHotEncoder(categories=levels_list, 
+                                       #   handle_unknown='ignore'  
+                                         )), 
+        ('imputer', SimpleImputer(strategy='constant',
+                                  fill_value=None
+                                 )),
         ])
-    # Las transforme antes para evitar problemas no las variables a la hora de predecir e el test_set...
 
+    
     preprocessor = ColumnTransformer([
         ('num', num_pipe, num_features),
         ('cat', cat_pipe, cat_features),
         ]) #, remainder='passthrough'
 
-
+    
     pipe_estimator = Pipeline(steps=[
         ('preprocessor', preprocessor),
-        ('imputer', SimpleImputer(strategy='constant', # esto lo puedo agnadir en los otros pipes
-                                  fill_value=None)),
+  #      ('imputer', SimpleImputer(strategy='constant', # 'constant'
+   #                               fill_value=None
+   #                              )),
         ('regressor', regressor)
         ])
     
@@ -270,13 +279,20 @@ def residuals(estimator, X_train, X_test, y_train, y_test):
     fig, ax =plt.subplots(2,2,figsize=(14,10))
 
     
-    sns.regplot(x=y_train, y=estimator.fit(X_train, y_train).predict(X_train), 
-                scatter_kws={"color": "cornflowerblue"}, line_kws={"color": "red"}, ax=ax[0,0])\
-               .set_title('Actual vs Predicted')
+    sns.regplot(x=y_train, y=estimator.fit(X_train, y_train).predict(X_train),
+                scatter_kws={"color": "cornflowerblue"}, line_kws={"color": "red"}, 
+                ax=ax[0,0])\
+               .set_title('Actual vs Predicted, Train')
+    ax[0,0].set_xlabel('Actual price')
+    ax[0,0].set_ylabel('Predicted price')
     sns.regplot(x=y_test, y=estimator.fit(X_train, y_train).predict(X_test), 
-                scatter_kws={"color": "cornflowerblue"}, line_kws={"color": "red"}, ax=ax[0,1])\
-               .set_title('Actual vs Predicted')
-
+                scatter_kws={"color": "cornflowerblue"}, line_kws={"color": "red"}, 
+                ax=ax[0,1])\
+               .set_title('Actual vs Predicted, Test')
+    ax[0,1].set_xlabel('Actual price')
+    ax[0,1].set_ylabel('Predicted price')
+    plt.tight_layout()
+    
     visualizer = ResidualsPlot(estimator, ax=ax[1,0], 
                                train_color='b', test_color='r', 
                                train_alpha=.3, test_alpha=.3,
