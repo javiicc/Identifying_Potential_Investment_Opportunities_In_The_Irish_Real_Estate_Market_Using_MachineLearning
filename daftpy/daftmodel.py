@@ -18,7 +18,7 @@ from sklearn.metrics import mean_absolute_percentage_error, r2_score
 
 from yellowbrick.regressor import ResidualsPlot
 
-'''
+
 def split_train_test(df, test_ratio=.15):
 
     shuffled_indices = np.random.permutation(len(df))
@@ -44,7 +44,7 @@ def split_x_y(train_set, test_set, features, target='price'):
           'y_test:', y_test.shape, '\n')
 
     return X_train, X_test, y_train, y_test
-'''
+
 
 def split_data(data, target='price', test_size=.15, output='X_y_train_test',
                random_state=None):
@@ -227,48 +227,41 @@ def compare_models(estimator, X_train, y_train,
     return scores, scores_resume
 
 
-def transformer_estimator(num_transformation, regressor, levels_list, poly_degree=1):
+def transformer_estimator(num_transformation, 
+                          regressor, 
+                          levels_list, 
+                          num_feat, 
+                          cat_feat, 
+                          poly_degree=1):
 
-    if num_transformation is 'std_scaler':
-        num_pipe = Pipeline([
-            ('std_scaler', StandardScaler()),
-            ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-            ('imputer', SimpleImputer(strategy='median', # 'constant'
-                        #          fill_value=None
-                                 )),
-            ])
-    elif num_transformation is 'yeo-johnson':
+    if num_transformation is 'power_transformer':
         num_pipe = Pipeline([
             ('power_transformer', PowerTransformer(method='yeo-johnson')), #, standardize=False
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-            ('imputer', SimpleImputer(strategy='median', # 'constant'
-                        #          fill_value=None
-                                 )),
-            ])    
-        
+            ('imputer', SimpleImputer(strategy='median')),
+            ])
+    elif num_transformation is 'std_scaler':
+        num_pipe = Pipeline([
+            ('std_scaler', StandardScaler()),
+            ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
+            ('imputer', SimpleImputer(strategy='median')),
+            ])
 
     cat_pipe = Pipeline([
-        ('one_hot_encoder', OneHotEncoder(categories=levels_list, 
-                                       #   handle_unknown='ignore'  
-                                         )), 
-        ('imputer', SimpleImputer(strategy='constant',
-                                  fill_value=None
-                                 )),
+        ('one_hot_encoder', OneHotEncoder(categories=levels_list)), 
+        ('imputer', SimpleImputer(strategy='constant', fill_value=None)),
         ])
 
     
     preprocessor = ColumnTransformer([
-        ('num', num_pipe, num_features),
-        ('cat', cat_pipe, cat_features),
+        ('num', num_pipe, num_feat),
+        ('cat', cat_pipe, cat_feat),
         ]) #, remainder='passthrough'
 
     
     pipe_estimator = Pipeline(steps=[
         ('preprocessor', preprocessor),
-  #      ('imputer', SimpleImputer(strategy='constant', # 'constant'
-   #                               fill_value=None
-   #                              )),
-        ('regressor', regressor)
+        ('regressor', regressor),
         ])
     
     return pipe_estimator
