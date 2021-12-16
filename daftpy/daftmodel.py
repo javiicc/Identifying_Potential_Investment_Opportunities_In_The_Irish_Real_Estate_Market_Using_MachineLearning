@@ -125,12 +125,15 @@ def cross_validate_custom(estimator, scoring_dict, X_train, y_train, cv=10, retu
 
 
 def scores_statistics(estimator, scoring_dict, X_train, y_train, cv=10,
-                      return_train_score=False, time_info=False):
+                      return_train_score=False, time_info=False, 
+                      return_est=False):
+    
     scores = cross_validate(estimator,
                             X=X_train, y=y_train,
                             scoring=scoring_dict,
                             cv=cv,
-                            return_train_score=return_train_score)
+                            return_train_score=return_train_score,
+                            return_estimator=return_est)
 
     if time_info:
         fit_time_mean = np.mean(scores['fit_time'])
@@ -227,6 +230,19 @@ def compare_models(estimator, X_train, y_train,
     return scores, scores_resume
 
 
+from sklearn.base import BaseEstimator, TransformerMixin
+
+class IdentityTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self):
+        pass
+    
+    def fit(self, input_array, y=None):
+        return self
+    
+    def transform(self, input_array, y=None):
+        return input_array*1
+
+
 def transformer_estimator(num_transformation, 
                           regressor, 
                           levels_list, 
@@ -243,6 +259,12 @@ def transformer_estimator(num_transformation,
     elif num_transformation is 'std_scaler':
         num_pipe = Pipeline([
             ('std_scaler', StandardScaler()),
+            ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
+            ('imputer', SimpleImputer(strategy='median')),
+            ])
+    elif num_transformation is 'identity':
+        num_pipe = Pipeline([
+            ('identity', IdentityTransformer()),
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
             ('imputer', SimpleImputer(strategy='median')),
             ])
