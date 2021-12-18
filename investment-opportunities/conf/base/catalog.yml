@@ -14,10 +14,10 @@ preprocessed_ads:
   filepath: data/02_intermediate/preprocessed_ads.csv
   layer: intermediate
 
-drop_outliers_ix:
+df_no_outliers:
   type: pandas.CSVDataSet
-  filepath: data/02_intermediate/df_no_outliers.csv
-  layer: intermediate
+  filepath: data/03_primary/df_no_outliers.csv
+  layer: primary
 
 ads_with_location_features:
   type: pandas.CSVDataSet

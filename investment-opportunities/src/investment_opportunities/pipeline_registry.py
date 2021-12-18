@@ -33,7 +33,8 @@ from typing import Dict
 from kedro.pipeline import Pipeline
 
 from .pipelines import data_processing as dp
-from .pipelines import feature_engineering_geospatial_data as fegd
+from .pipelines import data_cleansing as dc
+from .pipelines import feature_engineering_geospatial_data as fe
 from .pipelines import data_science as ds
 
 
@@ -45,12 +46,14 @@ def register_pipelines() -> Dict[str, Pipeline]:
 
     """
     data_processing_pipeline = dp.create_pipeline()
-    feature_engineering_pipeline = fegd.create_pipeline()
+    data_cleansing_pipeline = dc.create_pipeline()
+    feature_engineering_pipeline = fe.create_pipeline()
     data_science_pipeline = ds.create_pipeline()
 
     return {
         "__default__": data_processing_pipeline,
         "dp": data_processing_pipeline,
-        "fegd": feature_engineering_pipeline,
+        "dc": data_cleansing_pipeline,
+        "fe": feature_engineering_pipeline,
         "ds": data_science_pipeline,
     }
