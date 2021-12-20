@@ -359,7 +359,7 @@ def location_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
 
     df_loc = eircode_homogenize(df)
 
-    df = add_location(df=df, geonames_df=geonames_df)
+    df = add_location(df=df_loc, geonames_df=geonames_df)  # df=df
 
     df.drop(columns=['country_code', 'country', 'county', 'municipality',
                        'city', 'town', 'locality', 'suburb', 'road', 'house_number',
