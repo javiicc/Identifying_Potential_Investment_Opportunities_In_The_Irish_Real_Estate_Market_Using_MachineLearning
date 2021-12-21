@@ -17,10 +17,6 @@ markdown_text = '''
 
 df = pd.read_csv('data_predicted.csv', sep=',')
 
-<<<<<<< HEAD
-df = pd.read_csv('data_predicted.csv', sep=',')
-=======
->>>>>>> origin/kedro
 
 # Generate a table
 def generate_table(dataframe, max_rows=10):
