@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node
 
-from .nodes import location_feature_engineering
+from .nodes import location_feature_engineering, add_geonames
 
 
 
@@ -9,10 +9,15 @@ def create_pipeline(**kwargs):
         [
             node(
                 func=location_feature_engineering,
-                inputs="preprocessed_ads",  # hay que poner el sin outliers pero esta roto
+                inputs="df_no_outliers",
                 outputs="ads_with_location_features",
                 name="location_feature_engineering_node",
             ),
-
+            node(
+                func=add_geonames,
+                inputs=["ads_with_location_features", "geonames"],
+                outputs="ads_with_location_features_and_geonames",
+                name="add_geonames_node",
+            ),
         ]
     )

@@ -355,14 +355,19 @@ def location_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
 
     # Make a DataFrame with the dictionary obtained from `geonames_dict` function
     # Esto puedo hacerlo antes o ponerlo en data directamente
-    geonames_df = pd.DataFrame(geonames_dict())
+    #geonames_df = pd.DataFrame(geonames_dict())
 
     df_loc = eircode_homogenize(df)
 
-    df = add_location(df=df_loc, geonames_df=geonames_df)  # df=df
+    #df_loc = add_location(df=df_loc, geonames_df=geonames_df)  # df=df
 
-    df.drop(columns=['country_code', 'country', 'county', 'municipality',
+    df_loc.drop(columns=['country_code', 'country', 'county', 'municipality',
                        'city', 'town', 'locality', 'suburb', 'road', 'house_number',
                        'admin1', 'place_coordinates'], inplace=True)
+    return df_loc
+
+def add_geonames(df: pd.DataFrame, geonames_df) -> pd.DataFrame:
+
+    df_loc = add_location(df=df, geonames_df=geonames_df)
 
     return df

@@ -101,7 +101,7 @@ def get_features_by_type(df):
 
 
 def split_data(data, target='price', test_size=.15, output='X_y_train_test',
-               random_state=7):
+               random_state=7):  #7   .15 random_state=random_state test_size=test_size
     features = list(data.columns)
     features.remove(target)
 
@@ -130,7 +130,7 @@ def split_data(data, target='price', test_size=.15, output='X_y_train_test',
     elif output == 'X_y':
         print(f'X: {X.shape}')
         print(f'y: {y.shape}')
-        return X, y
+        return X_train, X_test, y_train, y_test
 
 def transformer_estimator(levels_code, levels_type_house,
                           num_features, cat_features,

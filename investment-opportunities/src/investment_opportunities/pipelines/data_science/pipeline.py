@@ -10,7 +10,7 @@ def create_pipeline(**kwargs):
         [
             node(
                 func=variables_to_modelize,
-                inputs="ads_with_location_features",
+                inputs="model_input",
                 outputs="model_input_variables",
                 name="select_variables_to_modelize_node",
             ),
