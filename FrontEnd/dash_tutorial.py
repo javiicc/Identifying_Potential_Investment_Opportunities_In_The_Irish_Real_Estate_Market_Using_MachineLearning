@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 
 app = dash.Dash(__name__)
 
-df = pd.read_csv('data_example.csv', sep=',')
+df = pd.read_csv('data_predicted.csv', sep=',')
 
 # Generates a table
 def generate_table(dataframe, max_rows=10):
@@ -32,7 +32,7 @@ fig = px.scatter_mapbox(df,
                         lon="longitude",
                         color="dif_per",
                         size="price",
-                        color_continuous_scale=px.colors.cyclical.IceFire,
+                        color_continuous_scale=px.colors.diverging.RdYlGn,
                         size_max=15,
                         zoom=10,
                         mapbox_style='carto-positron',
