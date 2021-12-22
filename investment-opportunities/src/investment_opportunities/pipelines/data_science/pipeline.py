@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node
 
-from .nodes import (variables_to_modelize, split_data, get_levels, get_features_by_type,
+from .nodes import (get_levels, get_features_by_type,
                     transformer_estimator, train_model, evaluate_model)
 
 
@@ -9,15 +9,9 @@ def create_pipeline(**kwargs):
     return Pipeline(
         [
             node(
-                func=variables_to_modelize,
-                inputs="model_input",
-                outputs="model_input_variables",
-                name="select_variables_to_modelize_node",
-            ),
-            node(
                 func=get_levels,
                 inputs="model_input_variables",
-                outputs=["levels_type_house", "levels_code"],
+                outputs="levels_list",
                 name="get_levels_node",
             ),
             node(
@@ -27,21 +21,15 @@ def create_pipeline(**kwargs):
                 name="get_features_by_type_node",
             ),
             node(
-                func=split_data,
-                inputs="model_input_variables",
-                outputs=["X_train", "X_test", "y_train", "y_test"],
-                name="split_data_node",
-            ),
-            node(
                 func=transformer_estimator,
-                inputs=["levels_type_house", "levels_code", "num_features", "cat_features"],
+                inputs=["levels_list", "num_features", "cat_features"],  #"regressor",
                 outputs="pipe_estimator",
                 name="pipe_estimator_node",
             ),
             node(
                 func=train_model,
                 inputs=["X_train", "y_train", "pipe_estimator"],
-                outputs="regressor",
+                outputs="regressor", # REGRESSOR
                 name="regressor_node",
             ),
             node(

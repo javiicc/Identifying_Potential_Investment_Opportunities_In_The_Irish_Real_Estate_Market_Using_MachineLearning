@@ -150,7 +150,7 @@ def location_engineering(df, latitude='latitude', longitude='longitude'):
 
     return df
 
-
+'''
 def geonames_dict():
     """Scrape the website from the url.
 
@@ -203,7 +203,7 @@ def geonames_dict():
     del col['admin3']
 
     return col
-
+'''
 
 def homogenize(eircode):  # 8, 3, 7, , dublin, 6, 9, 10
     """Scrape the website from the url.
@@ -362,12 +362,12 @@ def location_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
     #df_loc = add_location(df=df_loc, geonames_df=geonames_df)  # df=df
 
     df_loc.drop(columns=['country_code', 'country', 'county', 'municipality',
-                       'city', 'town', 'locality', 'suburb', 'road', 'house_number',
-                       'admin1', 'place_coordinates'], inplace=True)
+                       'city', 'town', 'locality', 'suburb', 'road', 'house_number'],
+                inplace=True)
     return df_loc
 
 def add_geonames(df: pd.DataFrame, geonames_df) -> pd.DataFrame:
 
     df_loc = add_location(df=df, geonames_df=geonames_df)
 
-    return df
+    return df_loc

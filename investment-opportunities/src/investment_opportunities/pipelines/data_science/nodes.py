@@ -53,42 +53,29 @@ from sklearn.metrics import mean_absolute_percentage_error
 
 import joblib
 ###########################################################################
-# DATA SCIENCE FUNCTIONS
+# DATA SCIENCE FUNCTIONS AND CLASSES
 ###########################################################################
+from sklearn.base import BaseEstimator, TransformerMixin
 
+
+class IdentityTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self):
+        pass
+
+    def fit(self, input_array, y=None):
+        return self
+
+    def transform(self, input_array, y=None):
+        return input_array * 1
 
 ###########################################################################
 # DATA SCIENCE NODES
 ###########################################################################
-def variables_to_modelize(df: pd.DataFrame) -> pd.DataFrame:
-    features = [
-        'price',
-        'floor_area',
-        #    'views',
-        'latitude',
-        'longitude',
-        'bedroom',
-        'bathroom',
-        #    'sale_type',
-        'type_house',
-        #    'postcode',
-        #    'state_district',
-        #    'county',
-        #    'city_district',
-        #    'road',
-        #    'place',
-        'code',
-        #    'admin1',
-        #    'cities'
-    ]
-
-    data = df[features].copy()
-    return data
 
 def get_levels(df):
     levels_type_house = df.type_house.unique()
     levels_code = df.code.unique()
-    return levels_type_house, levels_code
+    return [levels_type_house, levels_code]
 
 def get_features_by_type(df):
     num_features = list(df.select_dtypes('number').columns)  # X_train
@@ -100,76 +87,51 @@ def get_features_by_type(df):
     return num_features, cat_features
 
 
-def split_data(data, target='price', test_size=.15, output='X_y_train_test',
-               random_state=7):  #7   .15 random_state=random_state test_size=test_size
-    features = list(data.columns)
-    features.remove(target)
 
-    y = data[target].copy()
-    X = data[features].copy()
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size,
-                                                        random_state=random_state)
-
-    train_set = X_train.copy()
-    train_set[target] = y_train.copy()
-
-    test_set = X_test.copy()
-    test_set[target] = y_test.copy()
-
-    if output == 'X_y_train_test':
-        print('X_train:', X_train.shape, '\n' +
-              'X_test:', X_test.shape, '\n' +
-              'y_train:', y_train.shape, '\n' +
-              'y_test:', y_test.shape, '\n')
-        return X_train, X_test, y_train, y_test
-    elif output == 'train_test':
-        print(f'train_set: {train_set.shape}')
-        print(f'test_set: {test_set.shape}')
-        return train_set, test_set
-    elif output == 'X_y':
-        print(f'X: {X.shape}')
-        print(f'y: {y.shape}')
-        return X_train, X_test, y_train, y_test
-
-def transformer_estimator(levels_code, levels_type_house,
-                          num_features, cat_features,
-                          regressor=XGBRegressor(n_estimators= 105),
-                          num_transformation='power_transformer', poly_degree=1):
-    if num_transformation is 'std_scaler':
-        num_pipe = Pipeline([
-            ('std_scaler', StandardScaler())
-            ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-        ])
-    elif num_transformation is 'power_transformer':
+def transformer_estimator(#num_transformation,
+                       #   regressor,
+                          levels_list,
+                          num_feat,
+                          cat_feat,
+                          poly_degree=1,
+                          num_transformation='power_transformer'):
+    if num_transformation is 'power_transformer':
         num_pipe = Pipeline([
             ('power_transformer', PowerTransformer(method='yeo-johnson')),
             # , standardize=False
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
+            ('imputer', SimpleImputer(strategy='median')),
+        ])
+    elif num_transformation is 'std_scaler':
+        num_pipe = Pipeline([
+            ('std_scaler', StandardScaler()),
+            ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
+            ('imputer', SimpleImputer(strategy='median')),
+        ])
+    elif num_transformation is 'identity':
+        num_pipe = Pipeline([
+            ('identity', IdentityTransformer()),
+            ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
+            ('imputer', SimpleImputer(strategy='median')),
         ])
 
     cat_pipe = Pipeline([
-        ('one_hot_encoder', OneHotEncoder(categories=[levels_code, levels_type_house]))
-        # No hace nada si ya transformadas
-        # handle_unknown='ignore'
+        ('one_hot_encoder', OneHotEncoder(categories=levels_list)),
+        ('imputer', SimpleImputer(strategy='constant', fill_value=None)),
     ])
-    # Las transforme antes para evitar problemas no las variables a la hora de predecir e el test_set...
 
     preprocessor = ColumnTransformer([
-        ('num', num_pipe, num_features),
-        ('cat', cat_pipe, cat_features),
+        ('num', num_pipe, num_feat),
+        ('cat', cat_pipe, cat_feat),
     ])  # , remainder='passthrough'
 
     pipe_estimator = Pipeline(steps=[
         ('preprocessor', preprocessor),
-        ('imputer',
-         SimpleImputer(strategy='constant',  # esto lo puedo agnadir en los otros pipes
-                       fill_value=None)),
-        ('regressor', regressor)
+        ('regressor', LinearRegression()),  #regressor
     ])
 
     return pipe_estimator
-
 
 def train_model(X_train: pd.DataFrame, y_train: pd.Series,
                 pipe_estimator) -> LinearRegression:
@@ -198,5 +160,6 @@ def evaluate_model(
     """
     y_pred = regressor.predict(X_test)
     score = r2_score(y_test, y_pred)
+    print('eeeeeeeeeeeeeeeeeh!!!!!!!!!!!!', score)
     logger = logging.getLogger(__name__)
     logger.info("Model has a coefficient R^2 of %.3f on test data.", score)

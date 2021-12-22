@@ -24,6 +24,11 @@ df_no_outliers:
   filepath: data/03_primary/df_no_outliers.csv
   layer: primary
 
+ads_with_location_features:
+  type: pandas.CSVDataSet
+  filepath: data/04_feature/ads_with_location_features.csv
+  layer: feature
+
 ads_with_location_features_and_geonames:
   type: pandas.CSVDataSet
   filepath: data/04_feature/ads_with_location_features_and_geonames.csv
@@ -51,8 +56,9 @@ X_test:
 
 y_test:
   type: pandas.CSVDataSet
-  filepath: data/05_model_input/X_test.csv
+  filepath: data/05_model_input/y_test.csv
   layer: models
+
 
 regressor:
   type: pickle.PickleDataSet

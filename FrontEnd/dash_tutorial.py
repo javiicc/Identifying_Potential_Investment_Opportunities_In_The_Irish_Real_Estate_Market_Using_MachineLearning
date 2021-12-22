@@ -7,7 +7,7 @@ from dash import html
 import plotly.express as px
 import pandas as pd
 import plotly.graph_objects as go
-from dash.dependencies import Input, Output
+from dash.dependencies import Output, Input
 
 app = dash.Dash(__name__)
 markdown_text = '''
@@ -36,7 +36,7 @@ def generate_table(dataframe, max_rows=10):
 fig = px.scatter_mapbox(df,
                         lat="latitude",
                         lon="longitude",
-                        color="dif_per",
+                        color="residual",
                         size="price",
                         color_continuous_scale=px.colors.diverging.RdYlGn,
                         size_max=15,
