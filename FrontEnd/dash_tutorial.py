@@ -43,7 +43,7 @@ fig = px.scatter_mapbox(df,
                         zoom=10,
                         mapbox_style='carto-positron',
                  #       width=1600,
-                        height=1300,
+                     #   height="100%",
                         #title='Investment Opportunities',
                        )
 
@@ -61,21 +61,31 @@ app.layout = dbc.Container([
         dbc.Col(html.H1("Ireland's Real Estate Market Opportunities",
                         className='text-center text-primary, mb-4'),
                 width=12)
-    ]),
+    ],
+        style={"height": "10vh"}
+    ),
     dbc.Row([
-        dbc.Col(html.H6("Welcome to Javier Castaño thesis",
+        dbc.Col(html.H6("Welcome to Javier Castaño thes",
                         className='text-center'),
                 width=12)
-    ]),
+    ],
+        style={"height": "5vh"}
+    ),
 
 
     dbc.Row([
 
         dbc.Col([
-            dcc.Graph(id='map', figure=fig),
+            dcc.Graph(
+                id='map',
+                figure=fig,
+                responsive=True,
+                style={'height': '100%'}
+
+            ),
         ],
             width={'size': 8},
-            style={"height": "100%"},
+           # style={"height": "100%"},
             #xs=12, sm=12, md=12, lg=8, xl=8
         ),
 
@@ -83,11 +93,14 @@ app.layout = dbc.Container([
             dcc.Graph(id='example', figure={}),
         ],
             width={'size': 4},
-            style={"height": "100%"},
+           # style={"height": "100%"},
             #xs=12, sm=12, md=12, lg=4, xl=4
         )
 
-    ], class_name='h-100'), # Horizontal:start,center,end,between,around
+    ],
+        style={"height": "85vh"}
+        #class_name='h-100'
+    ), # Horizontal:start,center,end,between,around
 
 ],
     fluid=True,
