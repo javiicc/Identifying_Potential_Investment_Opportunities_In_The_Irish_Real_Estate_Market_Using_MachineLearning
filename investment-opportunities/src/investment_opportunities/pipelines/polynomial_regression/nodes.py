@@ -51,10 +51,23 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn import metrics
 from sklearn.metrics import mean_absolute_percentage_error
 
-import joblib
+from sklearn.base import BaseEstimator, TransformerMixin
+
 ###########################################################################
 # DATA SCIENCE FUNCTIONS AND CLASSES
 ###########################################################################
+
+class IdentityTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self):
+        pass
+
+    def fit(self, input_array, y=None):
+        return self
+
+    def transform(self, input_array, y=None):
+        return input_array * 1
+
+
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
@@ -68,34 +81,14 @@ class IdentityTransformer(BaseEstimator, TransformerMixin):
     def transform(self, input_array, y=None):
         return input_array * 1
 
-###########################################################################
-# DATA SCIENCE NODES
-###########################################################################
-
-def get_levels(df):
-    levels_type_house = df.type_house.unique()
-    levels_code = df.code.unique()
-    return [levels_type_house, levels_code]
-
-def get_features_by_type(df):
-    num_features = list(df.select_dtypes('number').columns)  # X_train
-    num_features.remove('price')
-    # num_features.remove('longitude')
-    # num_features.remove('latitude')
-    cat_features = list(df.select_dtypes('object').columns)
-    #cat_features.remove('city_district')
-    return num_features, cat_features
-
-
-
-
 def transformer_estimator(#num_transformation,
-                       #   regressor,
+                          regressor,
                           levels_list,
                           num_feat,
                           cat_feat,
-                          poly_degree=1,
+                          poly_degree,
                           num_transformation='power_transformer'):
+
     if num_transformation is 'power_transformer':
         num_pipe = Pipeline([
             ('power_transformer', PowerTransformer(method='yeo-johnson')),
@@ -128,38 +121,50 @@ def transformer_estimator(#num_transformation,
 
     pipe_estimator = Pipeline(steps=[
         ('preprocessor', preprocessor),
-        ('regressor', LinearRegression()),  #regressor
+        ('regressor', regressor),  #regressor
     ])
 
     return pipe_estimator
 
-def train_model(X_train: pd.DataFrame, y_train: pd.Series,
-                pipe_estimator) -> LinearRegression:
-    """Trains the linear regression model.
+###########################################################################
+# DATA SCIENCE NODES
+###########################################################################
 
-    Args:
-        X_train: Training data of independent features.
-        y_train: Training data for price.
+def get_levels(df):
+    levels_type_house = df.type_house.unique()
+    levels_code = df.code.unique()
+    return [levels_type_house, levels_code]
 
-    Returns:
-        Trained model.
-    """
-    regressor = pipe_estimator
-    regressor.fit(X_train, y_train)
-    return regressor
+def get_features_by_type(df):
+    num_features = list(df.select_dtypes('number').columns)  # X_train
+    num_features.remove('price')
+    # num_features.remove('longitude')
+    # num_features.remove('latitude')
+    cat_features = list(df.select_dtypes('object').columns)
+    #cat_features.remove('city_district')
+    return num_features, cat_features
 
-def evaluate_model(
-    regressor, X_test: pd.DataFrame, y_test: pd.Series    #: LinearRegression
-):
-    """Calculates and logs the coefficient of determination.
 
-    Args:
-        regressor: Trained model.
-        X_test: Testing data of independent features.
-        y_test: Testing data for price.
-    """
-    y_pred = regressor.predict(X_test)
-    score = r2_score(y_test, y_pred)
-    print('eeeeeeeeeeeeeeeeeh!!!!!!!!!!!!', score)
-    logger = logging.getLogger(__name__)
-    logger.info("Model has a coefficient R^2 of %.3f on test data.", score)
+def get_estimators(levels_list, num_features, cat_features,
+                   transformer_estimator=transformer_estimator,
+                   regressor={'LinearRegression': LinearRegression()}):
+
+    if regressor is 'LinearRegression':
+        estimator_pipe = transformer_estimator(regressor=regressor,
+                                                   levels_list=levels_list,
+                                                   num_feat=num_features,
+                                                   cat_feat=cat_features,
+                                                   poly_degree=3,
+                                                   num_transformation='power_transformer')
+    else:
+        estimator_pipe = transformer_estimator(regressor=regressor,
+                                                   levels_list=levels_list,
+                                                   num_feat=num_features,
+                                                   cat_feat=cat_features,
+                                                   poly_degree=1,
+                                                   num_transformation='power_transformer')
+
+
+        print(estimator_pipe)
+
+    return estimator_pipe

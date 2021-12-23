@@ -73,7 +73,7 @@ app.layout = dbc.Container([
                           ),
             dcc.Graph(id='my-hist', figure={}),
         ], #width={'size':5, 'offset':1},
-           xs=12, sm=12, md=12, lg=5, xl=5,
+           xs=12, sm=12, md=12, lg=6, xl=6,
         ),
 
         dbc.Col([
@@ -91,7 +91,7 @@ app.layout = dbc.Container([
                 style={"width": "24rem"},
             )
         ], #width={'size':5, 'offset':1},
-           xs=12, sm=12, md=12, lg=5, xl=5
+           xs=12, sm=12, md=12, lg=4, xl=4
         )
     ], align="center")  # Vertical: start, center, end
 
