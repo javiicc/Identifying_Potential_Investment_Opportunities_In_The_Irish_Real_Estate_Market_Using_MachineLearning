@@ -59,8 +59,24 @@ y_test:
   filepath: data/05_model_input/y_test.csv
   layer: models
 
-
-regressor:
+### Models
+polyr:
   type: pickle.PickleDataSet
-  filepath: data/06_models/regressor.pickle
+  filepath: data/06_models/polyr.pickle
   versioned: true
+
+knnr:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/knnr.pickle
+  versioned: true
+
+dtr:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/dtr.pickle
+  versioned: true
+
+voting_regressor_BA:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/voting_regressor_BA.pickle
+  versioned: true
+
