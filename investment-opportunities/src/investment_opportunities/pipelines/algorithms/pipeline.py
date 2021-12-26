@@ -30,8 +30,8 @@ def create_pipeline(**kwargs):
             node(
                 func=train_model,
                 inputs=["X_train", "y_train", "estimators_dict"],
-                outputs=["polyr", "knnr", "dtr"], # REGRESSOR
-                name="regressor_node",
+                outputs=["polyr", "knnr", "dtr", "xgbr"], # REGRESSOR
+                name="training_node",
             ),
         ]
     )

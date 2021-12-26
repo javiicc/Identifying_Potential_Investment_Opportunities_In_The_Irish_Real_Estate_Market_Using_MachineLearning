@@ -59,6 +59,16 @@ y_test:
   filepath: data/05_model_input/y_test.csv
   layer: models
 
+X:
+  type: pandas.CSVDataSet
+  filepath: data/05_model_input/X.csv
+  layer: models
+
+y:
+  type: pandas.CSVDataSet
+  filepath: data/05_model_input/y.csv
+  layer: models
+
 ### Models
 polyr:
   type: pickle.PickleDataSet
@@ -79,4 +89,24 @@ voting_regressor_BA:
   type: pickle.PickleDataSet
   filepath: data/06_models/voting_regressor_BA.pickle
   versioned: true
+
+xgbr:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/xgbr.pickle
+  versioned: true
+
+stackingr:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/stackingr.pickle
+  versioned: true
+
+final_model:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/final_model.pickle
+  versioned: true
+
+data_w_residuals:
+  type: pandas.CSVDataSet
+  filepath: data/07_model_output/data_w_residuals.csv
+  layer: models
 

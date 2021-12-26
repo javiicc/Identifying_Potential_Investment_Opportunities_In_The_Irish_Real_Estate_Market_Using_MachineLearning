@@ -25,7 +25,7 @@ from sklearn.ensemble import StackingRegressor
 
 
 def evaluate_models(X_test: pd.DataFrame, y_test: pd.Series,
-                    polyr, knnr, dtr, voting_regressor_BA):
+                    polyr, knnr, dtr, voting_regressor_BA, xgbr, stackingr):
     """Calculates and logs the coefficient of determination.
 
     Args:
@@ -38,6 +38,8 @@ def evaluate_models(X_test: pd.DataFrame, y_test: pd.Series,
         'K Nearest Neighbors Regression': knnr,
         'Decision Tree Regression': dtr,
         'Voting Regressor BA': voting_regressor_BA,
+        'XGB Regressor': xgbr,
+        'Stacking Regressor': stackingr,
     }
 
     for key in trained_regressors_dict:

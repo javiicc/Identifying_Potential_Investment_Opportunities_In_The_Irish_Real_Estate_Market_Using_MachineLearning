@@ -30,7 +30,7 @@ def variables_to_modelize(df: pd.DataFrame) -> pd.DataFrame:
     data = df[features].copy()
     return data
 
-def split_data(data, target='price', test_size=.15, output='X_y_train_test',
+def split_data(data, target='price', test_size=.15, output='X_y_and_X_y_train_test',
                random_state=7):  #7   .15 random_state=random_state test_size=test_size
     features = list(data.columns)
     features.remove(target)
@@ -60,4 +60,12 @@ def split_data(data, target='price', test_size=.15, output='X_y_train_test',
     elif output == 'X_y':
         print(f'X: {X.shape}')
         print(f'y: {y.shape}')
-        return X_train, X_test, y_train, y_test
+        return X, y
+    elif output == 'X_y_and_X_y_train_test':
+        print('X_train:', X_train.shape, '\n' +
+              'X_test:', X_test.shape, '\n' +
+              'y_train:', y_train.shape, '\n' +
+              'y_test:', y_test.shape, '\n')
+        print(f'X: {X.shape}')
+        print(f'y: {y.shape}')
+        return X_train, X_test, y_train, y_test, X, y

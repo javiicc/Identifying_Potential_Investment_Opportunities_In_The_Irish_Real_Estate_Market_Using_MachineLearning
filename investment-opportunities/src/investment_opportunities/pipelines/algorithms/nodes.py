@@ -146,25 +146,32 @@ def get_features_by_type(df):
 def get_estimator(levels_list, num_features, cat_features,
                   transformer_estimator=transformer_estimator,
                   regressor_dict={'Polynomial_Regression': LinearRegression(),
-                                  'K_Nearest_Neighbors_Regressor': KNeighborsRegressor(n_neighbors=7,
-                                                                          weights='uniform', # distanc hace que haya mucho overfititng
-                                                                          leaf_size= 30),
-                                  'Decision_Tree_Regressor': DecisionTreeRegressor(max_depth=10,
-                                                                           min_samples_leaf=30,
-                                                                           random_state=7) # NO DA EXACTO, CHECK IT
+                                  'K_Nearest_Neighbors_Regressor': KNeighborsRegressor(
+                                      n_neighbors=7,
+                                      weights='uniform',
+                                      leaf_size= 30),
+                                  'Decision_Tree_Regressor': DecisionTreeRegressor(
+                                      max_depth=10,
+                                      min_samples_leaf=30,
+                                      random_state=7), # NO DA EXACTO, CHECK IT
+                                  'XGBRegressor': XGBRegressor(
+                                      n_estimators= 177, #150
+                                      max_depth=3,
+                                      learning_rate=.1,
+                                      subsample=.30),
                                   }):
     # PODRIA SER POR EL ORDEN DE LAS VARIABLES O ALGO...
     estimators_dict = {}
     for key in regressor_dict:
 
+        if key in ['Decision_Tree_Regressor', 'XGBRegressor']:
+            num_transformation = 'identity'
+        else:
+            num_transformation = 'power_transformer'
         if key in ['Polynomial_Regression', 'Decision_Tree_Regressor']:
             poly_degree = 3
         else:
             poly_degree = 1
-        if key in ['Decision_Tree_Regressor']:
-            num_transformation = 'identity'
-        else:
-            num_transformation = 'power_transformer'
 
         estimator_pipe = transformer_estimator(regressor=regressor_dict[key],
                                                levels_list=levels_list,
@@ -173,7 +180,7 @@ def get_estimator(levels_list, num_features, cat_features,
                                                poly_degree=poly_degree,
                                                num_transformation=num_transformation)
         estimators_dict[key] = estimator_pipe
-    #print(estimators_dict)
+    print(estimators_dict['Decision_Tree_Regressor'])
 
     return estimators_dict
 
@@ -199,6 +206,7 @@ def train_model(X_train: pd.DataFrame, y_train: pd.Series,
     polyr = trained_regressors_dict['Polynomial_Regression']
     knnr = trained_regressors_dict['K_Nearest_Neighbors_Regressor']
     dtr = trained_regressors_dict['Decision_Tree_Regressor']
-    #print(dtr)
+    xgbr = trained_regressors_dict['XGBRegressor']
 
-    return polyr, knnr, dtr
+
+    return polyr, knnr, dtr, xgbr

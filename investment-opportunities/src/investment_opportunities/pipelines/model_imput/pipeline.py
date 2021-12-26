@@ -22,7 +22,7 @@ def create_pipeline(**kwargs):
             node(
                 func=split_data,
                 inputs="model_input_variables",
-                outputs=["X_train", "X_test", "y_train", "y_test"],
+                outputs=["X_train", "X_test", "y_train", "y_test", "X", "y"],
                 name="split_data_node",
             ),
         ]
