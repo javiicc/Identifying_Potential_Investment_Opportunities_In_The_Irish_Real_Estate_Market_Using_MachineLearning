@@ -15,65 +15,131 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX],
                 )
 
 df = pd.read_csv('../investment-opportunities/data/07_model_output/data_w_residuals.csv', sep=',')
+df['predicted_price'] = df['predicted_price'].round(decimals=0)
+df['residual'] = df['residual'].round(decimals=0)
 
 
 
 # The scatter mapbox
-fig = px.scatter_mapbox(df,
-                        lat="latitude",
-                        lon="longitude",
-                        color="res_percentage",
-                        size="actual_price",
-                        color_continuous_scale=px.colors.diverging.RdYlGn,
-                        size_max=15,
-                        zoom=10,
-                        mapbox_style='carto-positron',
-                        range_color=[-1, 1],
-                       )
+map_fig = px.scatter_mapbox(
+    df,
+    lat="latitude",
+    lon="longitude",
+    color="res_percentage",
+    size="actual_price",
+    color_continuous_scale=px.colors.diverging.RdYlGn,
+    size_max=15,
+    zoom=7.3,
+    mapbox_style='carto-positron',
+    range_color=[-1, 1],
+    labels={'actual_price': 'PRICE',
+            'predicted_price': 'PREDICTION',
+            'residual': 'RESIDUAL'},
+    hover_data={'actual_price': True,
+                'predicted_price': True,
+                'latitude': False,
+                'longitude': False,
+                'res_percentage': False,
+                'residual': True,
+              #  'url': True,
+                },
+    hover_name='residual',
+    opacity=1,
+    template='plotly_dark',
+)
 
-markdown_text = '''
-    # Ireland's Real Estate Market Opportunities
-    *Test for my Data Science thesis*
-    '''
+bar_fig = {
+    'data': [
+        {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
+        {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
+    ],
+    'layout': {
+        'title': 'Dash Data Visualization'
+    }
+}
+
+#df2 = df.groupby('code')[['actual_price', 'code']].mean()
+#bar_fig2 = px.bar(
+#    df2,
+#    x='code', # cambiar a city
+#    y='actual_price',
+#)
+
+pie_fig = px.pie(
+    df,
+    values='actual_price',
+    names='type_house',
+    #title='',
+    color_discrete_sequence=px.colors.sequential.RdBu,
+    hover_data={'type_house': False,
+                'actual_price': False},
+    template='plotly_dark',
+)
+
+
 
 # Layout section: Boostrap
 # ------------------------------------------------------------------
 
 app.layout = dbc.Container([
-
     dbc.Row([
+
+        dbc.Col(html.H1("",
+                        className='pt-4 text-center text-primary, mb-4',
+                        ),
+                width=8,
+                style={"backgroundColor": "#100508"}
+                ),
         dbc.Col(html.H1("Ireland's Real Estate Market Opportunities",
-                        className='text-center text-primary, mb-4'),
-                width=12)
+                        className='pt-4 text-center text-primary text-light',
+                        ),
+                width=4,
+                style={"backgroundColor": "#100508"}
+                ),
     ],
-        style={"height": "10vh"}
+        style={"height": "10vh"}  # 10vh
     ),
     dbc.Row([
-        dbc.Col(html.H6("Welcome to Javier Castaño Candela's Thesis from KSchool",
+        dbc.Col(html.H6("",
                         className='text-center'),
-                width=12)
+                width=8,
+                style={"backgroundColor": "#100508"}
+                ),
+        dbc.Col(html.H1("",
+                        className='pt-4 text-center text-primary text-light',
+                        ),
+                width=4,
+                style={"backgroundColor": "#100508"}
+                ),
     ],
         style={"height": "5vh"}
     ),
 
-
     dbc.Row([
 
         dbc.Col([
+
             dcc.Graph(
                 id='map',
-                figure=fig,
+                figure=map_fig,
                 responsive=True,
                 style={'height': '100%'}
 
             ),
         ],
             width={'size': 8},
-           # style={"height": "100%"},
+            style={"backgroundColor": "#100508"}  #"#141F27"
+            # style={"height": "100%"},
             #xs=12, sm=12, md=12, lg=8, xl=8
         ),
 
         dbc.Col([
+
+            dcc.Graph(
+                id='bar',
+                figure=bar_fig,
+            ),
+
             dcc.RangeSlider(
                 id='price_range_slider',
             #    count=1,
@@ -148,11 +214,18 @@ app.layout = dbc.Container([
             ),
         ],
             width={'size': 2},
+            style={"backgroundColor": "#100508"}
           #  style={"height": "20%"},
             #xs=12, sm=12, md=12, lg=4, xl=4
         ),
 
         dbc.Col([
+
+            dcc.Graph(
+                id='pie',
+                figure=pie_fig
+            ),
+
             dcc.RangeSlider(
                 id='m2_price_range_slider',
                 #    count=1,
@@ -252,6 +325,7 @@ app.layout = dbc.Container([
             )
         ],
             width={'size': 2},
+            style={"backgroundColor": "#100508"}
             #style={"height": "100%"},
             #xs=12, sm=12, md=12, lg=4, xl=4
         )
@@ -263,7 +337,7 @@ app.layout = dbc.Container([
 
 ],
     fluid=True,
-    style={"height": "100vh", "backgroundColor": "#F0F6F9"}
+    style={"height": "100vh"}  ##F0F6F9  "backgroundColor": "black"
 )
 
 
