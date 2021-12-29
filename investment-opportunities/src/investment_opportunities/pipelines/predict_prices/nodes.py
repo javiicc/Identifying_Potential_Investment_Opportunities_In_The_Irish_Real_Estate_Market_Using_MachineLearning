@@ -17,3 +17,9 @@ def get_residuals(data_w_residuals):
     data_w_residuals['residual'] = data_w_residuals.predicted_price - data_w_residuals.actual_price
     data_w_residuals['res_percentage'] = data_w_residuals.residual / data_w_residuals.actual_price
     return data_w_residuals
+
+
+def add_features_for_frontend(data_w_residuals, model_input):
+    columns_to_merge = model_input[['url', 'place']] # add m2
+    data_for_frontend = data_w_residuals.merge(columns_to_merge, left_index=True, right_index=True)
+    return data_for_frontend

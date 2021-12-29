@@ -105,8 +105,13 @@ final_model:
   filepath: data/06_models/final_model.pickle
   versioned: true
 
-data_w_residuals:
+#data_w_residuals:
+#  type: pandas.CSVDataSet
+#  filepath: data/07_model_output/data_w_residuals.csv
+#  layer: models
+
+data_for_frontend:
   type: pandas.CSVDataSet
-  filepath: data/07_model_output/data_w_residuals.csv
+  filepath: data/07_model_output/data_for_frontend.csv
   layer: models
 
