@@ -14,49 +14,16 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX],
         #                    'content': 'width=device-width, initial-scale=1.0'}]
                 )
 
-df = pd.read_csv('../investment-opportunities/data/07_model_output/data_w_residuals.csv', sep=',')
+df = pd.read_csv('../investment-opportunities/data/07_model_output/data_for_frontend.csv', sep=',')
 df['predicted_price'] = df['predicted_price'].round(decimals=0)
 df['residual'] = df['residual'].round(decimals=0)
 
 
 
 # The scatter mapbox
-map_fig = px.scatter_mapbox(
-    df,
-    lat="latitude",
-    lon="longitude",
-    color="res_percentage",
-    size="actual_price",
-    color_continuous_scale=px.colors.diverging.RdYlGn,
-    size_max=15,
-    zoom=7.3,
-    mapbox_style='carto-positron',
-    range_color=[-1, 1],
-    labels={'actual_price': 'PRICE',
-            'predicted_price': 'PREDICTION',
-            'residual': 'RESIDUAL'},
-    hover_data={'actual_price': True,
-                'predicted_price': True,
-                'latitude': False,
-                'longitude': False,
-                'res_percentage': False,
-                'residual': True,
-              #  'url': True,
-                },
-    hover_name='residual',
-    opacity=1,
-    template='plotly_dark',
-)
 
-bar_fig = {
-    'data': [
-        {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
-        {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
-    ],
-    'layout': {
-        'title': 'Dash Data Visualization'
-    }
-}
+
+
 
 #df2 = df.groupby('code')[['actual_price', 'code']].mean()
 #bar_fig2 = px.bar(
@@ -65,16 +32,6 @@ bar_fig = {
 #    y='actual_price',
 #)
 
-pie_fig = px.pie(
-    df,
-    values='actual_price',
-    names='type_house',
-    #title='',
-    color_discrete_sequence=px.colors.sequential.RdBu,
-    hover_data={'type_house': False,
-                'actual_price': False},
-    template='plotly_dark',
-)
 
 
 
@@ -121,7 +78,7 @@ app.layout = dbc.Container([
 
             dcc.Graph(
                 id='map',
-                figure=map_fig,
+            #    figure=map_fig,
                 responsive=True,
                 style={'height': '100%'}
 
@@ -137,7 +94,7 @@ app.layout = dbc.Container([
 
             dcc.Graph(
                 id='bar',
-                figure=bar_fig,
+           #     figure=bar_fig,
             ),
 
             dcc.RangeSlider(
@@ -152,19 +109,19 @@ app.layout = dbc.Container([
                     int(df.actual_price.min()): {
                         'label': f'{int(df.actual_price.min())}€',
                         'style': {'color': '#f50'}},
-                    int(df.actual_price.max() * .25): {
-                        'label': f'{int(df.actual_price.max() * .25)}€',
-                        'style': {'color': '#f50'}},
+           #         int(df.actual_price.max() * .25): {
+            #            'label': f'{int(df.actual_price.max() * .25)}€',
+             #           'style': {'color': '#f50'}},
                     int(df.actual_price.max() / 2): {
                         'label': f'{int(df.actual_price.max() / 2)}€',
                         'style': {'color': '#f50'}},
-                    int(df.actual_price.max() * .75): {
-                        'label': f'{int(df.actual_price.max() * .75)}€',
-                        'style': {'color': '#f50'}},
+            #        int(df.actual_price.max() * .75): {
+             #           'label': f'{int(df.actual_price.max() * .75)}€',
+              #          'style': {'color': '#f50'}},
                     int(df.actual_price.max()): {
                         'label': f'{int(df.actual_price.max())}€',
                         'style': {'color': '#f50'}}},
-                tooltip={"placement": "top", "always_visible": True}
+                tooltip={"placement": "top", "always_visible": False}
             ),
             dcc.RangeSlider(
                 id='residuals_range_slider',
@@ -190,28 +147,12 @@ app.layout = dbc.Container([
                     int(df.residual.max()): {
                         'label': f'{int(df.residual.max())}€',
                         'style': {'color': '#f50'}}},
-                tooltip={"placement": "top", "always_visible": True}
+                tooltip={"placement": "top", "always_visible": False}
             ),
-            dcc.Dropdown(
-                id='city_dropdown',
-                options=[
-                    {'label': 'New York City', 'value': 'NYC'},
-                    {'label': 'Montreal', 'value': 'MTL'},
-                    {'label': 'San Francisco', 'value': 'SF'}
-                ],
-                value=['MTL', 'NYC'],
-                multi=True
-            ),
-            dcc.Dropdown(
-                id='eircode_dropdown',
-                options=[
-                    {'label': 'New York City', 'value': 'NYC'},
-                    {'label': 'Montreal', 'value': 'MTL'},
-                    {'label': 'San Francisco', 'value': 'SF'}
-                ],
-                value=['MTL', 'NYC'],
-                multi=True
-            ),
+            '''
+            Welcome to Javier Castaño's final project from the Master in Data Science at \
+            KSchool. You can interact with the map through the controls above. 
+            '''
         ],
             width={'size': 2},
             style={"backgroundColor": "#100508"}
@@ -219,70 +160,17 @@ app.layout = dbc.Container([
             #xs=12, sm=12, md=12, lg=4, xl=4
         ),
 
+
+
         dbc.Col([
 
             dcc.Graph(
                 id='pie',
-                figure=pie_fig
+            #    figure=pie_fig,
             ),
 
             dcc.RangeSlider(
-                id='m2_price_range_slider',
-                #    count=1,
-                className='my-sm-5',
-                min=int(df.residual.min()),
-                max=int(df.residual.max()),
-                # step=None,
-                value=[int(df.residual.min()), int(df.residual.max())],
-                marks={
-                    int(df.residual.min()): {
-                        'label': f'{int(df.residual.min())}€',
-                        'style': {'color': '#f50'}},
-                    #         int(df.residual.max() * .25): {
-                    #            'label': f'{int(df.residual.max() * .25)}€',
-                    #           'style': {'color': '#f50'}},
-                    0: {
-                        'label': f'0€',
-                        'style': {'color': '#f50'}},
-                    #        int(df.residual.max() * .75): {
-                    #           'label': f'{int(df.residual.max() * .75)}€',
-                    #          'style': {'color': '#f50'}},
-                    int(df.residual.max()): {
-                        'label': f'{int(df.residual.max())}€',
-                        'style': {'color': '#f50'}}},
-                tooltip={"placement": "top", "always_visible": True}
-            ),
-            dcc.RangeSlider(
-                id='res_percentage_range_slider',
-                #    count=1,
-                className='my-sm-5',
-                min=round(df.res_percentage.min(), 2),
-                max=df.res_percentage.max(),
-                # step=None,
-                value=[df.res_percentage.min(), df.res_percentage.max()],
-                marks={
-                    int(df.res_percentage.min()): {
-                        'label': f'{round(df.res_percentage.min(), 2)}%',
-                        'style': {'color': '#f50'}},
-                    int(df.res_percentage.min()): {
-                        'label': f'{int(df.res_percentage.min())}%',
-                        'style': {'color': '#f50'}},
-                    #         int(df.residual.max() * .25): {
-                    #            'label': f'{int(df.residual.max() * .25)}€',
-                    #           'style': {'color': '#f50'}},
-          #          0: {
-           #             'label': f'0€',
-            #            'style': {'color': '#f50'}},
-                    #        int(df.residual.max() * .75): {
-                    #           'label': f'{int(df.residual.max() * .75)}€',
-                    #          'style': {'color': '#f50'}},
-                    int(df.res_percentage.max()): {
-                        'label': f'{int(df.res_percentage.max())}%',
-                        'style': {'color': '#f50'}}},
-                tooltip={"placement": "top", "always_visible": True}
-            ),
-            dcc.RangeSlider(
-                id='floor_area',
+                id='floor_area_slider',
                 #    count=1,
                 className='my-sm-5',
                 min=int(df.floor_area.min()),
@@ -305,7 +193,7 @@ app.layout = dbc.Container([
                     int(df.floor_area.max()): {
                         'label': f'{int(df.floor_area.max())}m²',
                         'style': {'color': '#f50'}}},
-                tooltip={"placement": "top", "always_visible": True}
+                tooltip={"placement": "top", "always_visible": False}
             ),
             dcc.RangeSlider(
                 id='bedroom_range_slider',
@@ -340,9 +228,86 @@ app.layout = dbc.Container([
     style={"height": "100vh"}  ##F0F6F9  "backgroundColor": "black"
 )
 
+# Callback section: Boostrap
+# ------------------------------------------------------------------
 
+# Actual price slider
+@app.callback(
+    Output(component_id='map', component_property='figure'),
+    Output(component_id='pie', component_property='figure'),
+    Output(component_id='bar', component_property='figure'),
+    Input(component_id='price_range_slider', component_property='value'),
+    Input(component_id='floor_area_slider', component_property='value'),
+    Input(component_id='residuals_range_slider', component_property='value'),
+    Input(component_id='bedroom_range_slider', component_property='value'),
+    Input(component_id='bathroom_range_slider', component_property='value'),
+  #  Input(component_id='city_dropdown', component_property='value'),
+)
+def update_output_map(price_range, floor_area_range, residuals_range, bedroom_range,
+                      bathroom_range):  #, places
+    filtered_df = df[
+        (df.actual_price >= price_range[0])
+        & (df.actual_price <= price_range[1])
+        & (df.floor_area >= floor_area_range[0])
+        & (df.floor_area <= floor_area_range[1])
+        & (df.residual >= residuals_range[0])
+        & (df.residual <= residuals_range[1])
+        & (df.bedroom >= bedroom_range[0])
+        & (df.bedroom <= bedroom_range[1])
+        & (df.bathroom >= bathroom_range[0])
+        & (df.bathroom <= bathroom_range[1])
+    #    & (df['place'].isin(places))
+    ]
+    map_fig = px.scatter_mapbox(
+        filtered_df,
+        lat="latitude",
+        lon="longitude",
+        color="res_percentage",
+        size="actual_price",
+        color_continuous_scale=px.colors.diverging.RdYlGn,
+        size_max=15,
+        zoom=7.3,
+        mapbox_style='carto-positron',
+        range_color=[-1, 1],
+        labels={'actual_price': 'PRICE',
+                'predicted_price': 'PREDICTION',
+                'residual': 'RESIDUAL'},
+        hover_data={'actual_price': True,
+                    'predicted_price': True,
+                    'latitude': False,
+                    'longitude': False,
+                    'res_percentage': False,
+                    'residual': True,
+                    #  'url': True,
+                    },
+        hover_name='residual',
+        opacity=1,
+        template='plotly_dark',
+    )
+    map_fig.update(layout_coloraxis_showscale=False)
 
+    pie_fig = px.pie(
+        filtered_df,
+        values='actual_price',
+        names='type_house',
+        # title='',
+        color_discrete_sequence=px.colors.sequential.RdBu,
+        hover_data={'type_house': False,
+                    'actual_price': False},
+        template='plotly_dark',
+    )
 
+    mean_df = filtered_df.groupby('place')['actual_price'].mean()\
+                         .sort_values(ascending=False).head()
+    bar_fig = px.bar(
+        mean_df,
+        x=mean_df.index,
+        y=mean_df.values,
+        color_discrete_sequence=px.colors.sequential.RdBu,
+        template='plotly_dark',
+    )
+
+    return map_fig, pie_fig, bar_fig
 
 
 
