@@ -1,10 +1,8 @@
-
 from kedro.pipeline import Pipeline, node
-
 from .nodes import drop_outliers
 
 
-def create_pipeline(**kwargs):
+def create_pipeline():
     return Pipeline(
         [
             node(

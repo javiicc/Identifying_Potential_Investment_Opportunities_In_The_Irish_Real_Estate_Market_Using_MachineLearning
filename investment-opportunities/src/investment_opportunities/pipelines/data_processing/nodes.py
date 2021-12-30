@@ -1,12 +1,6 @@
 import numpy as np
 import pandas as pd
 
-import re
-from os import listdir
-from os.path import isfile, join
-
-from datetime import timedelta
-
 
 ###########################################################################
 # DATA PREPROCESSING FUNCTIONS
@@ -92,11 +86,11 @@ def drop_coord_outliers(df: pd.DataFrame) -> pd.DataFrame:
     before = df.shape[0]
     print(f'Rows before dropping: {before}')
 
-    df.drop(index=df[(df['latitude'] < 51.3) | (df['latitude'] > 55.4) | \
+    df.drop(index=df[(df['latitude'] < 51.3) | (df['latitude'] > 55.4) |
                      (df['longitude'] > -5.9) | (df['longitude'] < -10.6)].index,
             inplace=True)
     # Drop ads from Nothern Ireland
-    df.drop(index=df[(df['latitude'] > 54.5) & (df['longitude'] > -7.9) & \
+    df.drop(index=df[(df['latitude'] > 54.5) & (df['longitude'] > -7.9) &
                      (df['latitude'] < 54.6)].index, inplace=True)
 
     after = df.shape[0]
@@ -257,14 +251,22 @@ def preprocess_rooms(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-
-
 ###########################################################################
 # DATA PREPROCESSING NODES
 ###########################################################################
 
 def preprocess_ads(df: pd.DataFrame) -> pd.DataFrame:
+    """Node to process ads.
 
+    Parameters
+    ----------
+    df :
+        The dataframe to process.
+
+    Returns
+    -------
+    The dataframe processed.
+    """
     print('\nDROPPING USELESS COLUMNS.')
     # Drop useless columns
     df.drop(columns=['energy_performance_indicator'], inplace=True)
@@ -289,11 +291,3 @@ def preprocess_ads(df: pd.DataFrame) -> pd.DataFrame:
     df = preprocess_rooms(df)
 
     return df
-
-
-
-
-
-
-
-

@@ -1,9 +1,5 @@
-
 from kedro.pipeline import Pipeline, node
-
-from .nodes import (get_levels, get_features_by_type, train_model,
-                    get_estimator) #voting_regresor
-#get_voting_regressor_BA_estimator,
+from .nodes import (get_levels, get_features_by_type, train_model, get_estimator)
 
 
 def create_pipeline(**kwargs):
@@ -23,14 +19,14 @@ def create_pipeline(**kwargs):
             ),
             node(
                 func=get_estimator,
-                inputs=["levels_list", "num_features", "cat_features"],  # "regressor",
+                inputs=["levels_list", "num_features", "cat_features"],
                 outputs="estimators_dict",
                 name="pipe_estimator_node",
             ),
             node(
                 func=train_model,
                 inputs=["X_train", "y_train", "estimators_dict"],
-                outputs=["polyr", "knnr", "dtr", "xgbr"], # REGRESSOR
+                outputs=["polyr", "knnr", "dtr", "xgbr"],
                 name="training_node",
             ),
         ]

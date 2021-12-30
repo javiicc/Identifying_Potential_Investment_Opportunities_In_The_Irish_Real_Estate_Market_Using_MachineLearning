@@ -1,33 +1,29 @@
 import numpy as np
 import pandas as pd
 
-import re
-from os import listdir
-from os.path import isfile, join
-
-from datetime import timedelta
-
-
+from typing import List
 
 ###########################################################################
 # OUTLIERS PREPROCESSING FUNCTIONS
 ###########################################################################
+
+
 # Percentile based method
-def pct_method(data, level, lower=True):
-    """Classify outliers based on percentiles.
+def pct_method(data: pd.Series, level: int, lower=True) -> List[int]:
+    """Classify outliers based on percentile range.
 
     Parameters
     ----------
     data :
         Column.
     level :
-        Punto de corte a partir del cual se considera outlier.
+        Cut point since is considered outlier.
     lower :
-        To indicate whether there should be ...
+        To indicate whether there should be lower limit.
 
     Returns
     -------
-    .
+    Range.
     """
     # Upper and lower limits by percentiles
     upper = np.percentile(data, 100 - level)
@@ -40,17 +36,17 @@ def pct_method(data, level, lower=True):
 
 
 # Interquartile range method
-def iqr_method(data):
-    """Classify outliers based on.
+def iqr_method(data: pd.Series) -> List[int]:
+    """Classify outliers based on interquartile range.
 
     Parameters
     ----------
     data :
-        .
+        Column.
 
     Returns
     -------
-    .
+    Interquartile range.
     """
     # Calculating the IQR
     perc_75 = np.percentile(data, 75)
@@ -65,38 +61,26 @@ def iqr_method(data):
     return [iqr_lower, iqr_upper]
 
 
-# This approach only works if the data is approximately Gaussian
-def std_method(data):
-    """Classify outliers based on.
+def outlier_bool(df: pd.DataFrame, feature: pd.Series, level=1,
+                 continuous=False, log=False) -> pd.Series:
+    """Classify outliers based on percentile and interquartile ranges.
 
     Parameters
     ----------
-    data :
-        .
+    df :
+        DataFrame.
+    feature :
+        Column.
+    level :
+        'p' in np.percentile method.
+    continuous :
+        To indicate whether the variable is continuous or not.
+    log :
+        To indicate whether compute natural logarithm element-wise or not.
 
     Returns
     -------
-    .
-    """
-    # Creating three standard deviations away boundaries
-    std = np.std(data)
-    upper_3std = np.mean(data) + 3 * std
-    lower_3std = np.mean(data) - 3 * std
-    # Returning the upper and lower limits
-    return [lower_3std, upper_3std]
-
-
-def outlier_bool(df, feature, level=1, continuous=False, log=False):
-    """Classify outliers based on.
-
-    Parameters
-    ----------
-    data :
-        .
-
-    Returns
-    -------
-    .
+    A Pandas Series of booleans with True for outliers values.
     """
     data = df[feature]
 
@@ -107,7 +91,6 @@ def outlier_bool(df, feature, level=1, continuous=False, log=False):
     # Obtaining the ranges
     pct_range = pct_method(data, level)
     iqr_range = iqr_method(data)
-    std_range = std_method(data)
 
     if continuous is False:
         # Setting the lower limit fixed for discrete variables
@@ -116,20 +99,17 @@ def outlier_bool(df, feature, level=1, continuous=False, log=False):
         #                    iqr_range[1],
         #                   std_range[1]])
 
-    elif continuous:
+    else:
         if feature is 'floor_area':
             # Percentile based method is the only one that return a
             # positive value
             low_limit = pct_range[0]
         else:
-            # print('no')
             low_limit = np.min([pct_range[0],
                                 iqr_range[0],
-                                # std_range[0]
                                 ])
     high_limit = np.max([pct_range[1],
                          iqr_range[1],
-                         # std_range[1]
                          ])
 
     print(f'Limits: {[low_limit, high_limit]}')
@@ -137,109 +117,44 @@ def outlier_bool(df, feature, level=1, continuous=False, log=False):
     no_outlier_bool = data.between(low_limit, high_limit)
     outlier_bool = no_outlier_bool == False
     print(f'No outliers: {no_outlier_bool.sum()}')
-    print(f'Outliers: {(outlier_bool).sum()}\n')
+    print(f'Outliers: {outlier_bool.sum()}\n')
 
     # Return boolean
     return outlier_bool
 
-'''
-def drop_outliers(df, feature, level=1, continuous=False, log=False, inplace=False):
-    """Classify outliers based on.
 
-    Parameters
-    ----------
-    data :
-        .
-
-    Returns
-    -------
-    .
-    """
-    print(f'Range before: {[df[feature].min(), df[feature].max()]}\n')
-
-    outlier_boolean = outlier_bool(df=df, feature=feature, level=1, continuous=continuous,
-                                   log=False)
-    rows_before = df.shape[0]
-
-    # Filter data to get outliers
-    outliers = df[outlier_boolean == False]
-    # Filter data to drop outliers
-    df = df[outlier_boolean]
-
-    rows_after = df.shape[0]
-
-    print(f'Range after: {[df[feature].min(), df[feature].max()]}')
-    print(f'Outliers dropped: {rows_before - rows_after}')
-
-    return df, outliers
-'''
-'''
-def common_ix(index_list):
-    """Classify outliers based on.
-
-    Parameters
-    ----------
-    data :
-        .
-
-    Returns
-    -------
-    .
-    """
-    data_ix = []
-    for i, elem in enumerate(index_list):
-        # First index list
-        if i == 0:
-            # initial_ix = sd_out_price.index
-            initial_ix = elem
-            for ix in initial_ix:
-                # If ix is in the next index list then por el momento
-                # cumple la condicion y por tanto se une a la lista
-                if ix in index_list[i + 1]:
-                    data_ix.append(ix)
-            print(f'1st and 2nd index lists: {len(data_ix)} rows')
-
-        elif i < 4:
-            for ix in data_ix:
-                # Check whether index from data_ix are in the next list,
-                # if not -> remove it
-                if ix not in index_list[i + 1]:
-                    data_ix.remove(ix)
-            print(
-                f'{i + 2}{"rd" if i + 2 == 3 else "th"} index list: {len(data_ix)} rows')
-    print('-' * 10)
-    return data_ix
-'''
 ###########################################################################
 # OUTLIERS DROPPING NODES
 ###########################################################################
 
 
 def drop_outliers(df: pd.DataFrame,
-                  features=['price', 'floor_area',
-                            'views', 'bedroom', 'bathroom'],
-                  level=1, log=False, inplace=False): #continuous=False,
+                  features=('price', 'floor_area', 'views',
+                            'bedroom', 'bathroom')) -> pd.DataFrame:
     """Classify outliers based on.
 
     Parameters
     ----------
-    data :
-        .
+    df :
+        DataFrame with outliers.
+    features :
+        Column.
 
     Returns
     -------
-    .
+    DataFrame without outliers.
     """
     # List to add outliers from each feature
     outliers_list = []
     for feature in features:
 
-        print(feature.upper())
+        print('-'*50, '\n' + ' '*5, feature.upper(), '\n' + '-'*50)
         print(f'Range before: {[df[feature].min(), df[feature].max()]}\n')
 
+        # Use the outlier_bool() function to take the boolean Series
         if feature in ['bedroom', 'bathroom']:
-            outlier_boolean = outlier_bool(df=df, feature=feature, level=1, continuous=False,
-                                           log=False)
+            outlier_boolean = outlier_bool(df=df, feature=feature, level=1,
+                                           continuous=False, log=False)
         elif feature in ['price', 'floor_area', 'views']:
             outlier_boolean = outlier_bool(df=df, feature=feature, level=1,
                                            continuous=True, log=False)
@@ -250,53 +165,23 @@ def drop_outliers(df: pd.DataFrame,
         rows_after = df[outlier_boolean == False].shape[0]
         print(f'Range after: {[df[feature].min(), df[feature].max()]}')
         print(f'Outliers to drop: {rows_before - rows_after}')
-        print('-----------')
 
         # Increase the list with outliers index from each feature
+        # outlier_list below has repeated index
         outliers_list += list(outliers.index)
-        #print(len(outliers_list))
+        # print(len(outliers_list))
 
         # Convert list to set to eliminate repeated index
         outliers_set = set(outliers_list)
-        #print(len(outliers_set))
+        # print(len(outliers_set))
 
     before = df.shape
-    print('---------------')
+    print(('-'*25 + '\n' + '-'*25) * 2)  # + '-'*25
     print('Shape before:', before)
     # Drop outliers!
     df.drop(index=outliers_set, inplace=True)
     after = df.shape
     print('Shape after:', after)
-    print('Outliers dropped:', before[0] - after[0])
+    print('TOTAL OUTLIERS DROPPED:', before[0] - after[0])
 
     return df
-'''
-def drop_outliers_ix(df: pd.DataFrame, index_dict):
-    """Classify outliers based on.
-
-    Parameters
-    ----------
-    data :
-        .
-
-    Returns
-    -------
-    .
-    """
-    print(df.shape)
-    outliers_rep = []
-    for key in index_dict:
-        list_ = index_dict[key]
-        outliers_rep += list(list_)
-        # print(len(outliers_rep))
-
-    outliers = pd.Series(outliers_rep).unique()
-    print('Outliers dropped:', len(outliers))
-    print('estoy aqui')
-
-
-    df_without_outliers = df.drop(index=outliers).copy()
-    print(df_without_outliers.shape)
-
-    return df
-'''

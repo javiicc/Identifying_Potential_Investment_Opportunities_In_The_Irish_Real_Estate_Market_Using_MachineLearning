@@ -1,46 +1,18 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-
 import re
-from os import listdir
-from os.path import isfile, join
-
-from datetime import timedelta
-
 from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut
-import time
 
-import requests
-import lxml.html as lh
-import seaborn as sns
-
-import pylab
-from scipy.stats import kstest
-import scipy.stats as stats
-from scipy.stats import normaltest
-
-import ppscore as pps
-import random
-from sklearn.tree import DecisionTreeRegressor
-
-from sklearn.linear_model import LinearRegression
-from sklearn.feature_selection import (RFE,
-                                       SequentialFeatureSelector)
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-
-from sklearn.preprocessing import (StandardScaler, OneHotEncoder,
-                                   PolynomialFeatures, PowerTransformer)
+from typing import Dict
 
 
 ###########################################################################
 # FEATURE ENGINEERING FUNCTIONS
 ###########################################################################
 
+
 def location_dict(df: pd.DataFrame,
-                  latitude='latitude', longitude='longitude'):
+                  latitude='latitude', longitude='longitude') -> Dict[str, list]:
     """Take a dataframe and two columns names for latitude and longitude
     and do reverse geocoding with Nominatin geolocator.
 
@@ -99,7 +71,7 @@ def location_dict(df: pd.DataFrame,
     return location_dict
 
 
-def location_dataframe(df, dictionary):
+def location_dataframe(df: pd.DataFrame, dictionary: Dict[str, list]) -> pd.DataFrame:
     """Take a dataframe and a dictionary with location information
     and add it to the DataFrame.
 
@@ -124,10 +96,11 @@ def location_dataframe(df, dictionary):
     after = df.shape
     print(f'Shape after adding: {after}\n' + '-' * 10)
     print(f'Difference: {after[1] - before[1]} columns')
+
     return df
 
 
-def location_engineering(df, latitude='latitude', longitude='longitude'):
+def location_engineering(df: pd.DataFrame) -> pd.DataFrame:
     """Take a dataframe and a dictionary with location information
     and add it to the DataFrame.
 
@@ -135,9 +108,6 @@ def location_engineering(df, latitude='latitude', longitude='longitude'):
     ----------
     df :
         The dataframe to work with.
-    dictionary :
-        dictionary with location info and values with the same length
-        than the DataFrame.
 
     Returns
     -------
@@ -150,80 +120,31 @@ def location_engineering(df, latitude='latitude', longitude='longitude'):
 
     return df
 
-'''
-def geonames_dict():
-    """Scrape the website from the url.
+
+def homogenize(eircode: pd.Series) -> pd.Series:
+    """Takes the `postcode` column and homogenize it to get the routing keys.
 
     Parameters
     ----------
-    df :
-        The dataframe to work with.
-    dictionary :
-        dictionary with location info and values with the same length
-        than the DataFrame.
+    eircode :
+        Column to homogenize.
 
     Returns
     -------
-    The DataFrame with location info added.
-    """
-    url = 'http://www.geonames.org/postalcode-search.html?q=&country=IE'
-    page = requests.get(url)
-    doc = lh.fromstring(page.content)
-    tr_elements = doc.xpath('//tr')
-
-    # Create empty dict
-    col = {}
-    # For each row, store each first element (header) and an empty list
-    for i, t in enumerate(tr_elements[2]):
-        key = t.text_content().lower()
-        # print('%d: "%s"'%(i,name))
-        col[key] = []
-    col['place_coordinates'] = []
-
-    # Fill dict
-    # print(tr_elements[-1].text_content())
-    for tr in tr_elements[3:]:
-
-        if len(tr) == 7:
-
-            for key, td in zip(col, tr):
-                td = td.text_content()
-                # print(td)
-                col[key].append(td)
-
-        elif len(tr) == 2:
-
-            td = tr[-1].text_content()
-            # print(td)
-            col['place_coordinates'].append(td)
-
-    del col['']
-    del col['country']
-    del col['admin2']
-    del col['admin3']
-
-    return col
-'''
-
-def homogenize(eircode):  # 8, 3, 7, , dublin, 6, 9, 10
-    """Scrape the website from the url.
-
-    Parameters
-    ----------
-
-    Returns
-    -------
-
+    Column processed.
     """
     if eircode is np.nan:
         pass
+    # 8 should be the eircode length in all ads
     elif len(eircode) == 8:
         pass
+    # 3 is the routing key
     elif len(eircode) == 3:
         pass
 
     elif len(eircode) == 7:
         if re.match(r'\w{3} \w{3}', eircode):
+            # Only the three first digits are useful
             eircode = eircode[:3]
         else:
             routing_key = re.search(r'(\b\w{3})', eircode)[0]
@@ -273,8 +194,6 @@ def homogenize(eircode):  # 8, 3, 7, , dublin, 6, 9, 10
             eircode = 'D05'
         else:
             eircode = 'D' + eircode
-
-
 
     elif re.match(r'CO WESTMEATH', eircode) or \
             re.match(r'CO. WICKLOW', eircode) or \
@@ -342,9 +261,13 @@ def add_location(df, geonames_df):
     print(f'Difference: {after[1] - before[1]} columns')
 
     return df
+
+
 ###########################################################################
 # FEATURE ENGINEERING NODES
 ###########################################################################
+
+
 def location_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
 
     # Feature engineering with Geopy

@@ -1,39 +1,34 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-from sklearn.model_selection import train_test_split, cross_validate, GridSearchCV, ParameterGrid, cross_val_score
-from sklearn.preprocessing import (StandardScaler, OneHotEncoder,
-                                   PolynomialFeatures, PowerTransformer)
-from sklearn.impute import SimpleImputer
-
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-
-from sklearn.linear_model import LinearRegression
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor
-
 from sklearn import metrics
-from sklearn.metrics import mean_absolute_percentage_error
 
-from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.neighbors import KNeighborsRegressor
-from sklearn.ensemble import VotingRegressor
-from xgboost import XGBRegressor
-from sklearn.ensemble import StackingRegressor
+
+###########################################################################
+# EVALUATE MODELS NODE
+###########################################################################
 
 
 def evaluate_models(X_test: pd.DataFrame, y_test: pd.Series,
                     polyr, knnr, dtr, voting_regressor_BA, xgbr, stackingr):
-    """Calculates and logs the coefficient of determination.
+    """Calculates the coefficient of determination and other metrics and prints them.
 
-    Args:
-        regressor: Trained model.
-        X_test: Testing data of independent features.
-        y_test: Testing data for price.
+    Parameters
+    ----------
+    X_test:
+        Testing data of independent features.
+    y_test:
+        Testing data for price.
+    polyr
+    knnr
+    dtr
+    voting_regressor_BA
+    xgbr
+    stackingr
+
+    Returns
+    -------
+    Just prints the metrics.
     """
-    trained_regressors_dict={
+    trained_regressors_dict = {
         'Polynomial Regression': polyr,
         'K Nearest Neighbors Regression': knnr,
         'Decision Tree Regression': dtr,

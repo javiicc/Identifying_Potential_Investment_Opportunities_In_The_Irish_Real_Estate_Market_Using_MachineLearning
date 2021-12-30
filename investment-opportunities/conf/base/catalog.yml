@@ -74,36 +74,43 @@ polyr:
   type: pickle.PickleDataSet
   filepath: data/06_models/polyr.pickle
   versioned: true
+  layer: models
 
 knnr:
   type: pickle.PickleDataSet
   filepath: data/06_models/knnr.pickle
   versioned: true
+  layer: models
 
 dtr:
   type: pickle.PickleDataSet
   filepath: data/06_models/dtr.pickle
   versioned: true
+  layer: models
 
 voting_regressor_BA:
   type: pickle.PickleDataSet
   filepath: data/06_models/voting_regressor_BA.pickle
   versioned: true
+  layer: models
 
 xgbr:
   type: pickle.PickleDataSet
   filepath: data/06_models/xgbr.pickle
   versioned: true
+  layer: models
 
 stackingr:
   type: pickle.PickleDataSet
   filepath: data/06_models/stackingr.pickle
   versioned: true
+  layer: models
 
 final_model:
   type: pickle.PickleDataSet
   filepath: data/06_models/final_model.pickle
   versioned: true
+  layer: models
 
 #data_w_residuals:
 #  type: pandas.CSVDataSet
@@ -113,5 +120,5 @@ final_model:
 data_for_frontend:
   type: pandas.CSVDataSet
   filepath: data/07_model_output/data_for_frontend.csv
-  layer: models
+  layer: model_output
 

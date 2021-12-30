@@ -1,11 +1,8 @@
-
 from kedro.pipeline import Pipeline, node
-
 from .nodes import (get_stacking)
-#get_voting_regressor_BA_estimator,
 
 
-def create_pipeline(**kwargs):
+def create_pipeline():
     return Pipeline(
         [
             node(

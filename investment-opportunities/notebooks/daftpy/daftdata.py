@@ -1,18 +1,12 @@
 import sqlite3
-
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 import re
 from os import listdir
 from os.path import isfile, join
 
-from datetime import timedelta
-
 from scrapy.item import Field, Item
-from scrapy.loader.processors import MapCompose  # , TakeFirst
-# import re
+
 from w3lib.html import remove_tags, strip_html5_whitespace
 from itemloaders.processors import TakeFirst, MapCompose, Join
 from scrapy.loader import ItemLoader
@@ -22,6 +16,8 @@ from scrapy.http import TextResponse
 ########################################################################
 # DATA COLLECTION
 ########################################################################
+
+
 # Declaring Item subclass
 class DaftItem(Item):
     """Class to contain common Buy and Rent item fields.
@@ -76,7 +72,6 @@ class DaftItem(Item):
         self.type = type
         self.scraping_date = scraping_date
 '''
-
 
 
 class DaftLoader(ItemLoader):
@@ -435,13 +430,12 @@ def get_description(xpath: str, response: TextResponse, loader):
         loader.add_value('description', 'none')
 
 
-
-
 ########################################################################
 # DATA CLEANSING AND WRANGLING
 ########################################################################
 
-def get_db(dbname: str, query='''SELECT * FROM buy;'''):
+
+def get_db(dbname: str, query='''SELECT * FROM buy;''') -> pd.DataFrame:
     """Stablishes a connection to the database, queries it and drops 
     the advertiser'private information before return the dataframe.
     
@@ -457,14 +451,14 @@ def get_db(dbname: str, query='''SELECT * FROM buy;'''):
     The data obtained from the database as a dataframe.
     """
     database_path = f'../data/01_raw/{dbname}'
-    
-    
+
     connection = sqlite3.connect(database_path)
-    #cursor = connection.cursor()
+    # cursor = connection.cursor()
 
     daft = pd.read_sql_query(query, connection)
     connection.close()
-    
+
+    # Drop personal info
     daft.drop(['contact', 'phone'], axis=1, inplace=True)
     sale = daft.copy()
 
@@ -472,6 +466,12 @@ def get_db(dbname: str, query='''SELECT * FROM buy;'''):
 
 
 def db_dict():
+    """
+
+    Returns
+    -------
+
+    """
     data_path = 'data/'
     # data_pattern = r'\d{4}-\d{2}-\d{2}.db'
     daily_db = [f for f in listdir(data_path) if isfile(join(data_path, f)) \

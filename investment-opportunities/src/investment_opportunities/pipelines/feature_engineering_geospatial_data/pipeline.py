@@ -1,10 +1,8 @@
 from kedro.pipeline import Pipeline, node
-
 from .nodes import location_feature_engineering, add_geonames
 
 
-
-def create_pipeline(**kwargs):
+def create_pipeline():
     return Pipeline(
         [
             node(

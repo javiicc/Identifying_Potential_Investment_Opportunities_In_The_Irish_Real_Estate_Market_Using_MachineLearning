@@ -1,5 +1,4 @@
 from kedro.pipeline import Pipeline, node
-
 from .nodes import (get_predictions, get_residuals, add_features_for_frontend)
 
 
