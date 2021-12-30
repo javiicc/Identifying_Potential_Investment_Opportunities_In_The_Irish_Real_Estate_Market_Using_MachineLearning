@@ -24,6 +24,11 @@ df_no_outliers:
   filepath: data/03_primary/df_no_outliers.csv
   layer: primary
 
+ads_with_location_features:
+  type: pandas.CSVDataSet
+  filepath: data/04_feature/ads_with_location_features.csv
+  layer: feature
+
 ads_with_location_features_and_geonames:
   type: pandas.CSVDataSet
   filepath: data/04_feature/ads_with_location_features_and_geonames.csv
@@ -51,10 +56,62 @@ X_test:
 
 y_test:
   type: pandas.CSVDataSet
-  filepath: data/05_model_input/X_test.csv
+  filepath: data/05_model_input/y_test.csv
   layer: models
 
-regressor:
+X:
+  type: pandas.CSVDataSet
+  filepath: data/05_model_input/X.csv
+  layer: models
+
+y:
+  type: pandas.CSVDataSet
+  filepath: data/05_model_input/y.csv
+  layer: models
+
+### Models
+polyr:
   type: pickle.PickleDataSet
-  filepath: data/06_models/regressor.pickle
+  filepath: data/06_models/polyr.pickle
   versioned: true
+
+knnr:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/knnr.pickle
+  versioned: true
+
+dtr:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/dtr.pickle
+  versioned: true
+
+voting_regressor_BA:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/voting_regressor_BA.pickle
+  versioned: true
+
+xgbr:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/xgbr.pickle
+  versioned: true
+
+stackingr:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/stackingr.pickle
+  versioned: true
+
+final_model:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/final_model.pickle
+  versioned: true
+
+#data_w_residuals:
+#  type: pandas.CSVDataSet
+#  filepath: data/07_model_output/data_w_residuals.csv
+#  layer: models
+
+data_for_frontend:
+  type: pandas.CSVDataSet
+  filepath: data/07_model_output/data_for_frontend.csv
+  layer: models
+
