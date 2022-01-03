@@ -121,4 +121,3 @@ data_for_frontend:
   type: pandas.CSVDataSet
   filepath: data/07_model_output/data_for_frontend.csv
   layer: model_output
-

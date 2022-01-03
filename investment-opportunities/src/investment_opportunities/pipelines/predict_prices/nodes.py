@@ -1,3 +1,8 @@
+"""
+This is a boilerplate pipeline 'predict_prices'
+generated using Kedro 0.17.5
+"""
+
 import pandas as pd
 
 

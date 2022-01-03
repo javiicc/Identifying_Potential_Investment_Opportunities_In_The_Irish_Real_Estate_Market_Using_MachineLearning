@@ -1,3 +1,8 @@
+"""
+This is a boilerplate pipeline 'stacking_regressor_trained_with_all_data'
+generated using Kedro 0.17.5
+"""
+
 from kedro.pipeline import Pipeline, node
 from .nodes import get_stacking_final_model
 

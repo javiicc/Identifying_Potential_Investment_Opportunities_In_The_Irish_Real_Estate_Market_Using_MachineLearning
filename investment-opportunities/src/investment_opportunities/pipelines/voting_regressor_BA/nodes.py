@@ -1,3 +1,8 @@
+"""
+This is a boilerplate pipeline 'voting_regressor_BA'
+generated using Kedro 0.17.5
+"""
+
 import pandas as pd
 from sklearn.ensemble import VotingRegressor
 

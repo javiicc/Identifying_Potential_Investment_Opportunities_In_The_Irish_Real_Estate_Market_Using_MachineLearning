@@ -1,3 +1,8 @@
+"""
+This is a boilerplate pipeline 'model_input'
+generated using Kedro 0.17.5
+"""
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 

@@ -1,3 +1,8 @@
+"""
+This is a boilerplate pipeline 'stacking_regressor'
+generated using Kedro 0.17.5
+"""
+
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import StackingRegressor

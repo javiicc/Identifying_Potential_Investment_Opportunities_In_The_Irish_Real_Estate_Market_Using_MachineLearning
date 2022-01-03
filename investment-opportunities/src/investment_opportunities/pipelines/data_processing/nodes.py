@@ -1,3 +1,8 @@
+"""
+This is a boilerplate pipeline 'data_processing'
+generated using Kedro 0.17.5
+"""
+
 import numpy as np
 import pandas as pd
 

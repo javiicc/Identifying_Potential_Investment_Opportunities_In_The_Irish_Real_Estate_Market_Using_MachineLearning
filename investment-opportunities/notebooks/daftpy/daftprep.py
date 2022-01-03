@@ -1,12 +1,4 @@
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
-import re
-from os import listdir
-from os.path import isfile, join
-
-from datetime import timedelta
 
 
 ###########################################################################
@@ -89,10 +81,9 @@ def process_price(df):
     print(f'Rows before dropping: {before}')
     
     # Filter to drop three kind of ads
-    df = df[((df['price'] != 'Price on Application') & (
-              df['price'] != 'AMV: Price on Application') &
-              df['price'].notna()
-            )].copy()
+    df = df[((df['price'] != 'Price on Application')
+             & (df['price'] != 'AMV: Price on Application')
+             & (df['price'].notna()))].copy()
     
     index_to_drop = df.dropna(subset=['price']).loc[
                     df.dropna(subset=['price'])['price'].str.contains('£')
@@ -136,6 +127,7 @@ def process_coordinates(df):
     print(f'Shape after process: {df.shape}')
     return df
 
+
 def drop_coord_outliers(df):
     """Takes a dataframe and drop coordinates outliers.
     
@@ -151,10 +143,11 @@ def drop_coord_outliers(df):
     before = df.shape[0]
     print(f'Rows before dropping: {before}')
     
-    df.drop(index=df[(df['latitude'] < 51.3) | (df['latitude'] > 55.4) | \
-                     (df['longitude'] > -5.9) | (df['longitude'] < -10.6)].index, inplace=True)
+    df.drop(index=df[(df['latitude'] < 51.3) | (df['latitude'] > 55.4) |
+                     (df['longitude'] > -5.9) | (df['longitude'] < -10.6)].index,
+            inplace=True)
     # Drop ads from Nothern Ireland
-    df.drop(index=df[(df['latitude'] > 54.5) & (df['longitude'] > -7.9) & \
+    df.drop(index=df[(df['latitude'] > 54.5) & (df['longitude'] > -7.9) &
                      (df['latitude'] < 54.6)].index, inplace=True)
     
     after = df.shape[0]
@@ -205,6 +198,7 @@ def floor_area_wragling(df):
     df['floor_area'] = df['floor_area'].str.split(' ').str[0]
     return df
 
+
 def process_floor_area(df):
     """Takes a dataframe and process it with `drop_floor_area`
     and `floor_area_wragling` functions.
@@ -239,7 +233,7 @@ def drop_info(df):
     before = df.shape
     print(f'Shape before dropping: {before}')
     
-    #df.dropna(subset=['info'])
+    # df.dropna(subset=['info'])
     df = df[df['info'].str.split(',').apply(len) == 4]
     
     after = df.shape
@@ -266,7 +260,7 @@ def process_info(df):
     df = drop_info(df).copy()
     
     before = df.shape
-    print(f'Shape before dropping: {before}')
+    print(f'Shape before splitting: {before}')
     
     df['bedroom'] = df['info'].str.split(',').str[0]
     df['bathroom'] = df['info'].str.split(',').str[1]
@@ -275,7 +269,7 @@ def process_info(df):
     df.drop(columns=['info'], inplace=True)
 
     after = df.shape
-    print(f'Shape after dropping: {after}\n' + '-' * 10)
+    print(f'Shape after splitting: {after}\n' + '-' * 10)
     print(f'Difference: {after[1] - before[1]} columns')
     
     return df
@@ -312,39 +306,3 @@ def process_rooms(df):
     df['bedroom'] = df['bedroom'].str.split(' ').str[0]
     df['bathroom'] = df['bathroom'].str.split(' ').str[0]
     return df
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

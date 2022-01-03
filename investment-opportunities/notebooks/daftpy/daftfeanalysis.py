@@ -3,49 +3,22 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import re
-from os import listdir
-from os.path import isfile, join
-
-from datetime import timedelta
-
-from scrapy.item import Field, Item
-from scrapy.loader.processors import MapCompose  # , TakeFirst
-# import re
-from w3lib.html import remove_tags, strip_html5_whitespace
-from itemloaders.processors import TakeFirst, MapCompose, Join
-from scrapy.loader import ItemLoader
-from scrapy.http import TextResponse
-
 
 from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut
-import time
 
 import requests
 import lxml.html as lh
 import seaborn as sns
 
-import pylab
-from scipy.stats import kstest
 import scipy.stats as stats
-from scipy.stats import normaltest
 
-import ppscore as pps
-import random
-from sklearn.tree import DecisionTreeRegressor
+from sklearn.feature_selection import (RFE, SequentialFeatureSelector)
 
-from sklearn.linear_model import LinearRegression
-from sklearn.feature_selection import (RFE, 
-                                       SequentialFeatureSelector)
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestRegressor
-
-from sklearn.preprocessing import (StandardScaler, OneHotEncoder,
-                                   PolynomialFeatures, PowerTransformer)
 
 ########################################################################
 # Feature Engineering
 ########################################################################
+
 
 def missing_values(df):
     """Take a dataframe and plot missing values.

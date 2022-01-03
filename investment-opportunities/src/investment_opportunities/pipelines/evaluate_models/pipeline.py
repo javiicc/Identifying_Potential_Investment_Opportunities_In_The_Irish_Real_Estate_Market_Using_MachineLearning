@@ -1,3 +1,8 @@
+"""
+This is a boilerplate pipeline 'evaluate_models'
+generated using Kedro 0.17.5
+"""
+
 from kedro.pipeline import Pipeline, node
 from .nodes import (evaluate_models)
 
@@ -14,3 +19,4 @@ def create_pipeline():
             ),
         ]
     )
+

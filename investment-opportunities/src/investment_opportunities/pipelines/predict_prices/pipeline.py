@@ -1,3 +1,8 @@
+"""
+This is a boilerplate pipeline 'predict_prices'
+generated using Kedro 0.17.5
+"""
+
 from kedro.pipeline import Pipeline, node
 from .nodes import (get_predictions, get_residuals, add_features_for_frontend)
 

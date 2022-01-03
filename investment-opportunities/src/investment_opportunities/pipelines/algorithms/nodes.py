@@ -1,3 +1,8 @@
+"""
+This is a boilerplate pipeline 'algorithms'
+generated using Kedro 0.17.5
+"""
+
 import pandas as pd
 from sklearn.preprocessing import (StandardScaler, OneHotEncoder,
                                    PolynomialFeatures, PowerTransformer)

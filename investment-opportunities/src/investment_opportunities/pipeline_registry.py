@@ -1,5 +1,4 @@
 """Project pipelines."""
-
 from typing import Dict
 
 from kedro.pipeline import Pipeline
@@ -7,13 +6,14 @@ from kedro.pipeline import Pipeline
 from .pipelines import data_processing as dp
 from .pipelines import data_cleansing as dc
 from .pipelines import feature_engineering_geospatial_data as fe
-from .pipelines import model_imput as mi
+from .pipelines import model_input as mi
 from .pipelines import algorithms as a
 from .pipelines import voting_regressor_BA as vr
 from .pipelines import stacking_regressor as sr
 from .pipelines import evaluate_models as em
 from .pipelines import stacking_regressor_trained_with_all_data as fm
 from .pipelines import predict_prices as pp
+
 
 def register_pipelines() -> Dict[str, Pipeline]:
     """Register the project's pipeline.

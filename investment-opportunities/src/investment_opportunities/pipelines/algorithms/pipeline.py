@@ -1,3 +1,8 @@
+"""
+This is a boilerplate pipeline 'algorithms'
+generated using Kedro 0.17.5
+"""
+
 from kedro.pipeline import Pipeline, node
 from .nodes import (get_levels, get_features_by_type, train_model, get_estimator)
 
@@ -31,3 +36,4 @@ def create_pipeline(**kwargs):
             ),
         ]
     )
+

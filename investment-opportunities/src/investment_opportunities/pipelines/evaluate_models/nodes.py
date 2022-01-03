@@ -1,3 +1,7 @@
+"""
+This is a boilerplate pipeline 'evaluate_models'
+generated using Kedro 0.17.5
+"""
 import pandas as pd
 from sklearn import metrics
 

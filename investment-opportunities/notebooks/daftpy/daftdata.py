@@ -1,14 +1,14 @@
 import sqlite3
 import pandas as pd
 
-import re
-from os import listdir
-from os.path import isfile, join
+# import re
+# from os import listdir
+# from os.path import isfile, join
 
 from scrapy.item import Field, Item
 
 from w3lib.html import remove_tags, strip_html5_whitespace
-from itemloaders.processors import TakeFirst, MapCompose, Join
+from itemloaders.processors import MapCompose
 from scrapy.loader import ItemLoader
 from scrapy.http import TextResponse
 
@@ -43,7 +43,7 @@ class DaftItem(Item):
     type = Field()
     scraping_date = Field()
     description = Field()
-'''
+    '''
     def __init__(self, daft_id=None, item_id=None, url=None, name=None,
                  price=None, info=None, sale_type=None, floor_area=None,
                  contact=None,
@@ -71,7 +71,7 @@ class DaftItem(Item):
         self.coordinates = coordinates
         self.type = type
         self.scraping_date = scraping_date
-'''
+    '''
 
 
 class DaftLoader(ItemLoader):
@@ -159,6 +159,7 @@ def get_info(xpath: str, response: TextResponse, loader):
     except:
         loader.add_value('info', 'none')
 
+
 def get_ber(xpath: str, response: TextResponse, loader):
     """Obtain the ad's ber from the response object throug a Selector and
     populate the `ber` field. Populates the `ber` field with `none` if 
@@ -212,6 +213,7 @@ def get_entered_renewed_views(xpath: str, response: TextResponse, loader):
         loader.add_value('entered_renewed', 'none')
         loader.add_value('views', 'none')
 
+
 def get_contact_phone(xpath_contact: str, xpath_phone: str, pattern_phone: str,
                       response: TextResponse, loader):
     """Obtain the ad's contact info from the response object throug a Selector
@@ -224,6 +226,8 @@ def get_contact_phone(xpath_contact: str, xpath_phone: str, pattern_phone: str,
         Path for the Selector.
     xpath_phone :
         Path for the Selector.
+    pattern_phone :
+        Phone pattern.
     response :
         Page contents. Response object.
     loader : 
@@ -274,6 +278,7 @@ def get_psr(xpath: str, pattern: str, response: TextResponse, loader):
     except:
         loader.add_value('psr_license_number', 'none')
 
+
 def get_energy(xpath: str, response: TextResponse, loader):
     """Obtain the ad's energy info from the response object throug a Selector
     and populate the `energy` field. Populates the `energy` field with `none` if
@@ -296,6 +301,7 @@ def get_energy(xpath: str, response: TextResponse, loader):
             loader.add_value('energy', 'none')
     except:
         loader.add_value('energy', 'none')
+
 
 def get_coordinates(xpath: str, pattern: str, response: TextResponse, loader):
     """Obtain the ad's coordinates from the response object throug a Selector
@@ -321,6 +327,7 @@ def get_coordinates(xpath: str, pattern: str, response: TextResponse, loader):
             loader.add_value('coordinates', 'none')
     except:
         loader.add_value('coordinates', 'none')
+
 
 def get_desc(xpath: str, response: TextResponse, loader):
     """Obtain the some ad's information from the response object throug a Selector
@@ -352,6 +359,7 @@ def get_desc(xpath: str, response: TextResponse, loader):
             loader.add_value('floor_area', 'none')
     except:
         loader.add_value('floor_area', 'none')
+
 
 def get_overview(xpath_caracts: str, xpath_values: str, response: TextResponse,
                  loader):
@@ -385,6 +393,7 @@ def get_overview(xpath_caracts: str, xpath_values: str, response: TextResponse,
     except:
         loader.add_value('overview', 'none')
 
+
 def get_facilities(xpath: str, response: TextResponse, loader):
     """Obtain the some ad's facilities information from the response object throug a Selector
     and populate the `facilities` field. Populates the `facilities` field with `none` if something
@@ -405,6 +414,7 @@ def get_facilities(xpath: str, response: TextResponse, loader):
         loader.add_value('facilities', facilities)
     except:
         loader.add_value('facilities', 'none')
+
 
 def get_description(xpath: str, response: TextResponse, loader):
     """Obtain the ad's description from the response object throug a Selector and
@@ -464,14 +474,9 @@ def get_db(dbname: str, query='''SELECT * FROM buy;''') -> pd.DataFrame:
 
     return sale
 
-
+"""
 def db_dict():
-    """
 
-    Returns
-    -------
-
-    """
     data_path = 'data/'
     # data_pattern = r'\d{4}-\d{2}-\d{2}.db'
     daily_db = [f for f in listdir(data_path) if isfile(join(data_path, f)) \
@@ -498,8 +503,8 @@ def to_datetime(dictionary):
                                                             format='%d/%m/%Y')
         dictionary[key]['scraping_date'] = pd.to_datetime(dictionary[key]['scraping_date'],
                                                           format='%Y/%m/%d')
-
-
+"""
+"""
 def sale_dict_daily(dictionary):
     sale_dict_daily = {}
     for key in dictionary:
@@ -508,8 +513,8 @@ def sale_dict_daily(dictionary):
 
         sale_dict_daily[key] = dictionary[key][entered_renewed_day == scraping_day].reset_index(drop=True)
     return sale_dict_daily
-
-
+"""
+"""
 def drop_renewed(old_data, new_data):
     print(f'Shape before dropping: {new_data.shape}')
     for url in new_data['url']:
@@ -545,7 +550,7 @@ def concatenate_dropping_renewed(initial_key, dictionary):
         print('-'*20)
     print(f'Final shape: {full_data.shape}')
     return full_data
-
+"""
 
 
 
