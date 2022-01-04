@@ -10,9 +10,8 @@ from scrapy.exceptions import DropItem
 from datetime import date, datetime
 
 import sqlite3
-#from .items import RentIeHouseItem, RentIeRoomItem, DaftItem, PropertyItem
 from .items import DaftItemBuy, DaftItemRent
-
+import os.path as path
 
 class DuplicatesPipeline:
     """Class to filter duplicate items.
@@ -70,10 +69,11 @@ class DatabasePipeline(object):
         """Create the conection to the database and the cursor.
         """
         today = date.today()
-        # Path to the database -> Hacer sahrezable
-        data_path = '/home/javier/Desktop/potential-investments/Identifyin_Potential_'\
-        'Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/'\
-                    'investment-opportunities/data/01_raw/{}.db'.format(str(today))
+        data_path = path.abspath(path.join('pipelines.py', '../../../../'
+                                                           'investment-opportunities/'
+                                                           'data/01_raw/{}.db'
+                                           .format(str(today))))
+
         # Connect to a database
         self.conn = sqlite3.connect(data_path)
         # Create a cursor

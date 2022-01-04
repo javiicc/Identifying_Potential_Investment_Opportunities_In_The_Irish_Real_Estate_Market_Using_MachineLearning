@@ -6,12 +6,9 @@ Created on Mon Aug 23 15:58:45 2021
 @author: javier
 """
 
-#from scrapy import Spider  # CrawlSpider, Rule
-#from scrapy.linkextractors import LinkExtractor
-#from scrapy.loader import ItemLoader 
-#from scrapy.loader.processors import MapCompose
 from bs4 import BeautifulSoup as bs
 import requests
+import os.path as path
 
 
 def get_ip_list():
@@ -20,7 +17,8 @@ def get_ip_list():
     soup = bs(requests.get(url).content, 'html.parser')
               
     proxies = []
-    for row in soup.find('table', attrs={'class': 'table table-striped table-bordered'}).find_all('tr')[1:]:
+    for row in soup.find('table', attrs={'class': 'table table-striped table-bordered'}
+                         ).find_all('tr')[1:]:
         tds = row.find_all('td')
         try:
             ip = tds[0].text.strip()
@@ -31,9 +29,9 @@ def get_ip_list():
         
     return proxies
 
-ip_list_path = '/home/javier/Desktop/potential-investments/Identifyin_Potential_'\
-               'Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_'\
-               'Learning/data_collection/web_scraping/project_dir/proxies.txt'
+
+ip_list_path = path.abspath(path.join('IP_list.py', '../proxies.txt'))
+
 with open(ip_list_path, 'w') as file:
     for proxy in get_ip_list():
         file.write(proxy + '\n')

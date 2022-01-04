@@ -8,6 +8,7 @@ Created on Tue Aug 31 01:11:09 2021
 
 from bs4 import BeautifulSoup as bs
 import requests
+import os.path as path
 
 
 def get_urls_list():
@@ -24,9 +25,8 @@ def get_urls_list():
     return urls
 
 
-urls_path = '/home/javier/Desktop/potential-investments/Identifyin_Potential_'\
-            'Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_'\
-            'Learning/data_collection/web_scraping/project_dir/urls.txt'
+urls_path = path.abspath(path.join('urls.py', '../urls.txt'))
+
 with open(urls_path, 'w') as file:
     for city in get_urls_list():
         file.write(f'https://www.rent.ie/houses-to-let/renting_{city}/' + '\n')

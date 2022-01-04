@@ -9,14 +9,10 @@ from abc import ABC
 
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
-from scrapy.loader import ItemLoader
 
 import re
 
 from ..items import DaftItemBuy, DaftItemRent
-
-from datetime import datetime
-
 
 from ..daftdata import (DaftLoader, get_name, get_price, get_info, get_ber,
                              get_entered_renewed_views, get_contact_phone, 
@@ -24,15 +20,8 @@ from ..daftdata import (DaftLoader, get_name, get_price, get_info, get_ber,
                              get_desc, get_overview, get_facilities, 
                              get_description)
 
-
-
-
 from datetime import date
-import json
-import html
-
-
-
+import os.path as path
 
 
 class DaftSpider(CrawlSpider, ABC):
@@ -77,22 +66,7 @@ class DaftSpider(CrawlSpider, ABC):
                                   r'share/.+/\d+']), # Check the list works!!!
              follow=False, callback='parse_items_rent'),
     )
-    ''' NO QUITAR AUN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    rules = (
-        Rule(LinkExtractor(allow=r'.+from=.+'),
-             follow=True),
-        Rule(LinkExtractor(allow=r'for-sale/.+/\d+'),
-             follow=False, callback='parse_items_buy'),
-        Rule(LinkExtractor(allow=r'for-rent/house.+/\d+'),
-             follow=False, callback='parse_items_rent'),
-        Rule(LinkExtractor(allow=r'for-rent/apartment.+/\d+'),
-             follow=False, callback='parse_items_rent'),
-        Rule(LinkExtractor(allow=r'share/.+/\d+'),
-             follow=False, callback='parse_items_rent'),
-    )
-    '''
-    
-     
+
     def parse_items_buy(self, response):
         """The parse_items_buy method is in charge of processing the response and 
         returning scraped data.
@@ -145,11 +119,11 @@ class DaftSpider(CrawlSpider, ABC):
         item_loader.add_value('daft_id', daft_id)
 
         # Path to the HTML file
-        path_to_html = '/home/javier/Desktop/potential-investments/Identifyin_Potential_'\
-        'Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_'\
-        'Machine_Learning/investment-opportunities/data/01_raw/'\
-        'ad_htmls/{}_{}.html'.format(daft_id, str(date.today()))
-
+        path_to_html = path.abspath(path.join('daft.py', "../../../../"
+                                                         "investment-opportunities/"
+                                                         "data/01_raw/ad_htmls/"
+                                                         "{}_{}.html"
+                                              .format(daft_id, str(date.today()))))
 
         with open(path_to_html, 'w') as f:
             f.write(str(response.body))
@@ -276,10 +250,11 @@ class DaftSpider(CrawlSpider, ABC):
         item_loader.add_value('daft_id', daft_id)
         
         # Path to the HTML file
-        path_to_html = '/home/javier/Desktop/potential-investments/'\
-        'A_Study_Of_Potential_Investment_Opportunities_In_The_Irish_Real_'\
-        'Estate_Market_Using_Machine_Learning/data_available/ad_htmls/'\
-        '{}_{}.html'.format(daft_id, str(date.today()))
+        path_to_html = path.abspath(path.join('daft.py', "../../../../"
+                                                         "investment-opportunities/"
+                                                         "data/01_raw/ad_htmls/"
+                                                         "{}_{}.html"
+                                              .format(daft_id, str(date.today()))))
         
         with open(path_to_html, 'w') as f:
             f.write(str(response.body))

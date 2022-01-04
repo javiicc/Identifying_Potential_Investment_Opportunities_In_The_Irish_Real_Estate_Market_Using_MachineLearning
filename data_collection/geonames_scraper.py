@@ -1,6 +1,7 @@
 import requests
 import lxml.html as lh
 import pandas as pd
+import os.path as path
 
 
 def geonames_dict():
@@ -59,7 +60,7 @@ def geonames_dict():
 
 geonames_df = pd.DataFrame(geonames_dict())
 
-geonames_df.to_csv('/home/javier/Desktop/potential-investments/Identifyin_Potential_'
-                   'Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_'
-                   'Machine_Learning/investment-opportunities/data/01_raw/geonames.csv',
+geonames_df.to_csv('../investment-opportunities/data/01_raw/geonames.csv',
                    sep=',')
+
+
