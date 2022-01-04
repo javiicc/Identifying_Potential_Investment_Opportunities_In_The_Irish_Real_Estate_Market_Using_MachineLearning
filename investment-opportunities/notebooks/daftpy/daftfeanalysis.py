@@ -205,15 +205,17 @@ def geonames_dict():
     return col
 
 
-def homogenize(eircode):   # 8, 3, 7, , dublin, 6, 9, 10
-    """Scrape the website from the url. 
+def homogenize(eircode):   
+    """Homogenizes the postcode column values. 
     
     Parameters
     ----------
+    eircode :
+        String (something similar to an eircode expected)
     
     Returns
     -------
-
+    The string homogenized.
     """
     if eircode is np.nan: 
         pass
@@ -273,8 +275,6 @@ def homogenize(eircode):   # 8, 3, 7, , dublin, 6, 9, 10
             eircode = 'D05'
         else:
             eircode = 'D' + eircode
-            
-        
                 
     elif re.match(r'CO WESTMEATH', eircode) or \
          re.match(r'CO. WICKLOW', eircode) or \
@@ -299,10 +299,10 @@ def eircode_homogenize(df):
     
     Returns
     -------
-    The DataFrame with location info added.
+    The DataFrame with the postcode column homogenized.
     """
     df['postcode'] = df['postcode'].str.strip().apply(homogenize)
-    #df['postcode'] = df['postcode'].apply(homogenize)
+
     return df
 
 
