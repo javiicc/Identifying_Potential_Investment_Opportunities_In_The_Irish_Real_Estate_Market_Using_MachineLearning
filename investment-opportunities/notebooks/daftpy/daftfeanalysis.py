@@ -164,7 +164,7 @@ def geonames_dict():
     
     Returns
     -------
-    The DataFrame with location info added.
+    The dictionary with location info added.
     """
     url = 'http://www.geonames.org/postalcode-search.html?q=&country=IE'
     page = requests.get(url)
