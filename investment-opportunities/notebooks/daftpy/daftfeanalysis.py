@@ -708,7 +708,7 @@ def check_transformations(feature, df, df_no_out):
     -------
     .
     """
-    fig, ax = plt.subplots(6, 2, figsize=(12, 26))
+    fig, ax = plt.subplots(6, 2, figsize=(8, 14)) #12, 26
 
     #ax[0,0] = outplots(feature='price', df=df, df_no_out=df_no_out)
     df[feature].min()
@@ -720,53 +720,71 @@ def check_transformations(feature, df, df_no_out):
     feature_name = feature.replace('_', ' ').capitalize()
     
     # No restricted (with outliers)
-    sns.histplot(data=df[feature], bins=30, color='blue', ax=ax[0, 0]) 
+    sns.histplot(data=df[feature], bins=30, color='#b00b1e', ax=ax[0, 0]) 
     ### Highlihting the peak of the crisis
     ax[0,0].axvspan(df_no_out[feature].max(), df[feature].max(),
            alpha=0.3, color="crimson")
     ax[0,0].axvspan(df[feature].min(), df_no_out[feature].min(),
            alpha=0.3, color="crimson")
     ax[0,0].set_ylabel('Unrestricted')
-    ax[0,0].set_xlabel(feature_name)
-    
-    stats.probplot(df[feature], plot=ax[0,1])
-    
+    ax[0,0].set_xlabel(feature_name)    
+    stats.probplot(df[feature], plot=ax[0,1])   
 
     # Restrictec (without outliers)
-    sns.histplot(data=df_no_out[feature], bins=30, color='blue', ax=ax[1, 0]) 
-    ax[1,0].set_ylabel('Unrestricted NO outliers')
+    sns.histplot(data=df_no_out[feature], bins=30, color='#b00b1e', ax=ax[1, 0]) 
+    ax[1,0].set_ylabel('Restricted (NO outliers)')
     ax[1,0].set_xlabel(feature_name)
     stats.probplot(df_no_out[feature], plot=ax[1,1])
     
+    
     # No restricted and logarithmic transformation
-    sns.histplot(data=np.log(df[feature]), bins=30, color='red', ax=ax[2, 0]) 
+    sns.histplot(data=np.log(df[feature]), bins=30, color='#B93D14', ax=ax[2, 0]) 
     ax[2,0].set_ylabel('Unrestricted')
     ax[2,0].set_xlabel(f'{feature_name} logarithmic transformation')
     stats.probplot(np.log(df[feature]), plot=ax[2,1])
-    ax[2,0].axvspan(np.log(df_no_out[feature].max()), np.log(df[feature].max()),
-           alpha=0.3, color="crimson")
-    ax[2,0].axvspan(np.log(df[feature].min()), np.log(df_no_out[feature].min()),
-           alpha=0.3, color="crimson")
+    ax[2,0].axvspan(np.log(df_no_out[feature].max()), 
+                    np.log(df[feature].max()),
+                    alpha=0.3, color="crimson")
+    ax[2,0].axvspan(np.log(df[feature].min()), 
+                    np.log(df_no_out[feature].min()),
+                    alpha=0.3, color="crimson")
     
     # Restrictec and logarithmic transformation
-    sns.histplot(data=np.log(df_no_out[feature]), bins=30, color='red', ax=ax[3, 0]) 
-    ax[3,0].set_ylabel('Unrestricted NO outliers')
+    sns.histplot(data=np.log(df_no_out[feature]), bins=30, color='#B93D14', ax=ax[3, 0]) 
+    ax[3,0].set_ylabel('Restricted (NO outliers)')
     ax[3,0].set_xlabel(f'{feature_name} logarithmic transformation')
     stats.probplot(np.log(df_no_out[feature]), plot=ax[3,1])
+    
+    
     # No restricted and boxcox transformation
-    sns.histplot(data=stats.boxcox(df[feature])[0], bins=30, color='green', ax=ax[4, 0]) 
+    data1, lmbda1 = stats.boxcox(df[feature])
+    sns.histplot(data=data1, bins=30, color='#159819', ax=ax[4, 0]) 
     ax[4,0].set_ylabel('Unrestricted')
-    ax[4,0].set_xlabel(f'{feature_name} coxbox transformation')
-    stats.probplot(stats.boxcox(df[feature])[0], plot=ax[4,1])
-    #ax[4,0].axvspan(stats.boxcox(df_no_out[feature].max())[0], 
-     #               stats.boxcox(df[feature].max())[0],
-      #     alpha=0.3, color="crimson")
+    ax[4,0].set_xlabel(f'{feature_name} Box-Cox transformation')
+    stats.probplot(data1, plot=ax[4,1])
     
     # Restrictec and boxcox transformation
-    sns.histplot(data=stats.boxcox(df_no_out[feature])[0], bins=30, color='green', ax=ax[5, 0]) 
-    ax[5,0].set_ylabel('Unrestricted NO outliers')
-    ax[5,0].set_xlabel(f'{feature_name} coxbox transformation')
-    stats.probplot(stats.boxcox(df_no_out[feature])[0], plot=ax[5,1])
+    data2, lmbda2 = stats.boxcox(df_no_out[feature])
+    sns.histplot(data=data2, bins=30, color='#159819', ax=ax[5, 0]) 
+    ax[5,0].set_ylabel('Restricted (NO outliers)')
+    ax[5,0].set_xlabel(f'{feature_name} Box-Cox transformation')
+    stats.probplot(data2, plot=ax[5,1])
+    # print(lmbda1)
+    # print(lmbda2)
+    
+    # To color the outliers with the Box-Cox transformation is necessary apply the transformation
+    # to the limits and color the higher than the maximum limit and the lower than the minimum one
+    ax[4,0].axvspan(((((df_no_out[feature].max() + 1) ** (lmbda1)) - 1) / lmbda1), 
+                    data1.max(),
+                    alpha=0.3, color="crimson")
+    ax[4,0].axvspan(data1.min(), 
+                    ((((df_no_out[feature].min() - 1) ** (lmbda1)) - 1) / lmbda1),
+                    alpha=0.3, color="crimson")
+    # print(f'Min data1: {data1.min()}')
+    # print(f'Min data2: {data2.min()}')
+    
+    # print(f'Max data1: {data1.max()}')
+    # print(f'Max data2: {data2.max()}')
     
     fig.tight_layout()
     
