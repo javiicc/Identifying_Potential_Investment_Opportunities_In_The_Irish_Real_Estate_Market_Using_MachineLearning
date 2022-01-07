@@ -708,7 +708,7 @@ def check_transformations(feature, df, df_no_out):
     -------
     .
     """
-    fig, ax = plt.subplots(6, 2, figsize=(8, 14)) #12, 26
+    fig, ax = plt.subplots(6, 2, figsize=(8, 14))
 
     #ax[0,0] = outplots(feature='price', df=df, df_no_out=df_no_out)
     df[feature].min()
