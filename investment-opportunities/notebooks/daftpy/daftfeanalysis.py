@@ -878,11 +878,14 @@ def wrapper_methods(estimators_dict, method,
         print(scores, '\n')
         #scores_dict[key] = scores
         
-        fig, ax = plt.subplots(1, 1, figsize=(6, 3))
+        fig, ax = plt.subplots(figsize=(6, 3))
         ax.scatter(range(1, X_train.shape[1]), scores) #  + 1
-        ax.set_title(f'{key} Scores')
+        ax.set_title(f'{key} Scores', weight='bold', size=15)
         ax.set_xlabel('Number of Features')
-        ax.set_ylabel('R^2')
+        ax.set_ylabel('R²')
+        for location in ['left', 'bottom', 'right', 'top']:
+            ax.spines[location].set_visible(False)
+        ax.tick_params(bottom=False, left=False)
         plt.tight_layout()
   
         #return scores_dict
