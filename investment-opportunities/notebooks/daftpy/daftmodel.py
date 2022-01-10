@@ -17,8 +17,9 @@ from sklearn.model_selection import cross_validate
 from sklearn.metrics import mean_absolute_percentage_error, r2_score
 
 from yellowbrick.regressor import ResidualsPlot
+from sklearn.base import BaseEstimator, TransformerMixin
 
-
+'''
 def split_train_test(df, test_ratio=.15):
 
     shuffled_indices = np.random.permutation(len(df))
@@ -44,28 +45,35 @@ def split_x_y(train_set, test_set, features, target='price'):
           'y_test:', y_test.shape, '\n')
 
     return X_train, X_test, y_train, y_test
+'''
 
 
-def split_data(data, target='price', test_size=.15, output='X_y_train_test',
+def split_data(data, target='price', 
+               test_size=.15, 
+               output='X_y_train_test',
                random_state=None):
-    """Take a dataframe and plot missing values.
-    
+    """
+
     Parameters
     ----------
-    df : 
-        The dataframe to work with.
-    
+    data
+    target
+    test_size
+    output
+    random_state
+
     Returns
     -------
-    A DataFrame showing missinga values.
+
     """
     features = list(data.columns)
     features.remove(target)
-
+    # Separate the target from the data
     y = data[target].copy()
     X = data[features].copy()
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size,
+    X_train, X_test, y_train, y_test = train_test_split(X, y, 
+                                                        test_size=test_size,
                                                         random_state=random_state)
 
     train_set = X_train.copy()
@@ -74,6 +82,7 @@ def split_data(data, target='price', test_size=.15, output='X_y_train_test',
     test_set = X_test.copy()
     test_set[target] = y_test.copy()
 
+    # Decide what to return
     if output == 'X_y_train_test':
         print('X_train:', X_train.shape, '\n' +
               'X_test:', X_test.shape, '\n' +
@@ -91,30 +100,36 @@ def split_data(data, target='price', test_size=.15, output='X_y_train_test',
 
 
 def metrics_regression(y_test, y_pred, squared=False):
-    """Take a dataframe and plot missing values.
-    
+    """
+
     Parameters
     ----------
-    df : 
-        The dataframe to work with.
-    
+    y_test
+    y_pred
+    squared
+
     Returns
     -------
-    A DataFrame showing missinga values.
+
     """
     r2_score = metrics.r2_score(y_test, y_pred)
     mae = metrics.mean_absolute_error(y_test, y_pred)
     mape = metrics.mean_absolute_percentage_error(y_test, y_pred)
     # mse = metrics.mean_squared_error(y_test, y_pred)
     rmse = metrics.mean_squared_error(y_test, y_pred, squared=squared)
+    r = np.corrcoef(y_test, y_pred)[0][1]
 
     print(f'R²: {r2_score}')
     print(f'MAE: {mae}')
     print(f'MAPE: {mape}')
     # print(f'MSE: {mse}')
-    print(f'RMSE: {rmse}\n')
+    print(f'RMSE: {rmse}')
+    print(f'R (corr): {r}\n')
+    return r2_score, mae, r, mape
 
-def cross_validate_custom(estimator, scoring_dict, X_train, y_train, cv=10, return_train_score=False):
+'''
+def cross_validate_custom(estimator, scoring_dict, X_train, y_train, 
+                          cv=10, return_train_score=False):
     estimator = estimator
     scoring_dict = scoring_dict
 
@@ -122,12 +137,28 @@ def cross_validate_custom(estimator, scoring_dict, X_train, y_train, cv=10, retu
                             return_train_score=return_train_score)
     print(scores.keys())
     return scores
-
+'''
 
 def scores_statistics(estimator, scoring_dict, X_train, y_train, cv=10,
                       return_train_score=False, time_info=False, 
                       return_est=False):
-    
+    """
+
+    Parameters
+    ----------
+    estimator
+    scoring_dict
+    X_train
+    y_train
+    cv
+    return_train_score
+    time_info
+    return_est
+
+    Returns
+    -------
+
+    """
     scores = cross_validate(estimator,
                             X=X_train, y=y_train,
                             scoring=scoring_dict,
@@ -148,14 +179,14 @@ def scores_statistics(estimator, scoring_dict, X_train, y_train, cv=10,
 
     scores_resume ={}
     for key in scoring_dict:
-        try:
-            mean = np.mean(scores['test_' + key])
-            std = np.std(scores['test_' + key])
-            print(key, 'mean:', mean)
-            print(key, 'std:', std, '\n')
-            scores_resume[key] = (mean, std)
-        except:
-            continue
+#        try:
+        mean = np.mean(scores['test_' + key])
+        std = np.std(scores['test_' + key])
+        print(key, 'mean:', mean)
+        print(key, 'std:', std, '\n')
+        scores_resume[key] = (mean, std)
+#        except:
+ #           continue
     return scores, scores_resume
 
 
@@ -178,7 +209,6 @@ def plot_learning_curves(model, X_train, y_train, X_test, y_test, metric):
 
         train_r2.append(r2_score(y_train[:i], y_train_pred))
         test_r2.append(r2_score(y_test, y_test_pred))
-
 
     if metric == 'r2':
         print(f'Train R2: {train_r2[-1]}')
@@ -230,8 +260,6 @@ def compare_models(estimator, X_train, y_train,
     return scores, scores_resume
 
 
-from sklearn.base import BaseEstimator, TransformerMixin
-
 class IdentityTransformer(BaseEstimator, TransformerMixin):
     def __init__(self):
         pass
@@ -249,10 +277,24 @@ def transformer_estimator(num_transformation,
                           num_feat, 
                           cat_feat, 
                           poly_degree=1):
+    """
 
+    Parameters
+    ----------
+    num_transformation
+    regressor
+    levels_list
+    num_feat
+    cat_feat
+    poly_degree
+
+    Returns
+    -------
+
+    """
     if num_transformation is 'power_transformer':
         num_pipe = Pipeline([
-            ('power_transformer', PowerTransformer(method='yeo-johnson')), #, standardize=False
+            ('power_transformer', PowerTransformer(method='yeo-johnson')),
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
             ('imputer', SimpleImputer(strategy='median')),
             ])
@@ -274,13 +316,11 @@ def transformer_estimator(num_transformation,
         ('imputer', SimpleImputer(strategy='constant', fill_value=None)),
         ])
 
-    
     preprocessor = ColumnTransformer([
         ('num', num_pipe, num_feat),
         ('cat', cat_pipe, cat_feat),
         ]) #, remainder='passthrough'
 
-    
     pipe_estimator = Pipeline(steps=[
         ('preprocessor', preprocessor),
         ('regressor', regressor),
@@ -290,7 +330,7 @@ def transformer_estimator(num_transformation,
 
 
 def residuals(estimator, X_train, X_test, y_train, y_test):
-
+    plt.style.use('seaborn')
     fig, ax =plt.subplots(2,2,figsize=(14,10))
 
     
@@ -306,6 +346,14 @@ def residuals(estimator, X_train, X_test, y_train, y_test):
                .set_title('Actual vs Predicted, Test')
     ax[0,1].set_xlabel('Actual price')
     ax[0,1].set_ylabel('Predicted price')
+    
+    for location in ['left', 'bottom', 'right', 'top']:
+        ax[1, 1].spines[location].set_visible(False)
+    #ax[1, 3].set_xticklabels('')
+    #ax[1, 3].set_yticklabels('')
+    ax[1, 1].set_xticks([])
+    ax[1, 1].set_yticks([])
+    
     plt.tight_layout()
     
     visualizer = ResidualsPlot(estimator, ax=ax[1,0], 
@@ -317,4 +365,77 @@ def residuals(estimator, X_train, X_test, y_train, y_test):
     visualizer.show();
 
 
+def get_weigts(scores_dict=None):
+    """Takes a dictionary with models names and performances on the test set when
+    they were evaluated in the notebooks and returns a list with their respective weights.
 
+    Parameters
+    ----------
+    scores_dict :
+        Dictionary with names and performance metrics.
+
+    Returns
+    -------
+    List with weights.
+    """
+    if scores_dict is None:
+        scores_dict = {'poly': 74.06, 'knn': 74.57, 'dt': 71.71}
+
+    tot = 0
+    for key in scores_dict:
+        tot += scores_dict[key]
+
+    models_weight_list = []
+    for key in scores_dict:
+        weight = scores_dict[key] / tot
+        models_weight_list.append(weight)
+        
+    print(scores_dict)
+    
+    return models_weight_list
+
+
+def plot_metrics(metrics_to_plot):
+    plt.style.use('default')
+
+    metrics_df = pd.DataFrame.from_dict(metrics_to_plot, columns=['r2','mae','correlation','mape'], orient='index')
+
+    fig, ax = plt.subplots(2, 1, 
+                           figsize=(6,len(metrics_to_plot)+1.5))   #6
+
+    metrics_df[['r2','correlation','mape']].plot(kind='barh', ax=ax[0], 
+                                          color=['#2C9650', '#024A0A', '#CA1A1A'], alpha=1, width=.9) 
+    ax[0].set_title('Coef. of Determination and Coef. of Correlation', weight='bold', size=10)
+    ax[0].tick_params(bottom=False, left=False)
+    for location in ['left', 'bottom', 'right', 'top']:
+        ax[0].spines[location].set_visible(False)
+    ax[0].legend(labels=['R²', 'R corr', 'MAPE'], loc=3)
+        
+    metrics_df.mae.plot(kind='barh', ax=ax[1], 
+                        color='#CA1A1A', alpha=1, width=.5) 
+    ax[1].set_title('Mean Absolute Error', weight='bold', size=10)
+    ax[1].tick_params(bottom=False, left=False)
+    ax[1].set_xticks([0, 60000, 100000, 140000])
+    ax[1].set_xticklabels([0, 60000, 100000, 140000])
+    for location in ['left', 'bottom', 'right', 'top']:
+        ax[1].spines[location].set_visible(False)
+        
+        for ix, row in enumerate(metrics_df.iterrows()):
+        #    print(ix)
+         #   print(row[0])
+          #  print(row[1])
+           # print(row[1]['r2'])
+            ax[0].text(x=row[1]['r2']-.06, y=ix-.37, 
+                       s=f"{round(row[1]['r2'], 2)}",
+                       fontsize=6.5)
+            ax[0].text(x=row[1]['correlation']-.06, y=ix-.07, 
+                       s=f"{round(row[1]['correlation'], 2)}",
+                       fontsize=6.5,
+                       color='white')
+            ax[0].text(x=row[1]['mape']-.06, y=ix+.22, 
+                       s=f"{round(row[1]['mape'], 2)}",
+                       fontsize=6.5)
+            ax[1].text(x=row[1]['mae']-22500, y=ix-.08, 
+                       s=f"{round(row[1]['mae'])}")
+        
+    plt.tight_layout()

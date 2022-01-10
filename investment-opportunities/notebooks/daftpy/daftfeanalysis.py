@@ -90,7 +90,7 @@ def location_dict(df, latitude='latitude', longitude='longitude'):
                 location_dict[key].append(location.raw['address'][key])
             except:
                 location_dict[key].append(np.nan)
-        #time.sleep(1) # sleeps for 1 second
+        # time.sleep(1) # sleeps for 1 second
 
         # To check it is working
         if i in range(0, df.shape[0], 200):
@@ -350,6 +350,7 @@ def add_location(df, geonames_df):
 # Data Analysis
 ########################################################################
 
+
 def frequencies(df, variable):
     """Take a DataFrame and a variable name and return the frquencies. 
     
@@ -606,95 +607,6 @@ def print_limits(df, variable, level=1):
     print(f'Interquartile range method: {iqr_range}')
     #print(f'Standard deviation method: {std_range}')
 
-'''
-def common_ix(index_list):
-    """Classify outliers based on. 
-    
-    Parameters
-    ----------
-    data : 
-        .
-    
-    Returns
-    -------
-    .
-    """
-    data_ix = []
-    for i, elem in enumerate(index_list):
-        # First index list
-        if i == 0:
-            # initial_ix = sd_out_price.index
-            initial_ix = elem 
-            for ix in initial_ix:
-                # If ix is in the next index list then por el momento
-                # cumple la condicion y por tanto se une a la lista
-                if ix in index_list[i+1]:
-                    data_ix.append(ix)
-            print(f'1st and 2nd index lists: {len(data_ix)} rows')
-    
-        elif i < 4:
-            for ix in data_ix:
-                # Check whether index from data_ix are in the next list, 
-                # if not -> remove it
-                if ix not in index_list[i+1]:
-                    data_ix.remove(ix)
-            print(f'{i + 2}{"rd" if i + 2 == 3 else "th"} index list: {len(data_ix)} rows')
-    print('-' * 10)
-    return data_ix
-'''
-'''
-def drop_outliers_ix(df, index_list):
-    """Classify outliers based on. 
-    
-    Parameters
-    ----------
-    data : 
-        .
-    
-    Returns
-    -------
-    .
-    """
-    outliers_rep = []
-    for list_ in index_list:
-        outliers_rep += list(list_)
-        #print(len(outliers_rep))
-    
-    outliers = pd.Series(outliers_rep).unique()
-    print('Outliers dropped:', len(outliers))
-    
-    df_without_outliers = df.drop(index=outliers).copy()
-    
-    return df_without_outliers
-'''
-'''
-def drop_all_outliers(df, index_list):
-    """Classify outliers based on. 
-    
-    Parameters
-    ----------
-    data : 
-        .
-    
-    Returns
-    -------
-    .
-    """
-    # Get ads index which are not outliers
-    data_ix = outliers_ix(index_list)
-    
-    before = df.shape
-    print(f'Shape before dropping: {before}')
-    
-    # Filter data to drop outliers
-    sale_out = df.iloc[data_ix]
-    
-    after = sale_out.shape
-    print(f'Shape after dropping: {after}')
-    print(f'{before[0] - after[0]} rows/outliers dropped')
-    
-    return sale_out
-'''
 
 def check_transformations(feature, df, df_no_out):
     """Classify outliers based on. 
@@ -889,15 +801,4 @@ def wrapper_methods(estimators_dict, method,
         plt.tight_layout()
   
         #return scores_dict
-
-
-
-def normality_test(df, feature):
-    # D'Agostino's K-squared test
-    # ==============================================================================
-    k2, p_value = stats.normaltest(np.log(df[feature]))
-    print(f"Logarithmic transformation\n -----\n Estadístico = {k2}, p-value = {p_value}\n")
-
-    k2, p_value = stats.normaltest(stats.boxcox(df[feature])[0])
-    print(f"Coxbox transformation\n -----\n Estadístico = {k2}, p-value = {p_value}")
 
