@@ -316,10 +316,11 @@ def transformer_estimator(num_transformation,
         ('imputer', SimpleImputer(strategy='constant', fill_value=None)),
         ])
 
+    custom_feat = []
     preprocessor = ColumnTransformer([
-        ('num', num_pipe, num_feat),
+        ('num', num_pipe, num_feat),   
         ('cat', cat_pipe, cat_feat),
-        ]) #, remainder='passthrough'
+        ], remainder='passthrough')  # passthrough the cluster variable
 
     pipe_estimator = Pipeline(steps=[
         ('preprocessor', preprocessor),
