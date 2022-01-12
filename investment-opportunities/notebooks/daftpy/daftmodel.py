@@ -272,11 +272,12 @@ class IdentityTransformer(BaseEstimator, TransformerMixin):
 
 
 def transformer_estimator(num_transformation, 
-                          regressor, 
+                         # regressor, 
                           levels_list, 
                           num_feat, 
                           cat_feat, 
-                          poly_degree=1):
+                          poly_degree=1, 
+                          regressor=None):
     """
 
     Parameters
@@ -294,26 +295,28 @@ def transformer_estimator(num_transformation,
     """
     if num_transformation is 'power_transformer':
         num_pipe = Pipeline([
+        #    ('imputer', SimpleImputer(strategy='median')),  # median  mean
             ('power_transformer', PowerTransformer(method='yeo-johnson')),
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-            ('imputer', SimpleImputer(strategy='median')),
             ])
     elif num_transformation is 'std_scaler':
         num_pipe = Pipeline([
+        #    ('imputer', SimpleImputer(strategy='median')),  # median  mean
             ('std_scaler', StandardScaler()),
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-            ('imputer', SimpleImputer(strategy='median')),
             ])
     elif num_transformation is 'identity':
         num_pipe = Pipeline([
+        #    ('imputer', SimpleImputer(strategy='median')),  # median  mean
             ('identity', IdentityTransformer()),
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-            ('imputer', SimpleImputer(strategy='median')),
             ])
 
     cat_pipe = Pipeline([
+        ('imputer', SimpleImputer(missing_values=np.nan, 
+                                  strategy='constant', 
+                                  fill_value='Unknown')),  
         ('one_hot_encoder', OneHotEncoder(categories=levels_list)), 
-        ('imputer', SimpleImputer(strategy='constant', fill_value=None)),
         ])
 
     custom_feat = []
@@ -322,9 +325,14 @@ def transformer_estimator(num_transformation,
         ('cat', cat_pipe, cat_feat),
         ], remainder='passthrough')  # passthrough the cluster variable
 
-    pipe_estimator = Pipeline(steps=[
-        ('preprocessor', preprocessor),
-        ('regressor', regressor),
+    if regressor is None:
+        pipe_estimator = Pipeline(steps=[
+            ('preprocessor', preprocessor)
+        ])
+    else:
+        pipe_estimator = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('regressor', regressor)
         ])
     
     return pipe_estimator
@@ -440,3 +448,32 @@ def plot_metrics(metrics_to_plot):
                        s=f"{round(row[1]['mae'])}")
         
     plt.tight_layout()
+    
+
+def get_base_predictions(mean_prices, data_to_predict):
+
+    # Calculate mean price for Ireland
+    mean_price = mean_prices.mean()
+    # print(mean_price.values[0])
+    # The prediction is the mean price in the corresponding place so we join the data and mean_prices by place
+    # and taking the price as prediction
+    y_pred = data_to_predict.merge(mean_prices, how='left', left_on='place', right_index=True).price
+    # Fill missing values with the mean price for Ireland
+    y_pred.fillna(value=mean_price.values[0], inplace=True)
+    
+    return y_pred
+
+
+def comp_met(metrics_to_plot, new_model, last_best_model):
+    
+    base_model_mae = metrics_to_plot['Baseline Model'][1]
+    new_mae = metrics_to_plot[new_model][1]
+    last_best_mae = metrics_to_plot[last_best_model][1]
+    
+    improvement_basem = base_model_mae - new_mae
+    improvement_basem_perc = improvement_basem / base_model_mae
+    improvement_lbestm = last_best_mae - new_mae
+    improvement_lbestm_perc = improvement_lbestm / last_best_mae
+    
+    print(f'Improvement respect Baseline Model: {round(improvement_basem)}€ -> {round(improvement_basem_perc*100)}%')
+    print(f'Improvement respect Last Best Model: {round(improvement_lbestm)}€ -> {round(improvement_lbestm_perc*100)}%')
