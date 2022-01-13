@@ -19,34 +19,6 @@ from sklearn.metrics import mean_absolute_percentage_error, r2_score
 from yellowbrick.regressor import ResidualsPlot
 from sklearn.base import BaseEstimator, TransformerMixin
 
-'''
-def split_train_test(df, test_ratio=.15):
-
-    shuffled_indices = np.random.permutation(len(df))
-    test_set_size = int(len(df) * test_ratio)
-
-    test_indices = shuffled_indices[:test_set_size]
-    train_indices = shuffled_indices[test_set_size:]
-
-    return df.iloc[train_indices], df.iloc[test_indices]
-
-
-def split_x_y(train_set, test_set, features, target='price'):
-
-    y_train = train_set[target].copy()
-    X_train = train_set[features].copy()
-
-    y_test = test_set[target].copy()
-    X_test = test_set[features].copy()
-
-    print('X_train:', X_train.shape, '\n' +
-          'X_test:', X_test.shape, '\n' +
-          'y_train:', y_train.shape, '\n' +
-          'y_test:', y_test.shape, '\n')
-
-    return X_train, X_test, y_train, y_test
-'''
-
 
 def split_data(data, target='price', 
                test_size=.15, 
@@ -127,17 +99,7 @@ def metrics_regression(y_test, y_pred, squared=False):
     print(f'R (corr): {r}\n')
     return r2_score, mae, r, mape
 
-'''
-def cross_validate_custom(estimator, scoring_dict, X_train, y_train, 
-                          cv=10, return_train_score=False):
-    estimator = estimator
-    scoring_dict = scoring_dict
 
-    scores = cross_validate(estimator, X=X_train, y=y_train, scoring=scoring_dict, cv=cv,
-                            return_train_score=return_train_score)
-    print(scores.keys())
-    return scores
-'''
 
 def scores_statistics(estimator, scoring_dict, X_train, y_train, cv=10,
                       return_train_score=False, time_info=False, 
@@ -160,7 +122,7 @@ def scores_statistics(estimator, scoring_dict, X_train, y_train, cv=10,
 
     """
     scores = cross_validate(estimator,
-                            X=X_train, y=y_train,
+                            X=X_train, y=y_train,  # np.log
                             scoring=scoring_dict,
                             cv=cv,
                             return_train_score=return_train_score,
@@ -241,7 +203,7 @@ def compare_models(estimator, X_train, y_train,
                    ):
 
     scores = cross_validate(estimator,
-                            X=X_train, y=y_train,
+                            X=X_train, y=y_train,  
                             scoring=scoring_dict,
                             cv=cv,
                             return_train_score=return_train_score)
