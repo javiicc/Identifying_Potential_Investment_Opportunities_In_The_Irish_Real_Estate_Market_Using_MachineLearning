@@ -376,7 +376,7 @@ def plot_metrics(metrics_to_plot):
 
     metrics_df[['r2','correlation','mape']].plot(kind='barh', ax=ax[0], 
                                           color=['#2C9650', '#024A0A', '#CA1A1A'], alpha=1, width=.9) 
-    ax[0].set_title('Coef. of Determination and Coef. of Correlation', weight='bold', size=10)
+    ax[0].set_title('Coef. Determination, Coef. Correlation, MAPE', weight='bold', size=10)
     ax[0].tick_params(bottom=False, left=False)
     for location in ['left', 'bottom', 'right', 'top']:
         ax[0].spines[location].set_visible(False)
