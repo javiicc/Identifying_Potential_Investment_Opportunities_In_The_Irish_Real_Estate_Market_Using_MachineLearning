@@ -54,8 +54,8 @@ def variables_to_model(df: pd.DataFrame) -> pd.DataFrame:
         # 'county',
         # 'city_district',
         # 'road',
-        # 'place',
-        'code',
+        'place',
+        # 'code',
         # 'admin1',
         # 'cities'
     ]

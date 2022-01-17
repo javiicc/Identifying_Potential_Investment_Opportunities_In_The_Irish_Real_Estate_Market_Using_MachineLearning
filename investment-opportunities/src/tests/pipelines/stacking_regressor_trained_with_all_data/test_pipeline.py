@@ -26,7 +26,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-This is a boilerplate test file for pipeline 'stacking_regressor_trained_with_all_data'
+This is a boilerplate test file for pipeline 'voting_regressor_2_trained_with_all_data'
 generated using Kedro 0.17.5.
 Please add your pipeline tests here.
 

@@ -1,5 +1,5 @@
 """
-This is a boilerplate pipeline 'stacking_regressor'
+This is a boilerplate pipeline 'voting_regressor_2_trained_with_all_data'
 generated using Kedro 0.17.5
 """
 

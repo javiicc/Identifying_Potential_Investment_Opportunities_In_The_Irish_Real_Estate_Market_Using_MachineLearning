@@ -31,7 +31,7 @@ def create_pipeline(**kwargs):
             node(
                 func=train_model,
                 inputs=["X_train", "y_train", "estimators_dict"],
-                outputs=["polyr", "knnr", "dtr", "xgbr"],
+                outputs=["polyr", "knnr", "dtr", "xgbr", "rfr"],
                 name="training_node",
             ),
         ]

@@ -9,9 +9,9 @@ from .pipelines import feature_engineering_geospatial_data as fe
 from .pipelines import model_input as mi
 from .pipelines import algorithms as a
 from .pipelines import voting_regressor_BA as vr
-from .pipelines import stacking_regressor as sr
+from .pipelines import voting_regressor_2 as vr2
 from .pipelines import evaluate_models as em
-from .pipelines import stacking_regressor_trained_with_all_data as fm
+from .pipelines import voting_regressor_2_trained_with_all_data as fm
 from .pipelines import predict_prices as pp
 
 
@@ -28,17 +28,17 @@ def register_pipelines() -> Dict[str, Pipeline]:
     model_input_pipeline = mi.create_pipeline()
     algorithms_pipeline = a.create_pipeline()
     voting_regressor_BA_pipeline = vr.create_pipeline()
-    stacking_regressor_pipeline = sr.create_pipeline()
+    voting_regressor_2_pipeline = vr2.create_pipeline()
     evaluate_models_pipeline = em.create_pipeline()
-    stacking_regressor_trained_with_all_data_pipeline = fm.create_pipeline()
+    voting_regressor_2_trained_with_all_data_pipeline = fm.create_pipeline()
     predict_prices_pipeline = pp.create_pipeline()
 
     return {
         "__default__": data_processing_pipeline + data_cleansing_pipeline
                        + feature_engineering_pipeline + model_input_pipeline
                        + algorithms_pipeline + voting_regressor_BA_pipeline
-                       + stacking_regressor_pipeline + evaluate_models_pipeline
-                       + stacking_regressor_trained_with_all_data_pipeline
+                       + voting_regressor_2_pipeline + evaluate_models_pipeline
+                       + voting_regressor_2_trained_with_all_data_pipeline
                        + predict_prices_pipeline,
         "dp": data_processing_pipeline,
         "dc": data_cleansing_pipeline,
@@ -46,8 +46,8 @@ def register_pipelines() -> Dict[str, Pipeline]:
         "mi": model_input_pipeline,
         "a": algorithms_pipeline,
         "vr": voting_regressor_BA_pipeline,
-        "sr": stacking_regressor_pipeline,
+        "sr": voting_regressor_2_pipeline,
         "em": evaluate_models_pipeline,
-        "fm": stacking_regressor_trained_with_all_data_pipeline,
+        "fm": voting_regressor_2_trained_with_all_data_pipeline,
         "pp": predict_prices_pipeline,
     }

@@ -22,6 +22,7 @@ from scrapy.http import TextResponse
 ########################################################################
 # DATA COLLECTION
 ########################################################################
+
 # Declaring Item subclass
 class DaftItem(Item):
     """Class to contain common Buy and Rent item fields.
@@ -76,7 +77,6 @@ class DaftItem(Item):
         self.type = type
         self.scraping_date = scraping_date
 '''
-
 
 
 class DaftLoader(ItemLoader):
@@ -164,6 +164,7 @@ def get_info(xpath: str, response: TextResponse, loader):
     except:
         loader.add_value('info', 'none')
 
+
 def get_ber(xpath: str, response: TextResponse, loader):
     """Obtain the ad's ber from the response object throug a Selector and
     populate the `ber` field. Populates the `ber` field with `none` if 
@@ -216,6 +217,7 @@ def get_entered_renewed_views(xpath: str, response: TextResponse, loader):
     except:
         loader.add_value('entered_renewed', 'none')
         loader.add_value('views', 'none')
+
 
 def get_contact_phone(xpath_contact: str, xpath_phone: str, pattern_phone: str,
                       response: TextResponse, loader):
@@ -302,6 +304,7 @@ def get_energy(xpath: str, response: TextResponse, loader):
     except:
         loader.add_value('energy', 'none')
 
+
 def get_coordinates(xpath: str, pattern: str, response: TextResponse, loader):
     """Obtain the ad's coordinates from the response object throug a Selector
     and populate the `coordinates` field. Populates the `coordinates` field with `none` if
@@ -326,6 +329,7 @@ def get_coordinates(xpath: str, pattern: str, response: TextResponse, loader):
             loader.add_value('coordinates', 'none')
     except:
         loader.add_value('coordinates', 'none')
+
 
 def get_desc(xpath: str, response: TextResponse, loader):
     """Obtain the some ad's information from the response object throug a Selector
@@ -357,6 +361,7 @@ def get_desc(xpath: str, response: TextResponse, loader):
             loader.add_value('floor_area', 'none')
     except:
         loader.add_value('floor_area', 'none')
+
 
 def get_overview(xpath_caracts: str, xpath_values: str, response: TextResponse,
                  loader):
@@ -390,6 +395,7 @@ def get_overview(xpath_caracts: str, xpath_values: str, response: TextResponse,
     except:
         loader.add_value('overview', 'none')
 
+
 def get_facilities(xpath: str, response: TextResponse, loader):
     """Obtain the some ad's facilities information from the response object throug a Selector
     and populate the `facilities` field. Populates the `facilities` field with `none` if something
@@ -410,6 +416,7 @@ def get_facilities(xpath: str, response: TextResponse, loader):
         loader.add_value('facilities', facilities)
     except:
         loader.add_value('facilities', 'none')
+
 
 def get_description(xpath: str, response: TextResponse, loader):
     """Obtain the ad's description from the response object throug a Selector and
@@ -436,12 +443,12 @@ def get_description(xpath: str, response: TextResponse, loader):
 
 
 
-
+'''
 ########################################################################
 # DATA CLEANSING AND WRANGLING
 ########################################################################
 
-def get_db(dbname: str, query='''SELECT * FROM buy;'''):
+def get_db(dbname: str,): ##############
     """Stablishes a connection to the database, queries it and drops 
     the advertiser'private information before return the dataframe.
     
@@ -468,6 +475,11 @@ def get_db(dbname: str, query='''SELECT * FROM buy;'''):
 
     return sale
 
+
+
+########################################################################
+# DATA CLEANSING AND WRANGLING
+########################################################################
 
 def db_dict():
     data_path = 'data/'
@@ -544,7 +556,7 @@ def concatenate_dropping_renewed(initial_key, dictionary):
     print(f'Final shape: {full_data.shape}')
     return full_data
 
-
+'''
 
 
 

@@ -1,4 +1,4 @@
-# This is a boilerplate parameters config generated for pipeline 'stacking_regressor'
+# This is a boilerplate parameters config generated for pipeline 'voting_regressor_2'
 # using Kedro 0.17.5.
 #
 # Documentation for this file format can be found in "Parameters"

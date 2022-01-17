@@ -127,18 +127,15 @@ def location_dataframe(df, dictionary):
     return df
 
 
-def location_engineering(df, latitude='latitude', longitude='longitude'):
-    """Take a dataframe and a dictionary with location information
-    and add it to the DataFrame.
-    
+def location_engineering(df: pd.DataFrame) -> pd.DataFrame:
+    """Call the `location_dict()` function to get the location dictionary and the
+    `location_dataframe()` one to add the location dictionary info to the DataFrame.
+
     Parameters
     ----------
-    df : 
+    df :
         The dataframe to work with.
-    dictionary :
-        dictionary with location info and values with the same length 
-        than the DataFrame.
-    
+
     Returns
     -------
     The DataFrame with location info added.
@@ -153,48 +150,40 @@ def location_engineering(df, latitude='latitude', longitude='longitude'):
 
 def geonames_dict():
     """Scrape the website from the url. 
-    
-    Parameters
-    ----------
-    df : 
-        The dataframe to work with.
-    dictionary :
-        dictionary with location info and values with the same length 
-        than the DataFrame.
-    
+
     Returns
     -------
-    The dictionary with location info added.
+    A dictionary with geonames info.
     """
     url = 'http://www.geonames.org/postalcode-search.html?q=&country=IE'
     page = requests.get(url)
     doc = lh.fromstring(page.content) 
     tr_elements = doc.xpath('//tr')
     
-    #Create empty dict
+    # Create empty dict
     col = {}
-    #For each row, store each first element (header) and an empty list
+    # For each row, store each first element (header) and an empty list
     for i, t in enumerate(tr_elements[2]):
         key = t.text_content().lower()
-        #print('%d: "%s"'%(i,name))
+        # print('%d: "%s"'%(i,name))
         col[key] = [] 
     col['place_coordinates'] = []
 
     # Fill dict
-    #print(tr_elements[-1].text_content())
+    # print(tr_elements[-1].text_content())
     for tr in tr_elements[3:]:
         
         if len(tr) == 7:
    
             for key, td in zip(col, tr):
                 td = td.text_content()
-                #print(td)
+                # print(td)
                 col[key].append(td)
                 
         elif len(tr) == 2:
         
             td = tr[-1].text_content()
-            #print(td)
+            # print(td)
             col['place_coordinates'].append(td)
             
     del col['']
@@ -205,8 +194,8 @@ def geonames_dict():
     return col
 
 
-def homogenize(eircode):   
-    """Homogenizes the postcode column values. 
+def homogenize(eircode: pd.Series) -> pd.Series:
+    """Takes the postcode column and homogenizes it to get the routing key.
     
     Parameters
     ----------
@@ -215,17 +204,20 @@ def homogenize(eircode):
     
     Returns
     -------
-    The string homogenized.
+    Column processed.
     """
     if eircode is np.nan: 
         pass
+    # 8 should be the eircode length in all ads
     elif len(eircode) == 8: 
         pass
+    # 3 is the routing key
     elif len(eircode) == 3: 
         pass
         
     elif len(eircode) == 7:
         if re.match(r'\w{3} \w{3}', eircode):
+            # Only the three first digits are useful
             eircode = eircode[:3]
         else:            
             routing_key = re.search(r'(\b\w{3})', eircode)[0]
@@ -257,15 +249,10 @@ def homogenize(eircode):
             eircode = np.nan 
         elif eircode == 'CO.ATHLONE':
             eircode = np.nan 
-        elif re.match(r'\b\w{3}\b \b\w{2}\b \b\w{2}\b', eircode):   #D20 HK 69
+        elif re.match(r'\b\w{3}\b \b\w{2}\b \b\w{2}\b', eircode):   # D20 HK 69
             eircode = eircode[:3]
         else:
-            #print(f'"{eircode}"', 'not processed -> np.nan')
-            #for i in eircode:
-             #   print(i)
-            #print(len(eircode))
             eircode = np.nan
-            #print(eircode)
                 
     elif len(eircode) == 1: 
         eircode = 'D0' + eircode
@@ -281,9 +268,9 @@ def homogenize(eircode):
          re.match(r'CO. ROSCOMMON', eircode) or \
          re.match(r'CO. KILKENNY', eircode) or \
          re.match(r'0000', eircode) or \
-         re.match(r'CO WICKLOW', eircode): #re.match(r'nan', eircode)
+         re.match(r'CO WICKLOW', eircode): # re.match(r'nan', eircode)
                         
-        #print(f'"{eircode}"', 'not processed -> np.nan')
+        # print(f'"{eircode}"', 'not processed -> np.nan')
         eircode = np.nan
         
     return eircode
@@ -302,23 +289,22 @@ def eircode_homogenize(df):
     The DataFrame with the postcode column homogenized.
     """
     df['postcode'] = df['postcode'].str.strip().apply(homogenize)
-
     return df
 
 
 def add_location(df, geonames_df):
-    """Take two DataFrames and . 
-    
+    """Takes the first DataFrame and adds the geonames info to it.
+
     Parameters
     ----------
-    df : 
-        The dataframe to work with.
+    df :
+        DataFrame to add geonames info.
     geonames_df :
-        
-    
+        DataFrame with the geonames info.
+
     Returns
     -------
-    The DataFrame with location info added.
+    The df DataFrame with the geonames info.
     """
     before = df.shape
     print(f'Shape before dropping: {before}')
@@ -422,7 +408,7 @@ def iqr_method(data):
     # Returning the upper and lower limits
     return [iqr_lower, iqr_upper]
 
-
+'''
 # This approach only works if the data is approximately Gaussian
 def std_method(data):
     """Classify outliers based on. 
@@ -442,19 +428,27 @@ def std_method(data):
     lower_3std = np.mean(data) - 3 * std
     # Returning the upper and lower limits
     return [lower_3std, upper_3std]
-
+'''
 
 def outlier_bool(df, feature, level=1, continuous=False, log=False):
-    """Classify outliers based on.
+    """Classify outliers based on percentile and interquartile ranges.
 
     Parameters
     ----------
-    data :
-        .
+    df :
+        DataFrame.
+    feature :
+        Column.
+    level :
+        'p' in np.percentile method.
+    continuous :
+        To indicate whether the variable is continuous or not.
+    log :
+        To indicate whether compute natural logarithm element-wise or not.
 
     Returns
     -------
-    .
+    A Pandas Series of booleans with True for outliers values.
     """
     data = df[feature]
 
@@ -465,14 +459,12 @@ def outlier_bool(df, feature, level=1, continuous=False, log=False):
     # Obtaining the ranges
     pct_range = pct_method(data, level)
     iqr_range = iqr_method(data)
-    std_range = std_method(data)
 
     if continuous is False:
         # Setting the lower limit fixed for discrete variables
         low_limit = np.min(data)
         # high_limit = np.max([pct_range[1],
-        #                    iqr_range[1],
-        #                   std_range[1]])
+        #                      iqr_range[1])
 
     elif continuous:
         if feature is 'floor_area':
@@ -480,14 +472,11 @@ def outlier_bool(df, feature, level=1, continuous=False, log=False):
             # positive value
             low_limit = pct_range[0]
         else:
-            # print('no')
             low_limit = np.min([pct_range[0],
                                 iqr_range[0],
-                                # std_range[0]
                                 ])
     high_limit = np.max([pct_range[1],
                          iqr_range[1],
-                         # std_range[1]
                          ])
 
     print(f'Limits: {[low_limit, high_limit]}')
@@ -495,7 +484,7 @@ def outlier_bool(df, feature, level=1, continuous=False, log=False):
     no_outlier_bool = data.between(low_limit, high_limit)
     outlier_bool = no_outlier_bool == False
     print(f'No outliers: {no_outlier_bool.sum()}')
-    print(f'Outliers: {(outlier_bool).sum()}\n')
+    print(f'Outliers: {outlier_bool.sum()}\n')
 
     # Return boolean
     return outlier_bool
@@ -532,19 +521,20 @@ def drop_outliers_tmp(df, feature, level=1, continuous=False, log=False, inplace
 
 
 def drop_outliers(df: pd.DataFrame,
-                  features=['price', 'floor_area',
-                            'views', 'bedroom', 'bathroom'],
-                  level=1, log=False, inplace=False): #continuous=False,
-    """Classify outliers based on.
+                  features=('price', 'floor_area', 'views',
+                            'bedroom', 'bathroom')) -> pd.DataFrame:
+    """.
 
     Parameters
     ----------
-    data :
-        .
+    df :
+        DataFrame with outliers.
+    features :
+        Column.
 
     Returns
     -------
-    .
+    DataFrame without outliers.
     """
     # List to add outliers from each feature
     outliers_list = []
@@ -553,6 +543,7 @@ def drop_outliers(df: pd.DataFrame,
         print(feature.upper())
         print(f'Range before: {[df[feature].min(), df[feature].max()]}\n')
 
+        # Use the outlier_bool() function to take the boolean Series
         if feature in ['bedroom', 'bathroom']:
             outlier_boolean = outlier_bool(df=df, feature=feature, level=1, continuous=False,
                                            log=False)
@@ -569,12 +560,13 @@ def drop_outliers(df: pd.DataFrame,
         print('-----------')
 
         # Increase the list with outliers index from each feature
+        # outlier_list below has repeated index
         outliers_list += list(outliers.index)
         #print(len(outliers_list))
 
         # Convert list to set to eliminate repeated index
         outliers_set = set(outliers_list)
-        #print(len(outliers_set))
+        # print(len(outliers_set))
 
     before = df.shape
     print('---------------')

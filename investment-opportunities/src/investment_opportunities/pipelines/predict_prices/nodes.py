@@ -4,6 +4,7 @@ generated using Kedro 0.17.5
 """
 
 import pandas as pd
+import numpy as np
 
 
 ###########################################################################
@@ -24,7 +25,7 @@ def get_predictions(model, X: pd.DataFrame, y: pd.Series) -> pd.DataFrame:
     -------
     Returns a DataFrame with the input data and predictions.
     """
-    y_pred = model.predict(X)
+    y_pred = np.exp(model.predict(X))
     print('-' * 30, 'PREDICTIONS ---------> DONE!!!!!', '-' * 30)
     data_w_predictions = X.copy()
     # Add a column with the target

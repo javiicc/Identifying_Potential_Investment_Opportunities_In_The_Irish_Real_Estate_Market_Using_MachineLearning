@@ -106,8 +106,8 @@ def location_dataframe(df: pd.DataFrame, dictionary: Dict[str, list]) -> pd.Data
 
 
 def location_engineering(df: pd.DataFrame) -> pd.DataFrame:
-    """Take a dataframe and a dictionary with location information
-    and add it to the DataFrame.
+    """Call the `location_dict()` function to get the location dictionary and the
+    `location_dataframe()` one to add the location dictionary info to the DataFrame.
 
     Parameters
     ----------
@@ -127,7 +127,7 @@ def location_engineering(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def homogenize(eircode: pd.Series) -> pd.Series:
-    """Takes the `postcode` column and homogenize it to get the routing keys.
+    """Takes the postcode column and homogenizes it to get the routing key.
 
     Parameters
     ----------
@@ -184,12 +184,7 @@ def homogenize(eircode: pd.Series) -> pd.Series:
         elif re.match(r'\b\w{3}\b \b\w{2}\b \b\w{2}\b', eircode):  # D20 HK 69
             eircode = eircode[:3]
         else:
-            # print(f'"{eircode}"', 'not processed -> np.nan')
-            # for i in eircode:
-            #   print(i)
-            # print(len(eircode))
             eircode = np.nan
-            # print(eircode)
 
     elif len(eircode) == 1:
         eircode = 'D0' + eircode
@@ -226,21 +221,22 @@ def eircode_homogenize(df):
     The DataFrame with location info added.
     """
     df['postcode'] = df['postcode'].str.strip().apply(homogenize)
-    # df['postcode'] = df['postcode'].apply(homogenize)
     return df
 
 
 def add_location(df, geonames_df):
-    """Take two DataFrames and .
+    """Takes the first DataFrame and adds the geonames info to it.
 
     Parameters
     ----------
     df :
-        The dataframe to work with.
+        DataFrame to add geonames info.
+    geonames_df :
+        DataFrame with the geonames info.
 
     Returns
     -------
-    The DataFrame with location info added.
+    The df DataFrame with the geonames info.
     """
     before = df.shape
     print(f'Shape before dropping: {before}')
@@ -274,7 +270,18 @@ def add_location(df, geonames_df):
 
 
 def location_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
+    """Calls the `location_engineering()` function to get the DataFrame with
+    location info and then cleans and wrangles the location data.
 
+    Parameters
+    ----------
+    df :
+        The DataFrame to work with.
+
+    Returns
+    -------
+    Returns the DataFrame with location information cleaned.
+    """
     # Feature engineering with Geopy
     df = location_engineering(df)
 
@@ -283,19 +290,32 @@ def location_feature_engineering(df: pd.DataFrame) -> pd.DataFrame:
 
     # Make a DataFrame with the dictionary obtained from `geonames_dict` function
     # Esto puedo hacerlo antes o ponerlo en data directamente
-    #geonames_df = pd.DataFrame(geonames_dict())
+    # geonames_df = pd.DataFrame(geonames_dict())
 
     df_loc = eircode_homogenize(df)
 
-    #df_loc = add_location(df=df_loc, geonames_df=geonames_df)  # df=df
+    # df_loc = add_location(df=df_loc, geonames_df=geonames_df)  # df=df
 
     df_loc.drop(columns=['country_code', 'country', 'county', 'municipality',
-                       'city', 'town', 'locality', 'suburb', 'road', 'house_number'],
+                         'city', 'town', 'locality', 'suburb', 'road', 'house_number'],
                 inplace=True)
     return df_loc
 
-def add_geonames(df: pd.DataFrame, geonames_df) -> pd.DataFrame:
 
+def add_geonames(df: pd.DataFrame, geonames_df) -> pd.DataFrame:
+    """Simply calls the `add_location()` function and returns the DataFrame obtained.
+
+    Parameters
+    ----------
+    df :
+        DataFrame to add geonames info.
+    geonames_df :
+        DataFrame with the geonames info.
+
+    Returns
+    -------
+    The df DataFrame with the geonames info.
+    """
     df_loc = add_location(df=df, geonames_df=geonames_df)
 
     return df_loc

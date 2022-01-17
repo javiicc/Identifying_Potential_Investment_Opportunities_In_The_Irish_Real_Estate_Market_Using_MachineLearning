@@ -1,5 +1,5 @@
 """
-This is a boilerplate pipeline 'voting_regressor_BA'
+This is a boilerplate pipeline 'voting_regressor_2_trained_with_all_data'
 generated using Kedro 0.17.5
 """
 
@@ -9,7 +9,7 @@ from sklearn.ensemble import VotingRegressor
 
 
 ###########################################################################
-# VOTING REGRESSOR BA FUNCTIONS
+# VOTING REGRESSOR 2 FUNCTIONS
 ###########################################################################
 
 
@@ -27,7 +27,7 @@ def get_weights(scores_dict=None):
     List with weights.
     """
     if scores_dict is None:
-        scores_dict = {'poly': 78.77, 'knn': 73.38, 'dt': 71.46}
+        scores_dict = {'vrba': 79.04, 'rfr': 78.51, 'xgb': 79.31}
 
     tot = 0
     for key in scores_dict:
@@ -41,29 +41,31 @@ def get_weights(scores_dict=None):
 
 
 ###########################################################################
-# VOTING REGRESSOR BA NODE
+# STACKING REGRESSOR BA TRAINED NODE
 ###########################################################################
 
 
-def voting_regresor(X_train: pd.DataFrame, y_train: pd.DataFrame, polyr, knnr, dtr):
-    """Builds a voting regressor wit the models given and trains it with the data given.
+def voting_regresor_2_final_model(X: pd.DataFrame, y: pd.Series,
+                             voting_regressor_BA, rfr, xgbr):
+    """
 
     Parameters
     ----------
-    X_train
-    y_train
-    polyr
-    knnr
-    dtr
+    X
+    y
+    voting_regressor_BA
+    rfr
+    xgbr
 
     Returns
     -------
-    Returns a voting regressor trained.
+
     """
-    voting_regressor_ba = VotingRegressor(
-        estimators=[('poly', polyr),
-                    ('knn', knnr),
-                    ('dt', dtr)],
-        weights=get_weights()).fit(X_train, np.log(y_train))
-    print('-' * 30, 'VOTING REGRESSOR TRAINED!!', '-' * 30)
-    return voting_regressor_ba
+    # Define the base models
+    final_model = VotingRegressor(
+        estimators=[('vrba', voting_regressor_BA),
+                    ('rfr', rfr),
+                    ('xgb', xgbr)],
+        weights=get_weights()).fit(X, np.log(y))
+    print('-' * 30, 'FINAL MODEL TRAINED!!', '-' * 30)
+    return final_model

@@ -4,6 +4,7 @@ generated using Kedro 0.17.5
 """
 
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import (StandardScaler, OneHotEncoder,
                                    PolynomialFeatures, PowerTransformer)
 from sklearn.impute import SimpleImputer
@@ -15,6 +16,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.neighbors import KNeighborsRegressor
 from xgboost import XGBRegressor
+from sklearn.ensemble import RandomForestRegressor
 
 from typing import List, Tuple
 
@@ -69,38 +71,44 @@ def transformer_estimator(num_transformation: str,
     """
     if num_transformation is 'power_transformer':
         num_pipe = Pipeline([
+           # ('imputer', SimpleImputer(strategy='median')),
             ('power_transformer', PowerTransformer(method='yeo-johnson')),
-            # , standardize=False
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-            ('imputer', SimpleImputer(strategy='median')),
         ])
     elif num_transformation is 'std_scaler':
         num_pipe = Pipeline([
+           # ('imputer', SimpleImputer(strategy='median')),
             ('std_scaler', StandardScaler()),
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-            ('imputer', SimpleImputer(strategy='median')),
         ])
     elif num_transformation is 'identity':
         num_pipe = Pipeline([
+           # ('imputer', SimpleImputer(strategy='median')),
             ('identity', IdentityTransformer()),
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-            ('imputer', SimpleImputer(strategy='median')),
         ])
 
     cat_pipe = Pipeline([
+        ('imputer', SimpleImputer(missing_values=np.nan,
+                                  strategy='constant',
+                                  fill_value='Unknown')),
         ('one_hot_encoder', OneHotEncoder(categories=levels_list)),
-        ('imputer', SimpleImputer(strategy='constant', fill_value=None)),
     ])
 
     preprocessor = ColumnTransformer([
         ('num', num_pipe, num_feat),
         ('cat', cat_pipe, cat_feat),
-    ])  # , remainder='passthrough'
+    ], remainder='passthrough')
 
-    pipe_estimator = Pipeline(steps=[
-        ('preprocessor', preprocessor),
-        ('regressor', regressor),  #regressor
-    ])
+    if regressor is None:
+        pipe_estimator = Pipeline(steps=[
+            ('preprocessor', preprocessor)
+        ])
+    else:
+        pipe_estimator = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('regressor', regressor)
+        ])
 
     return pipe_estimator
 
@@ -110,7 +118,7 @@ def transformer_estimator(num_transformation: str,
 ###########################################################################
 
 
-def get_levels(df: pd.DataFrame) -> List[pd.Series]:
+def get_levels(df: pd.DataFrame) -> List[list]:
     """Get a DataFrame and return the levels from the code and type_house categorical
     features.
 
@@ -123,9 +131,16 @@ def get_levels(df: pd.DataFrame) -> List[pd.Series]:
     -------
     List of Pandas Series with the unique levels for each variable.
     """
-    levels_type_house = df.type_house.unique()
-    levels_code = df.code.unique()
-    return [levels_type_house, levels_code]
+    # Add `Unknown` to give it to missing values and not have an error  with levels
+    levels_type_house = list(df.type_house.unique())
+    levels_type_house.append('Unknown')
+    levels_type_house.remove(np.nan)
+
+    levels_place = list(df.place.unique())
+    levels_place.append('Unknown')
+    levels_place.remove(np.nan)
+
+    return [levels_type_house, levels_place]
 
 
 def get_features_by_type(df: pd.DataFrame) -> Tuple[list, list]:
@@ -154,6 +169,20 @@ def get_estimator(levels_list: List[pd.Series],
                   cat_features: list,
                   transformer_estimator=transformer_estimator,
                   regressor_dict=None):
+    '''
+
+    Parameters
+    ----------
+    levels_list
+    num_features
+    cat_features
+    transformer_estimator
+    regressor_dict
+
+    Returns
+    -------
+
+    '''
     # PODRIA SER POR EL ORDEN DE LAS VARIABLES O ALGO...
     if regressor_dict is None:
         regressor_dict = {
@@ -171,11 +200,19 @@ def get_estimator(levels_list: List[pd.Series],
                 max_depth=3,
                 learning_rate=.1,
                 subsample=.30),
+            'Random_Forest_Regressor': RandomForestRegressor(
+                n_estimators=180,
+                max_depth=10,
+                min_samples_leaf=9,
+                random_state=7,
+                bootstrap=True,
+                n_jobs=-1,
+            ),
                           }
     estimators_dict = {}
     for key in regressor_dict:
         # Choose transformation for numeric features
-        if key in ['Decision_Tree_Regressor', 'XGBRegressor']:
+        if key in ['Decision_Tree_Regressor', 'XGBRegressor', 'Random_Forest_Regressor']:
             num_transformation = 'identity'
         else:
             num_transformation = 'power_transformer'
@@ -220,13 +257,14 @@ def train_model(X_train: pd.DataFrame,
     for key in estimators_dict:
 
         regressor = estimators_dict[key]
-        regressor.fit(X_train, y_train)
+        regressor.fit(X_train, np.log(y_train))
         trained_regressors_dict[key] = regressor
 
     polyr = trained_regressors_dict['Polynomial_Regression']
     knnr = trained_regressors_dict['K_Nearest_Neighbors_Regressor']
     dtr = trained_regressors_dict['Decision_Tree_Regressor']
     xgbr = trained_regressors_dict['XGBRegressor']
+    rfr = trained_regressors_dict['Random_Forest_Regressor']
     print('-' * 30, 'MODELS TRAINED!!', '-' * 30)
 
-    return polyr, knnr, dtr, xgbr
+    return polyr, knnr, dtr, xgbr, rfr

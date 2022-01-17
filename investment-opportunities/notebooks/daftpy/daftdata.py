@@ -17,7 +17,7 @@ from scrapy.http import TextResponse
 # DATA COLLECTION
 ########################################################################
 
-
+'''
 # Declaring Item subclass
 class DaftItem(Item):
     """Class to contain common Buy and Rent item fields.
@@ -44,6 +44,7 @@ class DaftItem(Item):
     scraping_date = Field()
     description = Field()
     '''
+'''
     def __init__(self, daft_id=None, item_id=None, url=None, name=None,
                  price=None, info=None, sale_type=None, floor_area=None,
                  contact=None,
@@ -72,7 +73,7 @@ class DaftItem(Item):
         self.type = type
         self.scraping_date = scraping_date
     '''
-
+'''
 
 class DaftLoader(ItemLoader):
     """Class to contain input and output processors.
@@ -81,7 +82,7 @@ class DaftLoader(ItemLoader):
     default_input_processor = MapCompose(strip_html5_whitespace) 
 
     # Input processors for some fields
-    phone_in = MapCompose(lambda x: x.replace('\n', '').strip())
+    phone_in = MapCompose(lambda x: x.replace('', '').strip())
     views_in = MapCompose(remove_tags)
     type_house_in = MapCompose(remove_tags)
     energy_in = MapCompose(remove_tags)
@@ -445,7 +446,7 @@ def get_description(xpath: str, response: TextResponse, loader):
 ########################################################################
 
 
-def get_db(dbname: str, query='''SELECT * FROM buy;''') -> pd.DataFrame:
+def get_db(dbname: str, query='''''') -> pd.DataFrame:
     """Stablishes a connection to the database, queries it and drops 
     the advertiser'private information before return the dataframe.
     
@@ -473,7 +474,7 @@ def get_db(dbname: str, query='''SELECT * FROM buy;''') -> pd.DataFrame:
     sale = daft.copy()
 
     return sale
-
+'''
 """
 def db_dict():
 

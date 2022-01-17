@@ -101,8 +101,7 @@ def outlier_bool(df: pd.DataFrame, feature: pd.Series, level=1,
         # Setting the lower limit fixed for discrete variables
         low_limit = np.min(data)
         # high_limit = np.max([pct_range[1],
-        #                    iqr_range[1],
-        #                   std_range[1]])
+        #                      iqr_range[1])
 
     else:
         if feature is 'floor_area':
@@ -136,7 +135,7 @@ def outlier_bool(df: pd.DataFrame, feature: pd.Series, level=1,
 def drop_outliers(df: pd.DataFrame,
                   features=('price', 'floor_area', 'views',
                             'bedroom', 'bathroom')) -> pd.DataFrame:
-    """Classify outliers based on.
+    """.
 
     Parameters
     ----------

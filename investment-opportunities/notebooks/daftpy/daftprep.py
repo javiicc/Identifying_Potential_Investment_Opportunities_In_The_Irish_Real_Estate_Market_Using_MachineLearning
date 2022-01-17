@@ -1,9 +1,41 @@
 import numpy as np
+import pandas as pd
+import sqlite3
 
 
 ###########################################################################
 # DATA CLEANSING AND WRANGLING
 ###########################################################################
+
+def get_db(dbname: str, query='''SELECT * FROM buy;''') -> pd.DataFrame:
+    """Stablishes a connection to the database, queries it and drops
+    the advertiser'private information before return the dataframe.
+
+    Parameters
+    ----------
+    dbname :
+        The database name to addmto `database_path`.
+    query :
+        The query to the database.
+
+    Returns
+    -------
+    The data obtained from the database as a dataframe.
+    """
+    database_path = f'../data/01_raw/{dbname}'
+
+    connection = sqlite3.connect(database_path)
+    # cursor = connection.cursor()
+
+    daft = pd.read_sql_query(query, connection)
+    connection.close()
+
+    # Drop personal info
+    daft.drop(['contact', 'phone'], axis=1, inplace=True)
+    sale = daft.copy()
+
+    return sale
+
 
 def num_perc(df, feature, pattern):
     """Takes a dataframe, a feature and a pattern and returns the number and 

@@ -15,7 +15,6 @@ from sklearn import metrics
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import cross_validate
 from sklearn.metrics import mean_absolute_percentage_error, r2_score
-
 from yellowbrick.regressor import ResidualsPlot
 from sklearn.base import BaseEstimator, TransformerMixin
 
@@ -281,7 +280,7 @@ def transformer_estimator(num_transformation,
         ('one_hot_encoder', OneHotEncoder(categories=levels_list)), 
         ])
 
-    custom_feat = []
+    # custom_feat = []
     preprocessor = ColumnTransformer([
         ('num', num_pipe, num_feat),   
         ('cat', cat_pipe, cat_feat),
