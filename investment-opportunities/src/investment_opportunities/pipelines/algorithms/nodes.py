@@ -169,20 +169,25 @@ def get_estimator(levels_list: List[pd.Series],
                   cat_features: list,
                   transformer_estimator=transformer_estimator,
                   regressor_dict=None):
-    '''
+    """Makes a dictionary with the estimators.
 
     Parameters
     ----------
-    levels_list
-    num_features
-    cat_features
-    transformer_estimator
-    regressor_dict
+    levels_list :
+        List of lists with variables levels.
+    num_features :
+        Numeric features.
+    cat_features :
+        Categorical features.
+    transformer_estimator :
+        The `transformer_estimator()` function.
+    regressor_dict :
+        Dictionary with regressors if it is preferred to the default one.
 
     Returns
     -------
-
-    '''
+    The estimators dictionary.
+    """
     # PODRIA SER POR EL ORDEN DE LAS VARIABLES O ALGO...
     if regressor_dict is None:
         regressor_dict = {
@@ -206,9 +211,8 @@ def get_estimator(levels_list: List[pd.Series],
                 min_samples_leaf=9,
                 random_state=7,
                 bootstrap=True,
-                n_jobs=-1,
-            ),
-                          }
+                n_jobs=-1)
+        }
     estimators_dict = {}
     for key in regressor_dict:
         # Choose transformation for numeric features

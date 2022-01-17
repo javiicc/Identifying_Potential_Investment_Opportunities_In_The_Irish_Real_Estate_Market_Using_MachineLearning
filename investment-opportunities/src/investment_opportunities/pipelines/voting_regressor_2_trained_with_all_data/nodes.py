@@ -46,20 +46,23 @@ def get_weights(scores_dict=None):
 
 
 def voting_regresor_2_final_model(X: pd.DataFrame, y: pd.Series,
-                             voting_regressor_BA, rfr, xgbr):
-    """
+                                  voting_regressor_BA, rfr, xgbr):
+    """Builds a voting regressor wit the models given and trains it with the data given.
 
     Parameters
     ----------
     X
     y
-    voting_regressor_BA
-    rfr
-    xgbr
+    voting_regressor_BA :
+        Voting Regressor with Basic Algorithms.
+    rfr :
+        Random Forest Regressor.
+    xgbr :
+        Extreme Gradient Boosting.
 
     Returns
     -------
-
+    Returns a voting regressor trained.
     """
     # Define the base models
     final_model = VotingRegressor(

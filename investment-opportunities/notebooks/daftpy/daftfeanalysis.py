@@ -338,7 +338,7 @@ def add_location(df, geonames_df):
 
 
 def frequencies(df, variable):
-    """Take a DataFrame and a variable name and return the frquencies. 
+    """Take a DataFrame and a variable name and return the frequencies.
     
     Parameters
     ----------
@@ -357,22 +357,23 @@ def frequencies(df, variable):
     freq['freq_rel'] = freq.freq_abs / df.shape[0]
     return freq
 
+
 # Percentile based method
 def pct_method(data, level, lower=True):
-    """Classify outliers based on percentiles. 
-    
+    """Classify outliers based on percentile range.
+
     Parameters
     ----------
-    data : 
+    data :
         Column.
-    level : 
-        Punto de corte a partir del cual se considera outlier.
+    level :
+        Cut point since is considered outlier.
     lower :
-        To indicate whether there should be ...
-    
+        To indicate whether there should be lower limit.
+
     Returns
     -------
-    .
+    Range.
     """
     # Upper and lower limits by percentiles
     upper = np.percentile(data, 100 - level)
@@ -383,18 +384,19 @@ def pct_method(data, level, lower=True):
     else:
         return [upper]
 
+
 # Interquartile range method
 def iqr_method(data):
-    """Classify outliers based on. 
-    
+    """Classify outliers based on interquartile range.
+
     Parameters
     ----------
-    data : 
-        .
-    
+    data :
+        Column.
+
     Returns
     -------
-    .
+    Interquartile range.
     """
     # Calculating the IQR
     perc_75 = np.percentile(data, 75)
@@ -429,6 +431,7 @@ def std_method(data):
     # Returning the upper and lower limits
     return [lower_3std, upper_3std]
 '''
+
 
 def outlier_bool(df, feature, level=1, continuous=False, log=False):
     """Classify outliers based on percentile and interquartile ranges.
@@ -466,7 +469,7 @@ def outlier_bool(df, feature, level=1, continuous=False, log=False):
         # high_limit = np.max([pct_range[1],
         #                      iqr_range[1])
 
-    elif continuous:
+    else:
         if feature is 'floor_area':
             # Percentile based method is the only one that return a
             # positive value
@@ -488,6 +491,7 @@ def outlier_bool(df, feature, level=1, continuous=False, log=False):
 
     # Return boolean
     return outlier_bool
+
 
 def drop_outliers_tmp(df, feature, level=1, continuous=False, log=False, inplace=False):
     """Classify outliers based on. 
@@ -523,7 +527,8 @@ def drop_outliers_tmp(df, feature, level=1, continuous=False, log=False, inplace
 def drop_outliers(df: pd.DataFrame,
                   features=('price', 'floor_area', 'views',
                             'bedroom', 'bathroom')) -> pd.DataFrame:
-    """.
+    """Drop outliers based on the resulting boolean Series from the `outlier_bool()`
+    function.
 
     Parameters
     ----------
@@ -545,8 +550,8 @@ def drop_outliers(df: pd.DataFrame,
 
         # Use the outlier_bool() function to take the boolean Series
         if feature in ['bedroom', 'bathroom']:
-            outlier_boolean = outlier_bool(df=df, feature=feature, level=1, continuous=False,
-                                           log=False)
+            outlier_boolean = outlier_bool(df=df, feature=feature, level=1,
+                                           continuous=False, log=False)
         elif feature in ['price', 'floor_area', 'views']:
             outlier_boolean = outlier_bool(df=df, feature=feature, level=1,
                                            continuous=True, log=False)
@@ -562,7 +567,7 @@ def drop_outliers(df: pd.DataFrame,
         # Increase the list with outliers index from each feature
         # outlier_list below has repeated index
         outliers_list += list(outliers.index)
-        #print(len(outliers_list))
+        # print(len(outliers_list))
 
         # Convert list to set to eliminate repeated index
         outliers_set = set(outliers_list)
@@ -579,42 +584,42 @@ def drop_outliers(df: pd.DataFrame,
 
     return df_no_out
 
+
 def print_limits(df, variable, level=1):
-    """Classify outliers based on. 
-    
+    """Print the lower and upper limits.
+
     Parameters
     ----------
-    data : 
-        .
-    
-    Returns
-    -------
-    .
+    df :
+        The DataFrame to search in.
+    variable :
+        The current variable.
+    level :
+        Cut point since it is considered outlier.
     """
     pct_range = pct_method(df[variable], level=level)
     iqr_range = iqr_method(df[variable])
-    std_range = std_method(df[variable])
     
     print(f'Percentile based method: {pct_range}')
     print(f'Interquartile range method: {iqr_range}')
-    #print(f'Standard deviation method: {std_range}')
 
 
 def check_transformations(feature, df, df_no_out):
-    """Classify outliers based on. 
-    
+    """Plot several graphs showing the effects of dropping outliers and logarithmic and
+    box-cox transformation.
+
     Parameters
     ----------
-    data : 
-        .
-    
-    Returns
-    -------
-    .
+    feature :
+        Variable to work with.
+    df :
+        The full DataFrame.
+    df_no_out :
+        DataFrame without outliers.
     """
     fig, ax = plt.subplots(6, 2, figsize=(8, 14))
 
-    #ax[0,0] = outplots(feature='price', df=df, df_no_out=df_no_out)
+    # ax[0,0] = outplots(feature='price', df=df, df_no_out=df_no_out)
     df[feature].min()
     df[feature].max()
     
@@ -623,91 +628,93 @@ def check_transformations(feature, df, df_no_out):
     
     feature_name = feature.replace('_', ' ').capitalize()
     
-    # No restricted (with outliers)
+    # No restricted (with outliers) -> 1
     sns.histplot(data=df[feature], bins=30, color='#b00b1e', ax=ax[0, 0]) 
-    ### Highlihting the peak of the crisis
-    ax[0,0].axvspan(df_no_out[feature].max(), df[feature].max(),
-           alpha=0.3, color="crimson")
-    ax[0,0].axvspan(df[feature].min(), df_no_out[feature].min(),
-           alpha=0.3, color="crimson")
-    ax[0,0].set_ylabel('Unrestricted')
-    ax[0,0].set_xlabel(feature_name)    
-    stats.probplot(df[feature], plot=ax[0,1])   
+    # Highlighting the peak of the crisis
+    ax[0, 0].axvspan(df_no_out[feature].max(), df[feature].max(),
+                     alpha=0.3, color="crimson")
+    ax[0, 0].axvspan(df[feature].min(), df_no_out[feature].min(),
+                     alpha=0.3, color="crimson")
+    ax[0, 0].set_ylabel('Unrestricted')
+    ax[0, 0].set_xlabel(feature_name)
+    stats.probplot(df[feature], plot=ax[0, 1])
 
-    # Restrictec (without outliers)
+    # Restricted (without outliers) -> 2
     sns.histplot(data=df_no_out[feature], bins=30, color='#b00b1e', ax=ax[1, 0]) 
-    ax[1,0].set_ylabel('Restricted (NO outliers)')
-    ax[1,0].set_xlabel(feature_name)
-    stats.probplot(df_no_out[feature], plot=ax[1,1])
-    
-    
-    # No restricted and logarithmic transformation
+    ax[1, 0].set_ylabel('Restricted (NO outliers)')
+    ax[1, 0].set_xlabel(feature_name)
+    stats.probplot(df_no_out[feature], plot=ax[1, 1])
+
+    # No restricted and logarithmic transformation -> 3
     sns.histplot(data=np.log(df[feature]), bins=30, color='#B93D14', ax=ax[2, 0]) 
-    ax[2,0].set_ylabel('Unrestricted')
-    ax[2,0].set_xlabel(f'{feature_name} logarithmic transformation')
-    stats.probplot(np.log(df[feature]), plot=ax[2,1])
-    ax[2,0].axvspan(np.log(df_no_out[feature].max()), 
+    ax[2, 0].set_ylabel('Unrestricted')
+    ax[2, 0].set_xlabel(f'{feature_name} logarithmic transformation')
+    stats.probplot(np.log(df[feature]), plot=ax[2, 1])
+    ax[2, 0].axvspan(np.log(df_no_out[feature].max()),
                     np.log(df[feature].max()),
                     alpha=0.3, color="crimson")
-    ax[2,0].axvspan(np.log(df[feature].min()), 
+    ax[2, 0].axvspan(np.log(df[feature].min()),
                     np.log(df_no_out[feature].min()),
                     alpha=0.3, color="crimson")
     
-    # Restrictec and logarithmic transformation
+    # Restricted and logarithmic transformation -> 4
     sns.histplot(data=np.log(df_no_out[feature]), bins=30, color='#B93D14', ax=ax[3, 0]) 
-    ax[3,0].set_ylabel('Restricted (NO outliers)')
-    ax[3,0].set_xlabel(f'{feature_name} logarithmic transformation')
-    stats.probplot(np.log(df_no_out[feature]), plot=ax[3,1])
+    ax[3, 0].set_ylabel('Restricted (NO outliers)')
+    ax[3, 0].set_xlabel(f'{feature_name} logarithmic transformation')
+    stats.probplot(np.log(df_no_out[feature]), plot=ax[3, 1])
     
-    
-    # No restricted and boxcox transformation
+    # No restricted and box-cox transformation -> 5
     data1, lmbda1 = stats.boxcox(df[feature])
     sns.histplot(data=data1, bins=30, color='#159819', ax=ax[4, 0]) 
-    ax[4,0].set_ylabel('Unrestricted')
-    ax[4,0].set_xlabel(f'{feature_name} Box-Cox transformation')
+    ax[4, 0].set_ylabel('Unrestricted')
+    ax[4, 0].set_xlabel(f'{feature_name} Box-Cox transformation')
     stats.probplot(data1, plot=ax[4,1])
     
-    # Restrictec and boxcox transformation
+    # Restricted and box-cox transformation -> 6
     data2, lmbda2 = stats.boxcox(df_no_out[feature])
     sns.histplot(data=data2, bins=30, color='#159819', ax=ax[5, 0]) 
-    ax[5,0].set_ylabel('Restricted (NO outliers)')
-    ax[5,0].set_xlabel(f'{feature_name} Box-Cox transformation')
-    stats.probplot(data2, plot=ax[5,1])
+    ax[5, 0].set_ylabel('Restricted (NO outliers)')
+    ax[5, 0].set_xlabel(f'{feature_name} Box-Cox transformation')
+    stats.probplot(data2, plot=ax[5, 1])
     # print(lmbda1)
     # print(lmbda2)
     
-    # To color the outliers with the Box-Cox transformation is necessary apply the transformation
-    # to the limits and color the higher than the maximum limit and the lower than the minimum one
-    ax[4,0].axvspan(((((df_no_out[feature].max() + 1) ** (lmbda1)) - 1) / lmbda1), 
-                    data1.max(),
-                    alpha=0.3, color="crimson")
-    ax[4,0].axvspan(data1.min(), 
-                    ((((df_no_out[feature].min() - 1) ** (lmbda1)) - 1) / lmbda1),
-                    alpha=0.3, color="crimson")
+    # To color the outliers with the Box-Cox transformation is necessary apply the
+    # transformation to the limits and color the higher than the maximum limit and the
+    # lower than the minimum one
+    ax[4, 0].axvspan(((((df_no_out[feature].max() + 1) ** lmbda1) - 1) / lmbda1),
+                     data1.max(),
+                     alpha=0.3, color="crimson")
+    ax[4, 0].axvspan(data1.min(),
+                     ((((df_no_out[feature].min() - 1) ** lmbda1) - 1) / lmbda1),
+                     alpha=0.3, color="crimson")
     # print(f'Min data1: {data1.min()}')
     # print(f'Min data2: {data2.min()}')
     
     # print(f'Max data1: {data1.max()}')
     # print(f'Max data2: {data2.max()}')
-    
     fig.tight_layout()
     
     
-    
-    
 def tchebycheff(df, num_features, k=2, transformation=None):
-    """Classify outliers based on. 
-    
+    """Calculate skewness, kurtosis, and Tchebycheff bounds.
+
     Parameters
     ----------
-    data : 
-        .
-    
+    df :
+        The DataFrame to work with.
+    num_features :
+        Numeric features.
+    k :
+        Number of standard deviations.
+    transformation :
+        Type of transformation.
+
     Returns
     -------
-    .
+    Return a DataFrame with the statistics.
     """
-    if transformation == None:
+    if transformation is None:
         skew = df[num_features].skew()
         kurtosis = df[num_features].kurtosis()
     elif transformation == 'log':
@@ -725,9 +732,8 @@ def tchebycheff(df, num_features, k=2, transformation=None):
     
     return pd.DataFrame({'skewness': skew,
                          'kurtosis': kurtosis,
-                  'lim_inf': lim_inf,
-                  'lim_sup': lim_sup
-                 })
+                         'lim_inf': lim_inf,
+                         'lim_sup': lim_sup})
 
 
 def outplots(df, df_no_out, feature):
@@ -745,8 +751,21 @@ def outplots(df, df_no_out, feature):
 
 def wrapper_methods(estimators_dict, method, 
                     X_train, y_train, X_test, y_test):
+    """Plot two graphs showing the evolution of the score while changing the number
+    of features.
 
-    #scores_dict = {}
+    Parameters
+    ----------
+    estimators_dict :
+        Dictionary with estimators to try.
+    method :
+        The feature selection method.
+    X_train
+    y_train
+    X_test
+    y_test
+    """
+    # scores_dict = {}
     for key in estimators_dict:
         print(key, '\n' + '-' * 10)
         estimator = estimators_dict[key]
@@ -757,7 +776,7 @@ def wrapper_methods(estimators_dict, method,
             # Choose selector
             if method is 'rfe':
                 selector = RFE(estimator=estimator, 
-                               n_features_to_select=i, # i = 1feature, 2features...
+                               n_features_to_select=i,
                                step=1) 
             elif method is 'sfs_forward':
                 selector = SequentialFeatureSelector(estimator=estimator, 
@@ -771,19 +790,18 @@ def wrapper_methods(estimators_dict, method,
             # Select variables
             selector.fit(X_train, y_train)    
 
-            #print(sfs.support_)
-            #print(sfs.ranking_)
+            # print(sfs.support_)
+            # print(sfs.ranking_)
             print(X_train.columns[selector.support_].values, '\n')
 
             estimator.fit(X_train.loc[:, selector.support_], y_train)
-            scores.append(estimator.score(X_test.loc[:, selector.support_], 
-                                       y_test)) 
+            scores.append(estimator.score(X_test.loc[:, selector.support_], y_test))
 
         print(scores, '\n')
-        #scores_dict[key] = scores
+        # scores_dict[key] = scores
         
         fig, ax = plt.subplots(figsize=(6, 3))
-        ax.scatter(range(1, X_train.shape[1]), scores) #  + 1
+        ax.scatter(range(1, X_train.shape[1]), scores)
         ax.set_title(f'{key} Scores', weight='bold', size=15)
         ax.set_xlabel('Number of Features')
         ax.set_ylabel('R²')
@@ -791,6 +809,3 @@ def wrapper_methods(estimators_dict, method,
             ax.spines[location].set_visible(False)
         ax.tick_params(bottom=False, left=False)
         plt.tight_layout()
-  
-        #return scores_dict
-

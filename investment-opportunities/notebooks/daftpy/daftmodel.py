@@ -23,7 +23,7 @@ def split_data(data, target='price',
                test_size=.15, 
                output='X_y_train_test',
                random_state=None):
-    """
+    """Take a DataFrame and split it depending of the output argument.
 
     Parameters
     ----------
@@ -35,8 +35,9 @@ def split_data(data, target='price',
 
     Returns
     -------
-
+    Several Dataframes.
     """
+    # List with features to model
     features = list(data.columns)
     features.remove(target)
     # Separate the target from the data
@@ -46,14 +47,15 @@ def split_data(data, target='price',
     X_train, X_test, y_train, y_test = train_test_split(X, y, 
                                                         test_size=test_size,
                                                         random_state=random_state)
-
+    # Just in case we need training set
     train_set = X_train.copy()
     train_set[target] = y_train.copy()
-
+    # Just in case we need test test
     test_set = X_test.copy()
     test_set[target] = y_test.copy()
 
-    # Decide what to return
+    # The function will return different collection of sets depending of the
+    # output argument
     if output == 'X_y_train_test':
         print('X_train:', X_train.shape, '\n' +
               'X_test:', X_test.shape, '\n' +
@@ -71,7 +73,7 @@ def split_data(data, target='price',
 
 
 def metrics_regression(y_test, y_pred, squared=False):
-    """
+    """Prints several metrics.
 
     Parameters
     ----------
@@ -81,7 +83,7 @@ def metrics_regression(y_test, y_pred, squared=False):
 
     Returns
     -------
-
+    The metrics.
     """
     r2_score = metrics.r2_score(y_test, y_pred)
     mae = metrics.mean_absolute_error(y_test, y_pred)
@@ -99,11 +101,11 @@ def metrics_regression(y_test, y_pred, squared=False):
     return r2_score, mae, r, mape
 
 
-
 def scores_statistics(estimator, scoring_dict, X_train, y_train, cv=10,
                       return_train_score=False, time_info=False, 
                       return_est=False):
-    """
+    """Uses cross validation to evaluate the estimator and calculates the mean
+    and standard deviation of the results.
 
     Parameters
     ----------
@@ -118,10 +120,10 @@ def scores_statistics(estimator, scoring_dict, X_train, y_train, cv=10,
 
     Returns
     -------
-
+    Returns two dictionaries with scores.
     """
     scores = cross_validate(estimator,
-                            X=X_train, y=y_train,  # np.log
+                            X=X_train, y=y_train,
                             scoring=scoring_dict,
                             cv=cv,
                             return_train_score=return_train_score,
@@ -138,23 +140,24 @@ def scores_statistics(estimator, scoring_dict, X_train, y_train, cv=10,
         print('score_time mean:', score_time_mean)
         print('score_time std:', score_time_std)
 
-    scores_resume ={}
+    scores_resume = {}
     for key in scoring_dict:
-#        try:
         mean = np.mean(scores['test_' + key])
         std = np.std(scores['test_' + key])
         print(key, 'mean:', mean)
         print(key, 'std:', std, '\n')
         scores_resume[key] = (mean, std)
-#        except:
- #           continue
+
     return scores, scores_resume
 
 
 def plot_learning_curves(model, X_train, y_train, X_test, y_test, metric):
-    #   X_train, X_val, y_train, y_val =
+    """
+    I don't use this functions in the notebooks since it takes a long time.
+    """
+    # X_train, X_val, y_train, y_val =
     # X_val, y_val = X_test.copy(), y_test.copy()
-    #    X_train, y_train = X_train[:250].copy(), y_train[:250].copy()
+    # X_train, y_train = X_train[:250].copy(), y_train[:250].copy()
 
     train_errors, test_errors = [], []
     train_r2, test_r2 = [], []
@@ -198,8 +201,23 @@ def plot_learning_curves(model, X_train, y_train, X_test, y_test, metric):
 
 def compare_models(estimator, X_train, y_train,
                    scoring_dict,
-                   cv, return_train_score=False,
-                   ):
+                   cv, return_train_score=False):
+    """It is pretty similar to `scores_statistics()` function but this one is
+    used to compare the learners of the voting regressors.
+
+    Parameters
+    ----------
+    estimator
+    X_train
+    y_train
+    scoring_dict
+    cv
+    return_train_score
+
+    Returns
+    -------
+
+    """
 
     scores = cross_validate(estimator,
                             X=X_train, y=y_train,  
@@ -232,59 +250,65 @@ class IdentityTransformer(BaseEstimator, TransformerMixin):
         return input_array*1
 
 
-def transformer_estimator(num_transformation, 
-                         # regressor, 
-                          levels_list, 
-                          num_feat, 
-                          cat_feat, 
-                          poly_degree=1, 
+def transformer_estimator(num_transformation: str,
+                          levels_list,
+                          num_feat: list,
+                          cat_feat: list,
+                          poly_degree=1,
                           regressor=None):
-    """
+    """This function will make several types of transformations on the data based on the
+    arguments given before to use a given estimator as a regressor.
 
     Parameters
     ----------
-    num_transformation
-    regressor
-    levels_list
-    num_feat
-    cat_feat
-    poly_degree
+    num_transformation :
+        String to indicate the type of transformation to perform.
+    regressor :
+        The regressor to be used.
+    levels_list :
+        List of Pandas Series to indicate the different levels of type_house and
+        code attributes.
+    num_feat:
+        Numeric features.
+    cat_feat :
+        Categorical features.
+    poly_degree :
+        The degree in case we want a polynomial transformation.
 
     Returns
     -------
-
+    Estimator.
     """
     if num_transformation is 'power_transformer':
         num_pipe = Pipeline([
-        #    ('imputer', SimpleImputer(strategy='median')),  # median  mean
+           # ('imputer', SimpleImputer(strategy='median')),
             ('power_transformer', PowerTransformer(method='yeo-johnson')),
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-            ])
+        ])
     elif num_transformation is 'std_scaler':
         num_pipe = Pipeline([
-        #    ('imputer', SimpleImputer(strategy='median')),  # median  mean
+           # ('imputer', SimpleImputer(strategy='median')),
             ('std_scaler', StandardScaler()),
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-            ])
+        ])
     elif num_transformation is 'identity':
         num_pipe = Pipeline([
-        #    ('imputer', SimpleImputer(strategy='median')),  # median  mean
+           # ('imputer', SimpleImputer(strategy='median')),
             ('identity', IdentityTransformer()),
             ('poly', PolynomialFeatures(degree=poly_degree, include_bias=False)),
-            ])
-
-    cat_pipe = Pipeline([
-        ('imputer', SimpleImputer(missing_values=np.nan, 
-                                  strategy='constant', 
-                                  fill_value='Unknown')),  
-        ('one_hot_encoder', OneHotEncoder(categories=levels_list)), 
         ])
 
-    # custom_feat = []
+    cat_pipe = Pipeline([
+        ('imputer', SimpleImputer(missing_values=np.nan,
+                                  strategy='constant',
+                                  fill_value='Unknown')),
+        ('one_hot_encoder', OneHotEncoder(categories=levels_list)),
+    ])
+
     preprocessor = ColumnTransformer([
-        ('num', num_pipe, num_feat),   
+        ('num', num_pipe, num_feat),
         ('cat', cat_pipe, cat_feat),
-        ], remainder='passthrough')  # passthrough the cluster variable
+    ], remainder='passthrough')
 
     if regressor is None:
         pipe_estimator = Pipeline(steps=[
@@ -295,47 +319,54 @@ def transformer_estimator(num_transformation,
             ('preprocessor', preprocessor),
             ('regressor', regressor)
         ])
-    
+
     return pipe_estimator
 
 
 def residuals(estimator, X_train, X_test, y_train, y_test):
-    plt.style.use('seaborn')
-    fig, ax =plt.subplots(2,2,figsize=(14,10))
+    """Plots several scatter plots. Two of the show predicted prices against actual ones
+    in train and test sets. The other one show residuals against predicted price.
 
-    
+    Parameters
+    ----------
+    estimator
+    X_train
+    X_test
+    y_train
+    y_test
+    """
+    plt.style.use('seaborn')
+    fig, ax = plt.subplots(2, 2, figsize=(14, 10))
+
     sns.regplot(x=y_train, y=estimator.fit(X_train, y_train).predict(X_train),
                 scatter_kws={"color": "cornflowerblue"}, line_kws={"color": "red"}, 
-                ax=ax[0,0])\
-               .set_title('Actual vs Predicted, Train')
-    ax[0,0].set_xlabel('Actual price')
-    ax[0,0].set_ylabel('Predicted price')
+                ax=ax[0, 0]).set_title('Actual vs Predicted, Train')
+    ax[0, 0].set_xlabel('Actual price')
+    ax[0, 0].set_ylabel('Predicted price')
     sns.regplot(x=y_test, y=estimator.fit(X_train, y_train).predict(X_test), 
                 scatter_kws={"color": "cornflowerblue"}, line_kws={"color": "red"}, 
-                ax=ax[0,1])\
-               .set_title('Actual vs Predicted, Test')
-    ax[0,1].set_xlabel('Actual price')
-    ax[0,1].set_ylabel('Predicted price')
+                ax=ax[0, 1]).set_title('Actual vs Predicted, Test')
+    ax[0, 1].set_xlabel('Actual price')
+    ax[0, 1].set_ylabel('Predicted price')
     
     for location in ['left', 'bottom', 'right', 'top']:
         ax[1, 1].spines[location].set_visible(False)
-    #ax[1, 3].set_xticklabels('')
-    #ax[1, 3].set_yticklabels('')
+    # ax[1, 3].set_xticklabels('')
+    # ax[1, 3].set_yticklabels('')
     ax[1, 1].set_xticks([])
     ax[1, 1].set_yticks([])
     
     plt.tight_layout()
     
-    visualizer = ResidualsPlot(estimator, ax=ax[1,0], 
+    visualizer = ResidualsPlot(estimator, ax=ax[1, 0],
                                train_color='b', test_color='r', 
-                               train_alpha=.3, test_alpha=.3,
-                              )
+                               train_alpha=.3, test_alpha=.3)
     visualizer.fit(X_train, y_train)
     visualizer.score(X_test, y_test)
-    visualizer.show();
+    visualizer.show()
 
 
-def get_weigts(scores_dict=None):
+def get_weights(scores_dict=None):
     """Takes a dictionary with models names and performances on the test set when
     they were evaluated in the notebooks and returns a list with their respective weights.
 
@@ -366,57 +397,83 @@ def get_weigts(scores_dict=None):
 
 
 def plot_metrics(metrics_to_plot):
+    """Plots metrics.
+
+    Parameters
+    ----------
+    metrics_to_plot :
+        Dictionary with the metrics obtained.
+    """
     plt.style.use('default')
+    # Make a DataFrame with the metrics
+    metrics_df = pd.DataFrame.from_dict(metrics_to_plot,
+                                        columns=['r2', 'mae', 'correlation', 'mape'],
+                                        orient='index')
 
-    metrics_df = pd.DataFrame.from_dict(metrics_to_plot, columns=['r2','mae','correlation','mape'], orient='index')
+    fig, ax = plt.subplots(2, 1, figsize=(6, len(metrics_to_plot) + 1.5))
 
-    fig, ax = plt.subplots(2, 1, 
-                           figsize=(6,len(metrics_to_plot)+1.5))   #6
-
-    metrics_df[['r2','correlation','mape']].plot(kind='barh', ax=ax[0], 
-                                          color=['#2C9650', '#024A0A', '#CA1A1A'], alpha=1, width=.9) 
-    ax[0].set_title('Coef. Determination, Coef. Correlation, MAPE', weight='bold', size=10)
+    # First graph
+    metrics_df[['r2', 'correlation', 'mape']].plot(kind='barh', ax=ax[0],
+                                                   color=['#2C9650',
+                                                          '#024A0A',
+                                                          '#CA1A1A'],
+                                                   alpha=1, width=.9)
+    ax[0].set_title('Coef. Determination, Coef. Correlation, MAPE',
+                    weight='bold', size=10)
     ax[0].tick_params(bottom=False, left=False)
     for location in ['left', 'bottom', 'right', 'top']:
         ax[0].spines[location].set_visible(False)
     ax[0].legend(labels=['R²', 'R corr', 'MAPE'], loc=3)
-        
-    metrics_df.mae.plot(kind='barh', ax=ax[1], 
-                        color='#CA1A1A', alpha=1, width=.5) 
+
+    # Second graph
+    metrics_df.mae.plot(kind='barh', ax=ax[1], color='#CA1A1A', alpha=1, width=.5)
     ax[1].set_title('Mean Absolute Error', weight='bold', size=10)
     ax[1].tick_params(bottom=False, left=False)
     ax[1].set_xticks([0, 60000, 100000, 140000])
     ax[1].set_xticklabels([0, 60000, 100000, 140000])
     for location in ['left', 'bottom', 'right', 'top']:
         ax[1].spines[location].set_visible(False)
-        
-        for ix, row in enumerate(metrics_df.iterrows()):
-        #    print(ix)
-         #   print(row[0])
-          #  print(row[1])
-           # print(row[1]['r2'])
-            ax[0].text(x=row[1]['r2']-.06, y=ix-.37, 
-                       s=f"{round(row[1]['r2'], 2)}",
-                       fontsize=6.5)
-            ax[0].text(x=row[1]['correlation']-.06, y=ix-.07, 
-                       s=f"{round(row[1]['correlation'], 2)}",
-                       fontsize=6.5,
-                       color='white')
-            ax[0].text(x=row[1]['mape']-.06, y=ix+.22, 
-                       s=f"{round(row[1]['mape'], 2)}",
-                       fontsize=6.5)
-            ax[1].text(x=row[1]['mae']-22500, y=ix-.08, 
-                       s=f"{round(row[1]['mae'])}")
-        
+
+    # Write values in the bars
+    for ix, row in enumerate(metrics_df.iterrows()):
+       # print(ix)
+       # print[0])
+       # print(row[1])
+       # print(row[1]['r2'])
+        ax[0].text(x=row[1]['r2']-.06, y=ix-.37,
+                   s=f"{round(row[1]['r2'], 2)}",
+                   fontsize=6.5)
+        ax[0].text(x=row[1]['correlation']-.06, y=ix-.07,
+                   s=f"{round(row[1]['correlation'], 2)}",
+                   fontsize=6.5,
+                   color='white')
+        ax[0].text(x=row[1]['mape']-.06, y=ix+.22,
+                   s=f"{round(row[1]['mape'], 2)}",
+                   fontsize=6.5)
+        ax[1].text(x=row[1]['mae']-22500, y=ix-.08,
+                   s=f"{round(row[1]['mae'])}")
     plt.tight_layout()
     
 
 def get_base_predictions(mean_prices, data_to_predict):
+    """This function is the baseline model. It assigns a prediction equals to the mean
+    value in its zone to each house.
 
+    Parameters
+    ----------
+    mean_prices :
+        DataFrame with mean prices per town (or postal district for Dublin).
+    data_to_predict : The data to predict (X_train, X_test)
+
+    Returns
+    -------
+    A Series with the prediction prices.
+    """
     # Calculate mean price for Ireland
     mean_price = mean_prices.mean()
     # print(mean_price.values[0])
-    # The prediction is the mean price in the corresponding place so we join the data and mean_prices by place
+    # The prediction is the mean price in the corresponding place so we join the data
+    # and mean_prices by place
     # and taking the price as prediction
     y_pred = data_to_predict.merge(mean_prices, how='left', left_on='place', right_index=True).price
     # Fill missing values with the mean price for Ireland
@@ -426,7 +483,15 @@ def get_base_predictions(mean_prices, data_to_predict):
 
 
 def comp_met(metrics_to_plot, new_model, last_best_model):
-    
+    """Prints the comparison of the current model with the baseline model and the last
+    best model.
+
+    Parameters
+    ----------
+    metrics_to_plot
+    new_model
+    last_best_model
+    """
     base_model_mae = metrics_to_plot['Baseline Model'][1]
     new_mae = metrics_to_plot[new_model][1]
     last_best_mae = metrics_to_plot[last_best_model][1]
@@ -436,5 +501,7 @@ def comp_met(metrics_to_plot, new_model, last_best_model):
     improvement_lbestm = last_best_mae - new_mae
     improvement_lbestm_perc = improvement_lbestm / last_best_mae
     
-    print(f'Improvement respect Baseline Model: {round(improvement_basem)}€ -> {round(improvement_basem_perc*100)}%')
-    print(f'Improvement respect Last Best Model: {round(improvement_lbestm)}€ -> {round(improvement_lbestm_perc*100)}%')
+    print(f'Improvement respect Baseline Model: {round(improvement_basem)}€ -> '
+          f'{round(improvement_basem_perc*100)}%')
+    print(f'Improvement respect Last Best Model: {round(improvement_lbestm)}€ -> '
+          f'{round(improvement_lbestm_perc*100)}%')

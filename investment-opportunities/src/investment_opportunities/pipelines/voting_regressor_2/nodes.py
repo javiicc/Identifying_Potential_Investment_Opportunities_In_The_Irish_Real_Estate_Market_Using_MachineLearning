@@ -45,16 +45,19 @@ def get_weights(scores_dict=None):
 
 
 def voting_regresor_2(X_train: pd.DataFrame, y_train: pd.DataFrame,
-                    voting_regressor_BA, rfr, xgbr):
+                      voting_regressor_BA, rfr, xgbr):
     """Builds a voting regressor wit the models given and trains it with the data given.
 
     Parameters
     ----------
     X_train
     y_train
-    polyr
-    knnr
-    dtr
+    voting_regressor_BA :
+        Voting Regressor with Basic Algorithms.
+    rfr :
+        Random Forest Regressor.
+    xgbr :
+        Extreme Gradient Boosting.
 
     Returns
     -------
@@ -67,35 +70,3 @@ def voting_regresor_2(X_train: pd.DataFrame, y_train: pd.DataFrame,
         weights=get_weights()).fit(X_train, np.log(y_train))
     print('-' * 30, 'VOTING REGRESSOR 2 TRAINED!!', '-' * 30)
     return voting_regressor_2
-
-
-
-'''
-def get_stacking(voting_regressor_BA, xgbr, X_train: pd.DataFrame, y_train: pd.DataFrame):
-    """Takes the voting regressor and the xgboost, builds a stacking model with them and a
-    linear regression and trains it with the given data.
-
-    Parameters
-    ----------
-    voting_regressor_BA
-    xgbr
-    X_train
-    y_train
-
-    Returns
-    -------
-    Stacking model trained.
-    """
-    # Define the base models
-    level0 = list()
-    level0.append(('voting_regressor_BA', voting_regressor_BA))
-    level0.append(('xgb', xgbr))
-    # Define meta learner model
-    level1 = LinearRegression()
-    # Define the stacking ensemble
-    stackingr = StackingRegressor(estimators=level0, final_estimator=level1, cv=5)
-    stackingr.fit(X_train, y_train)
-    print('-' * 30, 'STACKING REGRESSOR TRAINED!!', '-' * 30)
-    return stackingr
-'''
-

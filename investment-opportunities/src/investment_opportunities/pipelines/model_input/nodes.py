@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 
 
 def merge_tables(df: pd.DataFrame) -> pd.DataFrame:
-    """This function has been created in case in there are more DataFrames in the future.
+    """This function has been created in case there are more DataFrames in the future.
 
     Parameters
     ----------
@@ -28,7 +28,7 @@ def merge_tables(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def variables_to_model(df: pd.DataFrame) -> pd.DataFrame:
-    """Takes a Dataframe and return with features to model.
+    """Takes a Dataframe and return it with features to model.
 
     Parameters
     ----------
@@ -86,17 +86,16 @@ def split_data(data: pd.DataFrame,
     # List with features to model
     features = list(data.columns)
     features.remove(target)
-
+    # Separate the target from the data
     y = data[target].copy()
     X = data[features].copy()
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size,
+    X_train, X_test, y_train, y_test = train_test_split(X, y,
+                                                        test_size=test_size,
                                                         random_state=random_state)
-
     # Just in case we need training set
     train_set = X_train.copy()
     train_set[target] = y_train.copy()
-
     # Just in case we need test test
     test_set = X_test.copy()
     test_set[target] = y_test.copy()

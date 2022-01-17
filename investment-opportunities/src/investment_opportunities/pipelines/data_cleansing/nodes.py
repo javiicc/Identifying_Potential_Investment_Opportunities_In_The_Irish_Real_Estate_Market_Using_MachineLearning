@@ -135,7 +135,8 @@ def outlier_bool(df: pd.DataFrame, feature: pd.Series, level=1,
 def drop_outliers(df: pd.DataFrame,
                   features=('price', 'floor_area', 'views',
                             'bedroom', 'bathroom')) -> pd.DataFrame:
-    """.
+    """Drop outliers based on the resulting boolean Series from the `outlier_bool()`
+    function.
 
     Parameters
     ----------

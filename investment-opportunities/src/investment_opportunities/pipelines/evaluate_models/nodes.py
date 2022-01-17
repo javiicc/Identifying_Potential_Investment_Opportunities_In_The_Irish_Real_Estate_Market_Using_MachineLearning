@@ -53,11 +53,11 @@ def evaluate_models(X_test: pd.DataFrame, y_test: pd.Series,
         mape = metrics.mean_absolute_percentage_error(y_test, y_pred)
         # mse = metrics.mean_squared_error(y_test, y_pred)
         rmse = metrics.mean_squared_error(y_test, y_pred, squared=False)
-        #r = np.corrcoef(y_test, y_pred)[0][1]
+        # r = np.corrcoef(y_test, y_pred)[0][1]
 
         print(f' R²: {r2_score}')
         print(f' MAE: {mae}')
         print(f' MAPE: {mape}')
         # print(f' MSE: {mse}')
         print(f' RMSE: {rmse}\n')
-        #print(f'R (corr): {r}\n')
+        # print(f'R (corr): {r}\n')
