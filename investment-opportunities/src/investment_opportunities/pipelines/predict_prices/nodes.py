@@ -71,7 +71,7 @@ def add_features_for_frontend(data_w_residuals: pd.DataFrame,
     -------
     The DataFrame with all data needed for the Dash application.
     """
-    columns_to_merge = model_input[['url', 'place']] # add m2
+    columns_to_merge = model_input['url']
     data_for_frontend = data_w_residuals.merge(columns_to_merge,
                                                left_index=True, right_index=True)
     print('-' * 30, 'DATA READY', '-' * 30)
