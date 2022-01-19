@@ -105,3 +105,35 @@ def update_output_pie(price_range, floor_area_range, residuals_range, bedroom_ra
                 multi=True
             ),
             '''
+
+
+def cities(place):
+    if type(place) is not str:
+        return 'Unknown'
+    elif ('Dublin' in place) or ('Blackrock' in place) or ('Dun Laoghaire' in place):
+        return 'Dublin'
+    else:
+        return place
+
+
+df['city'] = df['place'].apply(cities)
+
+
+
+dbc.Row([
+
+        dbc.Col(html.H1("",
+                        className='pt-4 text-center text-primary, mb-4',
+                        ),
+                width=8,
+                style={"backgroundColor": "#100508"}
+                ),
+        dbc.Col(html.H1("Ireland's Real Estate Market Opportunities",
+                        className='pt-4 text-center text-primary text-light',
+                        ),
+                width=4,
+                style={"backgroundColor": "#100508"}
+                ),
+    ],
+        style={"height": "10vh"}  # 10vh
+    ),
