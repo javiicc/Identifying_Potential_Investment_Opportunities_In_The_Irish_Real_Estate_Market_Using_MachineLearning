@@ -8,11 +8,14 @@ from dash.dependencies import Output, Input
 import plotly.express as px
 import dash_bootstrap_components as dbc
 import pandas as pd
+import json
+import re
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX],
                # meta_tags=[{'name': 'viewport',
                 #            'content': 'width=device-width, initial-scale=1.0'}]
                 )
+
 
 df = pd.read_csv('../investment-opportunities/data/07_model_output/data_for_frontend.csv',
                  sep=',')
@@ -118,6 +121,13 @@ app.layout = dbc.Container([
                         'style': {'color': '#f50'}}},
                 tooltip={"placement": "top", "always_visible": False}
             ),
+            dcc.Markdown(
+                'Click on a house to see the link to its advertisement',
+                className="text-center text-white-50" #text-light
+            ),
+            html.A(
+                id='link_to_ad',
+            )
         ],
             width={'size': 2},
             style={"backgroundColor": "#100508"}
@@ -280,7 +290,7 @@ def update_output_map(price_range, floor_area_range, residuals_range, bedroom_ra
                     'longitude': False,
                     'res_percentage': False,
                     'residual': True,
-                    # 'url': True,
+                    'url': False,
                     },
         hover_name='residual',
         opacity=1,
@@ -313,6 +323,40 @@ def update_output_map(price_range, floor_area_range, residuals_range, bedroom_ra
 
     return map_fig, pie_fig, bar_fig
 
+@app.callback(
+    Output('link_to_ad', 'children'),
+    Output('link_to_ad', 'className'),
+#    Output('link_to_ad', 'style'),
+    Output('link_to_ad', 'href'),
+    Input('map', 'clickData'))
+def display_click_data(clickData):
+
+    click_data = json.dumps(clickData, indent=2)
+
+    url = re.search(r'(https:).+', str(click_data))
+
+    if url is None:
+        url = ''
+        className = "text-light"  # text-light
+    #    style = {"color": "blue"}
+        href = ''
+
+    else:
+        url = url.group().split('"')[0]
+        className = "text-white-50"  # text-light, text-center, text-info
+    #    style = {"color": "blue"}
+        href = url
+    return url, className, href  #, style
+
+
+#dcc.Link(
+ #   #    children='Click to visit',
+  #  id='link_to_ad',
+   # #    href='https://www.linkedin.com/in/javier-casta%C3%B1o-candela-b89039208/',
+    #className="text-center",
+#    style={"backgroundColor": "#100508", 'color': '#77C6FB'},
+ #   refresh=True,
+#),
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=3000)
