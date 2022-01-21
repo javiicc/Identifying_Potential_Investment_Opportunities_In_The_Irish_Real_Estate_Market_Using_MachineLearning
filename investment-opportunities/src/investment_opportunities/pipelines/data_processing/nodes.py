@@ -5,6 +5,8 @@ generated using Kedro 0.17.5
 
 import numpy as np
 import pandas as pd
+import sqlite3
+import os.path as path
 
 
 ###########################################################################
@@ -260,6 +262,39 @@ def preprocess_rooms(df: pd.DataFrame) -> pd.DataFrame:
 # DATA PREPROCESSING NODES
 ###########################################################################
 
+
+def get_db(dbname='2021-11-25.db', query='''SELECT * FROM buy;''') -> pd.DataFrame:
+    """Stablishes a connection to the database, queries it and drops
+    the advertiser'private information before return the dataframe.
+
+    Parameters
+    ----------
+    dbname :
+        The database name to addmto `database_path`.
+    query :
+        The query to the database.
+
+    Returns
+    -------
+    The data obtained from the database as a dataframe.
+    """
+    print('\n', '#' * 20, 'GETTING DATA FROM DATABASE', '#' * 20, '\n')
+    database_path = path.abspath(path.join('nodes.py', "../data/01_raw/{}"
+                                           .format(dbname)))
+
+    connection = sqlite3.connect(database_path)
+    # cursor = connection.cursor()
+
+    daft = pd.read_sql_query(query, connection)
+    connection.close()
+
+    # Drop personal info
+    daft.drop(['contact', 'phone'], axis=1, inplace=True)
+    sale = daft.copy()
+
+    return sale
+
+
 def preprocess_ads(df: pd.DataFrame) -> pd.DataFrame:
     """Node to process ads.
 
@@ -272,7 +307,8 @@ def preprocess_ads(df: pd.DataFrame) -> pd.DataFrame:
     -------
     The dataframe processed.
     """
-    print('\nDROPPING USELESS COLUMNS.')
+    print('\n', '#' * 20, 'PREPROCESSING DATA', '#' * 20)
+    print('\nDROPPING USELESS COLUMNS')
     # Drop useless columns
     df.drop(columns=['energy_performance_indicator'], inplace=True)
     df.drop(columns='item_id', inplace=True)
@@ -290,9 +326,9 @@ def preprocess_ads(df: pd.DataFrame) -> pd.DataFrame:
     df = preprocess_floor_area(df)
     print('\nPROCESSING INFO:')
     df = preprocess_info(df)
-    print('\nPROCESSING VIEWS.')
+    print('\nPROCESSING VIEWS')
     df = preprocess_views(df)
-    print('\nPROCESSING ROOMS.')
+    print('\nPROCESSING ROOMS\n')
     df = preprocess_rooms(df)
 
     return df
