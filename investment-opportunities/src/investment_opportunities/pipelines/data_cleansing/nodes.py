@@ -169,7 +169,7 @@ def drop_outliers(df: pd.DataFrame,
         outliers = df[outlier_boolean]
         rows_after = df[outlier_boolean == False].shape[0]
         print(f'Range after: {[df[feature].min(), df[feature].max()]}')
-        print(f'Outliers to drop: {rows_before - rows_after}')
+       # print(f'Outliers to drop: {rows_before - rows_after}')
 
         # Increase the list with outliers index from each feature
         # outlier_list below has repeated index
