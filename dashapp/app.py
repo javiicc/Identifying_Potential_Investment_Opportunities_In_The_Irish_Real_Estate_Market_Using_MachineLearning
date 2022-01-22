@@ -19,12 +19,6 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX],
                 #            'content': 'width=device-width, initial-scale=1.0'}]
                 )
 
-ALLOWED_TYPES = (
-    "hidden",
-    "text", "number", "password", "email", "search",
-    "tel", "url", "range",
-)
-
 df = pd.read_csv('../investment-opportunities/data/07_model_output/data_for_frontend.csv',
                  sep=',')
 df['predicted_price'] = df['predicted_price'].round(decimals=0)
@@ -33,303 +27,307 @@ df['residual'] = df['residual'].round(decimals=0)
 
 # Layout section: Boostrap
 # ------------------------------------------------------------------
-app.layout = dbc.Container([
-
-    # First row (height 15)
-    dbc.Row([
-        # Column (total width 12)
-        # Title
-        dbc.Col(html.H1("Ireland's Real Estate Market Opportunities",
-                        className='pt-4 text-center text-primary text-light',
-                        ),
-                width=12,
-                style={"backgroundColor": "#100508"},
-                ),
-        # Explanation bellow the title
-        dcc.Markdown('''
-        Welcome to Javier Castaño's final project from the Master in Data Science at
-        KSchool. You can interact with the map through the controls bellow.
-        ''',
-                     className="text-center",
-                     style={"backgroundColor": "#100508"}
-                     ),
-    ],
-        style={"height": "15vh"}
-    ),
-
-    # Second row (height 80)
-    # Contains 3 columns
-    dbc.Row([
-        # First column (width 8 of 12)
-        dbc.Col([
-            # Map graph
-            dcc.Graph(
-                id='map',
-                responsive=True,
-                style={'height': '100%'}
-            ),
+app.layout = dbc.Container(
+    className="",
+    children=[
+        # First row (height 15)
+        dbc.Row([
+            # Column (total width 12)
+            # Title
+            dbc.Col(html.H1("Ireland's Real Estate Market Opportunities",
+                            className='pt-4 text-center',  # text-primary   text-danger
+                            style={'color': 'rgb(132,11,11)'}  #5D0808  rgb(117,12,12)
+                            ),
+                    width=12,
+                    ),
+            # Explanation bellow the title
+            dcc.Markdown('''
+            Welcome to Javier Castaño's final project from the Master in Data Science at
+            KSchool. You can interact with the map through the controls bellow.
+            ''',
+                         className="text-center",
+                         style={'color': 'rgb(216,173,173)'}
+                         ),
         ],
-            width={'size': 8},
-            style={"backgroundColor": "#100508"}
+            style={"height": "15vh"}
         ),
-        # Second column (width 2 of 12)
-        dbc.Col([
-            # Bar graph
-            dcc.Graph(
-                id='bar',
-            #    className='my-4',
-            ),
-            # Markdown bellow bar graph -> price_range_slider title
-            dcc.Markdown(
-                '''
-                **PRICE**
-                ''',
-                className="text-center pt-5",   #my-3
-            ),
-            # Range slider for price variable
-            dcc.RangeSlider(
-                id='price_range_slider',
-                className='my-3',  #'my-sm-5',
-                min=int(df.actual_price.min()),
-                max=int(df.actual_price.max()),
-                value=[int(df.actual_price.min()), int(df.actual_price.max())],
-                marks={
-                    int(df.actual_price.min()): {
-                        'label': f'{int(df.actual_price.min())}€',
-                        'style': {'color': '#f50'}},
-                    int((df.actual_price.max() + df.actual_price.min()) / 2): {
-                        'label': f'{int((df.actual_price.max() + df.actual_price.min())/ 2)}€',
-                        'style': {'color': '#f50'}},
-                    int(df.actual_price.max()): {
-                        'label': f'{int(df.actual_price.max())}€',
-                        'style': {'color': '#f50'}}},
-                tooltip={"placement": "top", "always_visible": False}
-            ),
-            # Markdown  -> residuals_range_slider title
-            dcc.Markdown(
-                '''
-                **RESIDUALS**
-                ''',
-                className="text-center",
-            ),
-            # Range slider for residuals variable
-            dcc.RangeSlider(
-                id='residuals_range_slider',
-                className='my-3',   #'my-sm-5',
-                min=int(df.residual.min()),
-                max=int(df.residual.max()),
-                value=[int(df.residual.min()), int(df.residual.max())],
-                marks={
-                    int(df.residual.min()): {
-                        'label': f'{int(df.residual.min())}€',
-                        'style': {'color': '#f50'}},
-                    0: {
-                        'label': f'0€',
-                        'style': {'color': '#f50'}},
-                    int(df.residual.max()): {
-                        'label': f'{int(df.residual.max())}€',
-                        'style': {'color': '#f50'}}},
-                tooltip={"placement": "top", "always_visible": False}
-            ),
-            # Markdown bellow pie graph -> floor_area_slider title
-            dcc.Markdown(
-                '''
-                **FLOOR AREA**
-                ''',
-                className="text-center my-3",
-            ),
-            # Range slider for floor_area variable
-            dcc.RangeSlider(
-                id='floor_area_slider',
-                className='my-3',
-                min=int(df.floor_area.min()),
-                max=int(df.floor_area.max()),
-                # step=None,
-                value=[int(df.floor_area.min()), int(df.floor_area.max())],
-                marks={
-                    int(df.floor_area.min()): {
-                        'label': f'{int(df.floor_area.min())}m²',
-                        'style': {'color': '#f50'}},
-                    int((df.floor_area.max() + df.floor_area.min()) / 2): {
-                        'label': f'{int((df.floor_area.max() + df.floor_area.min()) / 2)}'
-                                 f'm²',
-                        'style': {'color': '#f50'}},
-                    int(df.floor_area.max()): {
-                        'label': f'{int(df.floor_area.max())}m²',
-                        'style': {'color': '#f50'}}},
-                tooltip={"placement": "top", "always_visible": False}
-            ),
-            # Markdown -> bedroom_range_slider title
-            dcc.Markdown(
-                '''
-                **BEDROOMS**
-                ''',
-                className="text-center",
-            ),
-            # Range slider for bedroom variable
-            dcc.RangeSlider(
-                id='bedroom_range_slider',
-                className='my-3',
-                marks={i: '{}'.format(i) for i in range(df.bedroom.min(),
-                                                        df.bedroom.max()+1)},
-                min=df.bedroom.min(),
-                max=df.bedroom.max(),
-                value=[df.bedroom.min(), df.bedroom.max()]
-            ),
-        ],
-            width={'size': 2},
-            style={"backgroundColor": "#100508"}
-        ),
-        # Third column (width 2 of 12)
-        dbc.Col([
-            dcc.Markdown(
-                'Select to get the average prices in the bar chart',
-                className="text-center text-white-50"
-            ),
-            # Dropdown to control the bar chart
-            dcc.Dropdown(
-                id='dropdown_bar',
-                options=[
-                    {'label': x, 'value': x}
-                    for x in df['place'].fillna('Unknown').unique()
+
+        # Second row (height 80)
+        # Contains 3 columns
+        dbc.Row(
+            children=[
+                # First column (width 8 of 12)
+                dbc.Col([
+                    # Map graph
+                    dcc.Graph(
+                        id='map',
+                        responsive=True,
+                        style={'height': '100%'}
+                    ),
                 ],
-                multi=True,
-                value=['Dublin 6', 'Dun Laoghaire', 'Dublin 4', 'Blackrock', 'Kinsale'],
-                optionHeight=35,
-                style={"backgroundColor": "#100508"},
-            ),
-            dcc.Markdown(
-                'Enter a house attributes to get its predicted price',
-                className="text-center text-white-50 pt-5"
-            ),
-            # Allows the user to enter the place attribute of a house
-            dcc.Dropdown(
-                id='dropdown_place',
-                options=[
-                    {'label': x, 'value': x}
-                    for x in df['place'].fillna('Unknown').unique()
-                ],
-                multi=False,
-                style={"backgroundColor": "#100508",
-                       },
-                className='pb-2',
-            ),
-            # Allows the user to enter the type_house attribute of a house
-            dcc.Dropdown(
-                id='dropdown_type_house',
-                options=[
-                    {'label': 'House', 'value': 'house'},
-                    {'label': 'Apartment', 'value': 'apartment'}
-                ],
-                multi=False,
-                style={"backgroundColor": "#100508",
-                       },
-                className='pb-2',
-            ),
-            # Allows the user to enter the bedroom attribute of a house
-            dcc.Input(
-                id='input_bedrooms',
-                type='number',
-                placeholder='Bedrooms',
-                className='text-center my-1',
-                min=1,
-                max=8,
-                style={"backgroundColor": "#100508",
-                       'color': 'white'},
-            ),
-            # Allows the user to enter the bathroom attribute of a house
-            dcc.Input(
-                id='input_bathrooms',
-                type='number',
-                placeholder='Bathrooms',
-                className='text-center my-1',
-                min=1,
-                max=7,
-                style={"backgroundColor": "#100508",
-                       'color': 'white'},
-            ),
-            # Allows the user to enter the floor area attribute of a house
-            dcc.Input(
-                id='input_floor_area',
-                type='number',
-                placeholder='Floor Area',
-                className='text-center my-1',
-                min=40,
-                max=625,
-              #  style={"backgroundColor": "#060448"},
-                style={"backgroundColor": "#100508",
-                       'color': 'white'},
-            ),
-            # Allows the user to enter the latitude attribute of a house
-            dcc.Input(
-                id='input_latitude',
-                type='text',
-                placeholder='Latitude',
-                className='text-center my-1',
-                style={"backgroundColor": "#100508",
-                       'color': 'white'},
-            ),
-            # Allows the user to enter the longitude attribute of a house
-            dcc.Input(
-                id='input_longitude',
-                type='text',
-                placeholder='Longitude',
-                className='text-center my-1',
-                style={"backgroundColor": "#100508",
-                       'color': 'white'},
-            ),
-            # Button to submit the attributes entered
-            html.Button(id='submit-button-state',
-                        n_clicks=0,
-                        children='Submit',
-                        className='btn-outline-primary px-2'
+                    width={'size': 8},
+                ),
+                # Second column (width 2 of 12)
+                dbc.Col(
+                    className="",
+                    children=[
+                        # Bar graph
+                        dcc.Graph(
+                            id='bar',
                         ),
-            # This markdown returns the predicted price
-            dcc.Markdown(
-                id='markdown_price',
-                className="text-center text-white-50 my-3"
-            ),
-            dcc.Markdown(
-                'Click on a house to see the link to its advertisement',
-                className="text-center text-white-50 pt-4"  #my-5
-            ),
-            # Link to the clicked house advertisement
-            html.A(
-                id='link_to_ad',
-            )
+                        # Markdown bellow bar graph -> price_range_slider title
+                        dcc.Markdown(
+                            '''
+                            **PRICE**
+                            ''',
+                            className="text-center pt-5",
+                            style={'color': 'rgb(103,214,140)'}
+                        ),
+                        # Range slider for price variable
+                        dcc.RangeSlider(
+                            id='price_range_slider',
+                            className='my-3',
+                            min=int(df.actual_price.min()),
+                            max=int(df.actual_price.max()),
+                            value=[int(df.actual_price.min()), int(df.actual_price.max())],
+                            marks={
+                                int(df.actual_price.min()): {
+                                    'label': f'{int(df.actual_price.min())}€',
+                                    'style': {'color': '#f50'}},
+                                int((df.actual_price.max() + df.actual_price.min()) / 2): {
+                                    'label': f'{int((df.actual_price.max() + df.actual_price.min())/ 2)}€',
+                                    'style': {'color': '#f50'}},
+                                int(df.actual_price.max()): {
+                                    'label': f'{int(df.actual_price.max())}€',
+                                    'style': {'color': '#f50'}}},
+                            tooltip={"placement": "top", "always_visible": False}
+                        ),
+                        # Markdown  -> residuals_range_slider title
+                        dcc.Markdown(
+                            '''
+                            **RESIDUALS**
+                            ''',
+                            className="text-center",
+                            style={'color': 'rgb(103,214,140)'}
+                        ),
+                        # Range slider for residuals variable
+                        dcc.RangeSlider(
+                            id='residuals_range_slider',
+                            className='my-3',
+                            min=int(df.residual.min()),
+                            max=int(df.residual.max()),
+                            value=[int(df.residual.min()), int(df.residual.max())],
+                            marks={
+                                int(df.residual.min()): {
+                                    'label': f'{int(df.residual.min())}€',
+                                    'style': {'color': '#f50'}},
+                                0: {
+                                    'label': f'0€',
+                                    'style': {'color': '#f50'}},
+                                int(df.residual.max()): {
+                                    'label': f'{int(df.residual.max())}€',
+                                    'style': {'color': '#f50'}}},
+                            tooltip={"placement": "top", "always_visible": False}
+                        ),
+                        # Markdown bellow pie graph -> floor_area_slider title
+                        dcc.Markdown(
+                            '''
+                            **FLOOR AREA**
+                            ''',
+                            className="text-center my-3",
+                            style={'color': 'rgb(103,214,140)'}
+                        ),
+                        # Range slider for floor_area variable
+                        dcc.RangeSlider(
+                            id='floor_area_slider',
+                            className='my-3',
+                            min=int(df.floor_area.min()),
+                            max=int(df.floor_area.max()),
+                            value=[int(df.floor_area.min()), int(df.floor_area.max())],
+                            marks={
+                                int(df.floor_area.min()): {
+                                    'label': f'{int(df.floor_area.min())}m²',
+                                    'style': {'color': '#f50'}},
+                                int((df.floor_area.max() + df.floor_area.min()) / 2): {
+                                    'label': f'{int((df.floor_area.max() + df.floor_area.min()) / 2)}'
+                                             f'm²',
+                                    'style': {'color': '#f50'}},
+                                int(df.floor_area.max()): {
+                                    'label': f'{int(df.floor_area.max())}m²',
+                                    'style': {'color': '#f50'}}},
+                            tooltip={"placement": "top", "always_visible": False}
+                        ),
+                        # Markdown -> bedroom_range_slider title
+                        dcc.Markdown(
+                            '''
+                            **BEDROOMS**
+                            ''',
+                            className="text-center",
+                            style={'color': 'rgb(103,214,140)'}
+                        ),
+                        # Range slider for bedroom variable
+                        dcc.RangeSlider(
+                            id='bedroom_range_slider',
+                            className='my-3',
+                            marks={i: '{}'.format(i) for i in range(df.bedroom.min(),
+                                                                    df.bedroom.max()+1)},
+                            min=df.bedroom.min(),
+                            max=df.bedroom.max(),
+                            value=[df.bedroom.min(), df.bedroom.max()]
+                        ),
+                    ],
+                    width={'size': 2},
+                ),
+                # Third column (width 2 of 12)
+                dbc.Col([
+                    dbc.Row(
+                        className="border border-light my-2 py-2",
+                        children=[
+                            dcc.Markdown(
+                                'Select to get the average prices in the bar chart',
+                                className="text-center text-white-50"
+                            ),
+                            # Dropdown to control the bar chart
+                            dcc.Dropdown(
+                                id='dropdown_bar',
+                                options=[
+                                    {'label': x, 'value': x}
+                                    for x in df['place'].fillna('Unknown').unique()
+                                ],
+                                multi=True,
+                                value=['Dublin 6', 'Dun Laoghaire', 'Dublin 4',
+                                       'Blackrock', 'Kinsale'],
+                                optionHeight=35,
+                            ),
+                        ]),
+                    dbc.Row(
+                        className="border border-light my-5",
+                        children=[
+                            dcc.Markdown(
+                                'Enter a house attributes to get its predicted price',
+                                className="text-center text-white-50 pt-2"
+                            ),
+                            # Allows the user to enter the place attribute of a house
+                            dcc.Dropdown(
+                                id='dropdown_place',
+                                options=[
+                                    {'label': x, 'value': x}
+                                    for x in df['place'].fillna('Unknown').unique()
+                                ],
+                                multi=False,
+                                className='pb-2',
+                            ),
+                            # Allows the user to enter the type_house attribute of a house
+                            dcc.Dropdown(
+                                id='dropdown_type_house',
+                                options=[
+                                    {'label': 'House', 'value': 'house'},
+                                    {'label': 'Apartment', 'value': 'apartment'}
+                                ],
+                                multi=False,
+                                className='pb-2',
+                            ),
+                            # Allows the user to enter the bedroom attribute of a house
+                            dbc.Input(
+                                id='input_bedrooms',
+                                type='number',
+                                placeholder='Bedrooms',
+                                className='w-75 mx-auto text-center my-1 py-1',
+                                min=1,
+                                max=8,
+                            ),
+                            # Allows the user to enter the bathroom attribute of a house
+                            dbc.Input(
+                                id='input_bathrooms',
+                                type='number',
+                                placeholder='Bathrooms',
+                                className='w-75 mx-auto text-center my-1 py-1 px-4',
+                                min=1,
+                                max=7,
+                            ),
+                            # Allows the user to enter the floor area attribute of a house
+                            dbc.Input(
+                                id='input_floor_area',
+                                type='number',
+                                placeholder='Floor Area',
+                                className='w-75 mx-auto text-center my-1 py-1',
+                                min=40,
+                                max=625,
+                            ),
+                            # Allows the user to enter the latitude attribute of a house
+                            dbc.Input(
+                                id='input_latitude',
+                                type='text',
+                                placeholder='Latitude',
+                                className='w-75 mx-auto text-center my-1 py-1',
+                            ),
+                            # Allows the user to enter the longitude attribute of a house
+                            dbc.Input(
+                                id='input_longitude',
+                                type='text',
+                                placeholder='Longitude',
+                                className='w-75 mx-auto text-center my-1 px-2 bg-light py-1',
+                            ),
+                            # Button to submit the attributes entered
+                            dbc.Button(
+                                id='submit-button-state',
+                                n_clicks=0,
+                                children='Submit',
+                                #className='w-75 mx-auto btn btn-dark px-2'
+                                className='w-50 my-1 mx-auto btn btn-outline-success px-2'
+                            ),
+                            # This markdown returns the predicted price
+                            dcc.Markdown(
+                                id='markdown_price',
+                                className="text-center my-3",   #text-white-50
+                            #    style={'color': 'rgb(103,214,140)'}
+
+                            ),
+                        ]),
+                    dcc.Markdown(
+                        'CLICK ON A HOUSE AND GO TO THE AD!!',
+                        className="text-center pt-3",  # text-white-50
+                        style={'color': 'rgb(216,173,173)'}
+                    ),
+                    # Link to the clicked house advertisement
+                    html.Div([
+                        html.A(
+                            id='link_to_ad',
+                        )])
+
+                ],
+                    width={'size': 2},
+                    # style={"backgroundColor": "#100508"}
+                )
+            ],
+            style={"height": "80vh"}
+        ),
+        # Third row (height 5)
+        dbc.Row([
+            # Empty column (width 8 of 12)
+            dbc.Col(
+                    width=8,
+                    # style={"backgroundColor": "#100508"}
+                    ),
+            # Second column (width 4 of 12)
+            dbc.Col(
+                # Link to my LinkedIn ;)
+                dcc.Link(
+                    'LinkedIn',
+                    href='https://www.linkedin.com/in/javier-casta%C3%B1o-candela-b89039208/',
+                    className="text-center",
+                    style={"backgroundColor": "#03182D", 'color': '#77C6FB'},
+                    refresh=True,
+                ),
+                width=4,
+                    ),
         ],
-            width={'size': 2},
-            style={"backgroundColor": "#100508"}
-        )
+            style={"height": "5vh"}
+        ),
     ],
-        style={"height": "80vh"}
-    ),
-    # Third row (height 5)
-    dbc.Row([
-        # Empty column (width 8 of 12)
-        dbc.Col(
-                width=8,
-                style={"backgroundColor": "#100508"}
-                ),
-        # Second column (width 4 of 12)
-        dbc.Col(
-            # Link to my LinkedIn ;)
-            dcc.Link(
-                'LinkedIn',
-                href='https://www.linkedin.com/in/javier-casta%C3%B1o-candela-b89039208/',
-                className="text-center",
-                style={"backgroundColor": "#100508", 'color': '#77C6FB'},
-                refresh=True,
-            ),
-            width=4,
-            style={"backgroundColor": "#100508"}
-                ),
-    ],
-        style={"height": "5vh"}
-    ),
-],
     fluid=True,
-    style={"height": "100vh"}
+    style={"height": "100vh",
+           "background-color": "#03182D"}  #E3E3DC
 )
 
 # Callback section: Boostrap
@@ -384,7 +382,7 @@ def update_output_map(price_range, floor_area_range, residuals_range, bedroom_ra
                     },
         hover_name='residual',
         opacity=1,
-        template='plotly_dark',
+        template='plotly_dark'
     )
     map_fig.update(layout_coloraxis_showscale=False)
 
@@ -395,6 +393,7 @@ def update_output_map(price_range, floor_area_range, residuals_range, bedroom_ra
     Output('link_to_ad', 'children'),
     Output('link_to_ad', 'className'),
     Output('link_to_ad', 'href'),
+    Output('link_to_ad', 'style'),
     Input('map', 'clickData'))
 def display_click_data(clickData):
     # Get info from the click
@@ -404,13 +403,15 @@ def display_click_data(clickData):
     # When any house is clicked nothing is shown
     if url is None:
         url = ''
-        className = "text-light"
+        className = "text-center text-light"
         href = ''
+        style = {'color': '#77C6FB'}
     else:
         url = url.group().split('"')[0]
-        className = "text-white-50"
+        className = "text-center font-weight-bold"  #text-white-50
         href = url
-    return url, className, href
+        style = {'color': '#77C6FB'}
+    return url, className, href, style
 
 
 @app.callback(
@@ -447,6 +448,7 @@ def display_click_data(places_list):
 
 @app.callback(
     Output('markdown_price', 'children'),
+    Output('markdown_price', 'style'),
     Input('submit-button-state', 'n_clicks'),
     State('dropdown_place', 'value'),
     State('dropdown_type_house', 'value'),
@@ -460,24 +462,24 @@ def display_click_data(n_clicks, place, type_house, bedrooms, bathrooms, floor_a
 
     # In case the user decide not enter the latitude or longitude
     if (latitude is None or longitude is None) and (place is not None):
-        return 'Enter all the attributes please'
+        return 'Enter all the attributes please', {'color': 'rgb(190,10,10)'}
     # When the app first runs the input are NoneType
     if latitude is None:
-        return 'Price prediction here!'
+        return 'Price prediction here!', {'color': 'rgb(103,214,140)'}
     # To check that the user enter valid data
     elif (50 < float(latitude[:2]) < 56) and (latitude[2] == '.'):
         latitude = float(latitude)
     else:
-        return 'Enter a correct latitude'
+        return 'Enter a correct latitude', {'color': 'rgb(190,10,10)'}
     if longitude is None:
-        return 'Price prediction here'
+        return 'Price prediction here', {'color': 'rgb(103,214,140)'}
     # To check that the user enter valid data
     elif (longitude[2] == '.' or longitude[1] == '.') and (-11 < float(longitude) < 5.8):
         longitude = float(longitude)
     else:
-        return 'Enter correct longitude'
+        return 'Enter correct longitude', {'color': 'rgb(190,10,10)'}
     if (bedrooms is None) or (bathrooms is None) or (floor_area is None):
-        return 'Enter all the attributes please'
+        return 'Enter all the attributes please', {'color': 'rgb(190,10,10)'}
     # Path to the model
     model_path = path.abspath(path.join('app.py',
                                         '../../investment-opportunities/data/06_models'
@@ -493,7 +495,7 @@ def display_click_data(n_clicks, place, type_house, bedrooms, bathrooms, floor_a
                                   'bathroom', 'type_house', 'place'])
     # Predict the house price
     predicted_price = round(np.exp(model.predict(house)[0]))
-    return f'{predicted_price}€'
+    return f'{predicted_price}€', {'color': 'rgb(103,214,140)'}
 
 
 if __name__ == '__main__':
