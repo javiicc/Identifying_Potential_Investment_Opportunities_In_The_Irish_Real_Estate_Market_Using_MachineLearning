@@ -285,7 +285,7 @@ app.layout = dbc.Container(
                             ),
                         ]),
                     dcc.Markdown(
-                        'CLICK ON A HOUSE AND GO TO THE AD!!',
+                        'CLICK ON A HOUSE AND GO TO ITS AD!!',
                         className="text-center pt-3",  # text-white-50
                         style={'color': 'rgb(216,173,173)'}
                     ),
