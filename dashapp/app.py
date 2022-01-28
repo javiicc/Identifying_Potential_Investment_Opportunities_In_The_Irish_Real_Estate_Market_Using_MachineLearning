@@ -181,7 +181,7 @@ app.layout = dbc.Container(
                 # Third column (width 2 of 12)
                 dbc.Col([
                     dbc.Row(
-                        className="border border-light my-2 py-2",
+                        className="my-2 py-2",  # border border-light
                         children=[
                             dcc.Markdown(
                                 'Select to get the average prices in the bar chart',
@@ -201,7 +201,7 @@ app.layout = dbc.Container(
                             ),
                         ]),
                     dbc.Row(
-                        className="border border-light my-5",
+                        className="my-5",  # border border-light 
                         children=[
                             dcc.Markdown(
                                 'Enter a house attributes to get its predicted price',
@@ -279,14 +279,14 @@ app.layout = dbc.Container(
                             # This markdown returns the predicted price
                             dcc.Markdown(
                                 id='markdown_price',
-                                className="text-center my-3",   #text-white-50
+                                className="text-center my-2",   #text-white-50
                             #    style={'color': 'rgb(103,214,140)'}
 
                             ),
                         ]),
                     dcc.Markdown(
                         'CLICK ON A HOUSE AND GO TO ITS AD!!',
-                        className="text-center pt-3",  # text-white-50
+                        className="text-center",  #  pt-3    text-white-50
                         style={'color': 'rgb(216,173,173)'}
                     ),
                     # Link to the clicked house advertisement
@@ -296,6 +296,7 @@ app.layout = dbc.Container(
                         )])
 
                 ],
+                 #   className='pr-4',
                     width={'size': 2},
                     # style={"backgroundColor": "#100508"}
                 )
