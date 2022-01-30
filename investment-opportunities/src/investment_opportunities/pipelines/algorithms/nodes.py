@@ -204,7 +204,7 @@ def get_estimator(levels_list: List[pd.Series],
                 n_estimators=177,
                 max_depth=3,
                 learning_rate=.1,
-                subsample=.30),
+                subsample=.25),
             'Random_Forest_Regressor': RandomForestRegressor(
                 n_estimators=180,
                 max_depth=10,
@@ -221,8 +221,10 @@ def get_estimator(levels_list: List[pd.Series],
         else:
             num_transformation = 'power_transformer'
         # Choose optimum degree based on the analysis in the notebooks
-        if key in ['Polynomial_Regression', 'Decision_Tree_Regressor']:
-            poly_degree = 4 
+        if key in ['Polynomial_Regression']:
+            poly_degree = 4
+        elif key in ['Decision_Tree_Regressor']:
+            poly_degree=3
         else:
             poly_degree = 1
 
