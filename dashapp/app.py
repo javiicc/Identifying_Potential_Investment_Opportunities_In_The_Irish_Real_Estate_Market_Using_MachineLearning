@@ -24,6 +24,8 @@ df = pd.read_csv('../investment-opportunities/data/07_model_output/data_for_fron
 df['predicted_price'] = df['predicted_price'].round(decimals=0)
 df['residual'] = df['residual'].round(decimals=0)
 
+places_sorted = list(df['place'].fillna('Unknown').unique())
+places_sorted.sort()
 
 # Layout section: Boostrap
 # ------------------------------------------------------------------
@@ -31,7 +33,9 @@ app.layout = dbc.Container(
     className="",
     children=[
         # First row (height 15)
-        dbc.Row([
+        dbc.Row(
+            className="",
+            children=[
             # Column (total width 12)
             # Title
             dbc.Col(html.H1("Ireland's Real Estate Market Opportunities",
@@ -49,15 +53,18 @@ app.layout = dbc.Container(
                          style={'color': 'rgb(216,173,173)'}
                          ),
         ],
-            style={"height": "15vh"}
+            style={"height": "10vh", "backgroundColor": "#100508"}
         ),
 
         # Second row (height 80)
         # Contains 3 columns
         dbc.Row(
+            className="",
             children=[
                 # First column (width 8 of 12)
-                dbc.Col([
+                dbc.Col(
+                    className="",
+                    children=[
                     # Map graph
                     dcc.Graph(
                         id='map',
@@ -66,10 +73,11 @@ app.layout = dbc.Container(
                     ),
                 ],
                     width={'size': 8},
+                    style={'backgroundColor': '#100508'}
                 ),
                 # Second column (width 2 of 12)
                 dbc.Col(
-                    className="",
+                    className="pt-2",
                     children=[
                         # Bar graph
                         dcc.Graph(
@@ -192,7 +200,7 @@ app.layout = dbc.Container(
                                 id='dropdown_bar',
                                 options=[
                                     {'label': x, 'value': x}
-                                    for x in df['place'].fillna('Unknown').unique()
+                                    for x in places_sorted
                                 ],
                                 multi=True,
                                 value=['Dublin 6', 'Dun Laoghaire', 'Dublin 4',
@@ -201,7 +209,7 @@ app.layout = dbc.Container(
                             ),
                         ]),
                     dbc.Row(
-                        className="my-5",  # border border-light 
+                        className="my-5",  # border border-light
                         children=[
                             dcc.Markdown(
                                 'Enter a house attributes to get its predicted price',
@@ -212,7 +220,7 @@ app.layout = dbc.Container(
                                 id='dropdown_place',
                                 options=[
                                     {'label': x, 'value': x}
-                                    for x in df['place'].fillna('Unknown').unique()
+                                    for x in places_sorted
                                 ],
                                 multi=False,
                                 className='pb-2',
@@ -279,7 +287,7 @@ app.layout = dbc.Container(
                             # This markdown returns the predicted price
                             dcc.Markdown(
                                 id='markdown_price',
-                                className="text-center my-2",   #text-white-50
+                                className="text-center",   #text-white-50
                             #    style={'color': 'rgb(103,214,140)'}
 
                             ),
@@ -301,14 +309,14 @@ app.layout = dbc.Container(
                     # style={"backgroundColor": "#100508"}
                 )
             ],
-            style={"height": "80vh"}
+            style={"height": "85vh"}
         ),
         # Third row (height 5)
         dbc.Row([
             # Empty column (width 8 of 12)
             dbc.Col(
                     width=8,
-                    # style={"backgroundColor": "#100508"}
+                    style={"backgroundColor": "#100508"}
                     ),
             # Second column (width 4 of 12)
             dbc.Col(
@@ -317,11 +325,12 @@ app.layout = dbc.Container(
                     'LinkedIn',
                     href='https://www.linkedin.com/in/javier-casta%C3%B1o-candela-b89039208/',
                     className="text-center",
-                    style={"backgroundColor": "#03182D", 'color': '#77C6FB'},
+                    style={"backgroundColor": "#100508", 'color': '#77C6FB'},
                     refresh=True,
                 ),
                 width=4,
-                    ),
+                style={'backgroundColor': '#100508'}
+            ),
         ],
             style={"height": "5vh"}
         ),
