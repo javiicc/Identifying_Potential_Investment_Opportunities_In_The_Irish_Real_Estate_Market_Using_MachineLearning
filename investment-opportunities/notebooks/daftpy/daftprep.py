@@ -33,6 +33,8 @@ def get_db(dbname: str, query='''SELECT * FROM buy;''') -> pd.DataFrame:
     # Drop personal info
     daft.drop(['contact', 'phone'], axis=1, inplace=True)
     sale = daft.copy()
+    
+    sale.replace('none', np.nan, inplace=True)
 
     return sale
 

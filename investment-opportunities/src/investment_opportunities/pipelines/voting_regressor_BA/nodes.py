@@ -64,6 +64,7 @@ def voting_regresor(X_train: pd.DataFrame, y_train: pd.DataFrame, polyr, knnr, d
         estimators=[('poly', polyr),
                     ('knn', knnr),
                     ('dt', dtr)],
-        weights=get_weights()).fit(X_train, np.log(y_train))
+        weights=get_weights()
+    ).fit(X_train, np.log(y_train))
     print('-' * 30, 'VOTING REGRESSOR TRAINED!!', '-' * 30)
     return voting_regressor_ba

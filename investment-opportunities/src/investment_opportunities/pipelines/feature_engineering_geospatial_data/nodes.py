@@ -318,4 +318,7 @@ def add_geonames(df: pd.DataFrame, geonames_df) -> pd.DataFrame:
     """
     df_loc = add_location(df=df, geonames_df=geonames_df)
 
+    # Drop teh index column
+    df_loc.drop(columns='Unnamed: 0', inplace=True)
+
     return df_loc

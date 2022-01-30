@@ -199,9 +199,9 @@ def get_estimator(levels_list: List[pd.Series],
             'Decision_Tree_Regressor': DecisionTreeRegressor(
                 max_depth=10,
                 min_samples_leaf=30,
-                random_state=7),  # NO DA EXACTO, CHECK IT
+                random_state=7),
             'XGBRegressor': XGBRegressor(
-                n_estimators=177,  # 150
+                n_estimators=177,
                 max_depth=3,
                 learning_rate=.1,
                 subsample=.30),
@@ -222,7 +222,7 @@ def get_estimator(levels_list: List[pd.Series],
             num_transformation = 'power_transformer'
         # Choose optimum degree based on the analysis in the notebooks
         if key in ['Polynomial_Regression', 'Decision_Tree_Regressor']:
-            poly_degree = 3
+            poly_degree = 4 
         else:
             poly_degree = 1
 

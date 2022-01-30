@@ -187,6 +187,6 @@ def drop_outliers(df: pd.DataFrame,
     df.drop(index=outliers_set, inplace=True)
     after = df.shape
     print('Shape after:', after)
-    print('TOTAL OUTLIERS DROPPED:', before[0] - after[0])
+    print('TOTAL OUTLIERS DROPPED:', before[0] - after[0], '\n')
 
     return df

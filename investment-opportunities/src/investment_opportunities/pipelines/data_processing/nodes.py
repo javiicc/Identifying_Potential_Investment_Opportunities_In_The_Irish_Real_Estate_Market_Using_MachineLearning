@@ -292,6 +292,8 @@ def get_db(dbname='2021-11-25.db', query='''SELECT * FROM buy;''') -> pd.DataFra
     daft.drop(['contact', 'phone'], axis=1, inplace=True)
     sale = daft.copy()
 
+    sale.replace('none', np.nan, inplace=True)
+
     return sale
 
 
@@ -313,7 +315,7 @@ def preprocess_ads(df: pd.DataFrame) -> pd.DataFrame:
     df.drop(columns=['energy_performance_indicator'], inplace=True)
     df.drop(columns='item_id', inplace=True)
 
-    df.replace('none', np.nan, inplace=True)
+    # df.replace('none', np.nan, inplace=True)
 
     # Preprocess columns
     print('\nPROCESSING PRICE:')
