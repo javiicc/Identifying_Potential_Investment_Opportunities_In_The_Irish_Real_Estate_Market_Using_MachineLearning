@@ -262,6 +262,7 @@ dependencies:
   - yellowbrick
   - ppscore
   - kedro
+  - pyfiglet
 
   - pip:
 
