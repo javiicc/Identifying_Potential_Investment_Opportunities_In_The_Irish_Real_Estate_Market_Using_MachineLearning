@@ -22,5 +22,5 @@ dependencies:
     - dash==2.1.0
     - dash-bootstrap-components==1.0.2
     - scrapy==2.5.1
-    - bs4==4.10.0
+    - bs4==4.9.3
 prefix: /home/javier/anaconda3/envs/tfm-javier
