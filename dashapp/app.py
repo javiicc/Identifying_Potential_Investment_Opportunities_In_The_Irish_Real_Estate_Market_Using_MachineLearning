@@ -53,7 +53,7 @@ app.layout = dbc.Container(
                          style={'color': 'rgb(216,173,173)'}
                          ),
         ],
-            style={"height": "10vh", "backgroundColor": "#100508"}
+            style={"height": "15vh", "backgroundColor": "#100508"}
         ),
 
         # Second row (height 80)
@@ -69,7 +69,7 @@ app.layout = dbc.Container(
                     dcc.Graph(
                         id='map',
                         responsive=True,
-                        style={'height': '100%'}
+                        style={'height': '100%'},
                     ),
                 ],
                     width={'size': 8},
@@ -79,22 +79,27 @@ app.layout = dbc.Container(
                 dbc.Col(
                     className="pt-2",
                     children=[
+
+                #    dbc.Row([
                         # Bar graph
                         dcc.Graph(
                             id='bar',
+                            style={"height": "35vh"}
                         ),
+               #         ], style={"height": "35vh"}),
+            #        dbc.Row([
                         # Markdown bellow bar graph -> price_range_slider title
                         dcc.Markdown(
                             '''
                             **PRICE**
                             ''',
-                            className="text-center pt-5",
+                            className="text-center pt-3",
                             style={'color': 'rgb(103,214,140)'}
                         ),
                         # Range slider for price variable
                         dcc.RangeSlider(
                             id='price_range_slider',
-                            className='my-3',
+                            className='my-1',
                             min=int(df.actual_price.min()),
                             max=int(df.actual_price.max()),
                             value=[int(df.actual_price.min()), int(df.actual_price.max())],
@@ -115,13 +120,13 @@ app.layout = dbc.Container(
                             '''
                             **RESIDUALS**
                             ''',
-                            className="text-center",
+                            className="text-center mt-2",
                             style={'color': 'rgb(103,214,140)'}
                         ),
                         # Range slider for residuals variable
                         dcc.RangeSlider(
                             id='residuals_range_slider',
-                            className='my-3',
+                            className='my-1',
                             min=int(df.residual.min()),
                             max=int(df.residual.max()),
                             value=[int(df.residual.min()), int(df.residual.max())],
@@ -142,13 +147,13 @@ app.layout = dbc.Container(
                             '''
                             **FLOOR AREA**
                             ''',
-                            className="text-center my-3",
+                            className="text-center my-2",
                             style={'color': 'rgb(103,214,140)'}
                         ),
                         # Range slider for floor_area variable
                         dcc.RangeSlider(
                             id='floor_area_slider',
-                            className='my-3',
+                            className='my-1',
                             min=int(df.floor_area.min()),
                             max=int(df.floor_area.max()),
                             value=[int(df.floor_area.min()), int(df.floor_area.max())],
@@ -176,20 +181,22 @@ app.layout = dbc.Container(
                         # Range slider for bedroom variable
                         dcc.RangeSlider(
                             id='bedroom_range_slider',
-                            className='my-3',
+                            className='my-1',
                             marks={i: '{}'.format(i) for i in range(df.bedroom.min(),
                                                                     df.bedroom.max()+1)},
                             min=df.bedroom.min(),
                             max=df.bedroom.max(),
                             value=[df.bedroom.min(), df.bedroom.max()]
                         ),
+      #                  ], #style={"height": "25vh"}
+                   # ),
                     ],
                     width={'size': 2},
                 ),
                 # Third column (width 2 of 12)
                 dbc.Col([
                     dbc.Row(
-                        className="my-2 py-2",  # border border-light
+                        className="my-1 py-1",  # border border-light
                         children=[
                             dcc.Markdown(
                                 'Select to get the average prices in the bar chart',
@@ -205,11 +212,12 @@ app.layout = dbc.Container(
                                 multi=True,
                                 value=['Dublin 6', 'Dun Laoghaire', 'Dublin 4',
                                        'Blackrock', 'Kinsale'],
-                                optionHeight=35,
+                                className='my-1',
+                            #    optionHeight=30,
                             ),
                         ]),
                     dbc.Row(
-                        className="my-5",  # border border-light
+                        className="my-3",  # border border-light
                         children=[
                             dcc.Markdown(
                                 'Enter a house attributes to get its predicted price',
@@ -309,7 +317,7 @@ app.layout = dbc.Container(
                     # style={"backgroundColor": "#100508"}
                 )
             ],
-            style={"height": "85vh"}
+            style={"height": "80vh"}
         ),
         # Third row (height 5)
         dbc.Row([
