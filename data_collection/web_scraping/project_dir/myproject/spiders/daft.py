@@ -86,8 +86,8 @@ class DaftSpider(CrawlSpider, ABC):
                                  response=response)
         
         ############################################################################
-        # Xpaths:
-        xpath_id = '//p[@class="DaftIDText__StyledDaftIDParagraph-vbn7aa-0 iWkymm"]/text()'
+        # Xpaths:   iWkymm
+        xpath_id = '//p[@class="DaftIDText__StyledDaftIDParagraph-vbn7aa-0 dcUjaz"]/text()'
         xpath_name = '//h1[@data-testid="address"]/text()'
         xpath_price = '//div[@data-testid="title-block"]/div/p/span/text()'
         xpath_info = '//div[@data-testid="card-info"]/p/text()'
