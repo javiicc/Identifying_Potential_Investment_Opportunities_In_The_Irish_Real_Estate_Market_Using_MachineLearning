@@ -39,8 +39,8 @@ app.layout = dbc.Container(
             # Column (total width 12)
             # Title
             dbc.Col(html.H1("Ireland's Real Estate Market Opportunities",
-                            className='pt-4 text-center',  # text-primary   text-danger
-                            style={'color': 'rgb(132,11,11)'}  #5D0808  rgb(117,12,12)
+                            className='pt-4 text-center',
+                            style={'color': 'rgb(132,11,11)'}
                             ),
                     width=12,
                     ),
@@ -79,15 +79,11 @@ app.layout = dbc.Container(
                 dbc.Col(
                     className="pt-2",
                     children=[
-
-                #    dbc.Row([
                         # Bar graph
                         dcc.Graph(
                             id='bar',
                             style={"height": "35vh"}
                         ),
-               #         ], style={"height": "35vh"}),
-            #        dbc.Row([
                         # Markdown bellow bar graph -> price_range_slider title
                         dcc.Markdown(
                             '''
@@ -113,7 +109,7 @@ app.layout = dbc.Container(
                                 int(df.actual_price.max()): {
                                     'label': f'{int(df.actual_price.max())}€',
                                     'style': {'color': '#f50'}}},
-                            tooltip={"placement": "top", "always_visible": False}
+                            tooltip={"placement": "top", "always_visible": False},
                         ),
                         # Markdown  -> residuals_range_slider title
                         dcc.Markdown(
@@ -140,7 +136,7 @@ app.layout = dbc.Container(
                                 int(df.residual.max()): {
                                     'label': f'{int(df.residual.max())}€',
                                     'style': {'color': '#f50'}}},
-                            tooltip={"placement": "top", "always_visible": False}
+                            tooltip={"placement": "top", "always_visible": False},
                         ),
                         # Markdown bellow pie graph -> floor_area_slider title
                         dcc.Markdown(
@@ -168,7 +164,7 @@ app.layout = dbc.Container(
                                 int(df.floor_area.max()): {
                                     'label': f'{int(df.floor_area.max())}m²',
                                     'style': {'color': '#f50'}}},
-                            tooltip={"placement": "top", "always_visible": False}
+                            tooltip={"placement": "top", "always_visible": False},
                         ),
                         # Markdown -> bedroom_range_slider title
                         dcc.Markdown(
@@ -186,21 +182,19 @@ app.layout = dbc.Container(
                                                                     df.bedroom.max()+1)},
                             min=df.bedroom.min(),
                             max=df.bedroom.max(),
-                            value=[df.bedroom.min(), df.bedroom.max()]
+                            value=[df.bedroom.min(), df.bedroom.max()],
                         ),
-      #                  ], #style={"height": "25vh"}
-                   # ),
                     ],
                     width={'size': 2},
                 ),
                 # Third column (width 2 of 12)
                 dbc.Col([
                     dbc.Row(
-                        className="my-1 py-1",  # border border-light
+                        className="my-1 py-1",
                         children=[
                             dcc.Markdown(
                                 'Select to get the average prices in the bar chart',
-                                className="text-center text-white-50"
+                                className="text-center text-white-50",
                             ),
                             # Dropdown to control the bar chart
                             dcc.Dropdown(
@@ -213,7 +207,8 @@ app.layout = dbc.Container(
                                 value=['Dublin 6', 'Dun Laoghaire', 'Dublin 4',
                                        'Blackrock', 'Kinsale'],
                                 className='my-1',
-                            #    optionHeight=30,
+                            #    optionHeight=25,
+                            #    style={'height': '9vh'},
                             ),
                         ]),
                     dbc.Row(
@@ -221,7 +216,7 @@ app.layout = dbc.Container(
                         children=[
                             dcc.Markdown(
                                 'Enter a house attributes to get its predicted price',
-                                className="text-center text-white-50 pt-2"
+                                className="text-center text-white-50 pt-2",
                             ),
                             # Allows the user to enter the place attribute of a house
                             dcc.Dropdown(
@@ -303,7 +298,7 @@ app.layout = dbc.Container(
                     dcc.Markdown(
                         'CLICK ON A HOUSE AND GO TO ITS AD!!',
                         className="text-center",  #  pt-3    text-white-50
-                        style={'color': 'rgb(216,173,173)'}
+                        style={'color': 'rgb(216,173,173)', 'height': '5%'}
                     ),
                     # Link to the clicked house advertisement
                     html.Div([
