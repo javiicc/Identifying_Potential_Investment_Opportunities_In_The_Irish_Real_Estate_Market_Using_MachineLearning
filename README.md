@@ -37,10 +37,26 @@ The data scraped with Scrapy were saved in a SQLite3 database.
 
 # Investment Opportunities
 
-This part was developed in notebooks and then it was relocated in a [Kedro](https://kedro.readthedocs.io/en/stable/01_introduction/01_introduction.html) project.
+This part was developed in notebooks and then it was relocated in a [Kedro](https://kedro.readthedocs.io/en/stable/01_introduction/01_introduction.html) project. Bellow you can see the structure of the project via notebooks and via Kedro. You can visit the 
+You can find an in-depth explanation of the project in the [Wiki](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/wiki) to find an in-depth explanation of both.
 
-## Notebooks structure
+### Notebooks structure
 
-## Kedro Pipeline
+### Kedro Pipeline
 
 ![Kedro Pipeline](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learnin/main/investment-opportunities/notebooks/imgs/kedro-viz-final.png)
+
+## Cleansing and Wrangling 
+
+## Feature Engineering Geospatial Data
+
+## Data Analysis
+
+## Prices Prediction - Modeling
+
+
+# Dash Application
+
+# Conclusions
+
+# Replicate The Project And In-Depth Explanation
