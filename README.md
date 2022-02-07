@@ -95,7 +95,7 @@ This part was developed in notebooks and then it was relocated in a [Kedro](http
 
 ### Kedro Pipeline
 
-![Kedro Pipeline](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learnin/main/investment-opportunities/notebooks/imgs/kedro-viz-final.png)
+![Kedro Pipeline](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/main/investment-opportunities/notebooks/imgs/last_mg_1.png)
 
 ## Cleansing and Wrangling 
 
