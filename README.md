@@ -48,6 +48,23 @@ You can find an in-depth explanation of the project in the [Wiki](https://github
 
 ## Cleansing and Wrangling 
 
+Each feature has been preprocessed in order to give it a properly format. 
+
+**Methodology**
+
+- Detecting the different cases or formats in which the data was and deciding what kind of task apply in it. Once the wrangling tasks were decided the next stept was building a function to do the tasks and finally to apply it.
+
+**Example: Price column**
+
+![Price Conclusions](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/price_conclusions.png)
+
+```python
+pd.DataFrame({'before': sale['price'], 
+              'after': process_price(sale)['price']}).head(10)
+```
+
+![Price Column Before and After](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/price_column_before_and_after.png)
+
 ## Feature Engineering Geospatial Data
 
 ## Data Analysis
