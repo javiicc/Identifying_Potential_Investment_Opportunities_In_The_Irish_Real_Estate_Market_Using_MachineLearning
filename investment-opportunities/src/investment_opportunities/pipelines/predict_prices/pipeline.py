@@ -24,8 +24,8 @@ def create_pipeline(**kwargs):
             ),
             node(
                 func=add_features_for_frontend,
-                inputs=["data_w_residuals", "model_input"],
-                outputs="data_for_frontend",
+                inputs=["data_w_residuals", "df_no_outliers"],
+                outputs="data_for_frontend", #model_input
                 name="add_features_for_frontend_node",
             ),
         ]

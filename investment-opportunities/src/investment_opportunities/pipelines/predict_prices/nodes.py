@@ -57,7 +57,7 @@ def get_residuals(data_w_residuals: pd.DataFrame) -> pd.DataFrame:
 
 
 def add_features_for_frontend(data_w_residuals: pd.DataFrame,
-                              model_input: pd.DataFrame) -> pd.DataFrame:
+                              df_no_outliers: pd.DataFrame) -> pd.DataFrame:
     """
 
     Parameters
@@ -71,7 +71,7 @@ def add_features_for_frontend(data_w_residuals: pd.DataFrame,
     -------
     The DataFrame with all data needed for the Dash application.
     """
-    columns_to_merge = model_input['url']
+    columns_to_merge = df_no_outliers['url']
     data_for_frontend = data_w_residuals.merge(columns_to_merge,
                                                left_index=True, right_index=True)
     print('-' * 30, 'DATA READY', '-' * 30)
