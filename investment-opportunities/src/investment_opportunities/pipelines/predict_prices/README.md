@@ -16,6 +16,7 @@ This pipeline predict prices and prepare the data for frontend.
 - final_model
 - X
 - y
+- df_no_outliers
 
 ## Pipeline outputs
 
