@@ -243,7 +243,7 @@ Having into account the three methods and the fact that `psr` could be similar t
 - `bedroom`
 - `bathroom`
 
-#### Conclusions
+### Conclusions
 
 After the full analysis made I selected the following variables as predictors in order to predict the houses prices:
 
@@ -257,9 +257,111 @@ After the full analysis made I selected the following variables as predictors in
 
 ## Prices Prediction - Modeling
 
+### Models
+
+To see the **transformations** applied to the variables and the **missing values traetment** as well as an in-depth explanation go to the [Prices Prediction](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/blob/main/investment-opportunities/notebooks/Price_Prediction.ipynb) notebook or to the [Wiki](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/wiki/3.5.-Price-Prediction)
+
+The graphs bellow shows the models tested and the metrics obtained for each model.
+
+![002](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learnin/main/investment-opportunities/notebooks/imgs/010.png)
+
+As you can see the model with better performance is the Voting Regressor 2. The voting regressor averages the individual predictions of the learners to form a final prediction. The learners which make up the voting regressor 2 are the following:
+- Voting Regressor Basic Algorithms (it is provided with other three learners)
+  - Polynomial Regression (degree 4)
+  - K-Nearest Neighbors Regressor
+  - Decision Tree Regressor
+- Random Forest Regressor 
+- XGboost
+
+The Voting Regressor 2 is able to improve the Baseline Model by 83,000€! Which mean a 56% less MAE. It also improve the second best model (Voting Regressor Basic Algorithms) by 1,500€ which mean only a 3%. My selected model was the Voting Regressor 2, but if you are concerned about the complexity of the models, you could choose the Polynomial Regresion since its performance is almost the same.
+
+|Improvement respect Baseline Model (MAE)|Improvemenet respect Best Last Model (MAE)|
+|:---:|:---:|
+|83,320€|1,732€|
+|56%|3%|
+
+### Conclusions and Model Selection
+
+- The best models obtain *coefficient of determination* around 0.8 so those models are able to explain an 80% of the variability in prices. In *Mean Absolute Error* terms this is an error between 66,000€ and 70,000€ aproximately in test set. This is not a bad score taking into account the low number of features we are worked with and the mean prices in Ireland. Also it is improving the *Baseline Model* by around 80,000€ so I am happy with that since the mean prices are so high in Ireland.
+
+- One surprising thing is that the Polynomial Regression has quite similar metrics than the XGBoost or the Random Forest. Despite the fact that I choosed the Voting Regressor 2 as the final model because it is the best one, it would make sense to use a much simpler model as the Polinomial Regressor if you are concerned about model's complexity since it is very good as well as simple.
+
+- Most of models tend to understimate houses prices which actual prices are over a million euros. Despite most houses are in the range price under a million this is still worrying. Our models are able to learn the relationship between preditor variables and the response variable better when the actual price of the house is under a million. That could be due to a lack of samples of expensive houses or due to a lack of predictors that can explain better the relationship with the price when it is too much high. Some predictors that perhaps explain that expensive prices could be the house year of construction, the average anual income of residents in areas with expensive prices, etc. 
+
+- Another important aspect is the type of error that is less dangerous. Our model will be used to find potential investment opportunities which means that if the model understimates a house price, that house would be less interesting to us as investemnt opportunity, discouraging us to invest money in that operation. That means that we would not win money but we would not loss it either. However, if the model tends to overstimate the price of a house it would be encouraging us to invest in that house so we could buy an asset which actual value is lower than its actual price. That means that we could loss money. So we can conclude that a model that tends to understimate asset prices is less dangerous to us that one that tends to overstimate them.
+
+# Conclusions and Future Stepts
+
+## Best Models
+
+|Model|MAE|R²|
+|:---:|:---:|:---:|
+|Voting Regressor 2|66,369€|0.80|
+|Stacking Model|66,729€|0.80|
+
+- The Voting Regressor 2 is able to improve the Baseline Model by 83,000€, which mean a 56% less MAE. 
+- Voting Regressor Basic Algorithms (it is provided with other three learners)
+  - Polynomial Regression (degree 4)
+  - K-Nearest Neighbors Regressor
+  - Decision Tree Regressor
+- Random Forest Regressor 
+- XGboost
+
+## Worst Models
+
+|Model|MAE|R²|
+|:---:|:---:|:---:|
+|Baselime Model|149,689€|0.23|
+|Decision Tree Regressor|81,283€|0.71|
+|K-Nearest Neighbors|77,802€|0.73|
+|Linear Regression|77,092€|0.74|
+
+## Polynomial Regression Degree 4 
+
+|Model|MAE|R²|
+|:---:|:---:|:---:|
+|Polynomial Regression|70,216€|0.78|
+
+The Polynomial Regresion with degree 4 has a pretty good performance and is simplest than the Voting Regressor 2.
+
+## Price Understimation
+
+- Most of models tend to understimate houses prices which actual prices are over a million euros. The models are able to learn the relationship between preditor variables and the response variable better when the actual price of the house is under a million euros. 
+
+- This could be solved collecting more advertisements or finding new predictors variables capable of better explaining the higher prices.
+
+- Since we are using the model to find potential investment opportunities, having a model that tend to understimate prices is less dangerous than one that tends to overstimate them. 
+
+## Future Steps
+
+I like thinking about this project as a prototype for a future data product. New ideas come to my mind quite often to improve the work but they go beyong the scope of my project for now. Some of them are the following:
+
+- Collecting more data. I am currently learning about databases, Apache Airflow, and SQL to be able to make ETL pipelines and schedule all the process. I think it would be useful to collect all new ads from [daft.ie](https://www.daft.ie/) daily and save them in a database to train the models with more data, maybe a whole month.
+- Obtaining more variables. There area a lot of variables that could be used as predictor variables.
+  - Distance from houses to diferent points of interest.
+  - Weather data in each place.
+  - Income level per capita and area or city.
+  - Demographic data.
+- Trying new models and maybe deep learning.
+- Building models for houses with prices over a million euros to check whether that improve the metrics. 
+- Improving the frontend.
 
 # Dash Application
 
-# Conclusions
+The Dash Application is showed at the beggining and you can see the code [here](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/blob/main/dashapp/app.py).
+
+Tha application has been deployed to Heroku and you can visit it here:
+
+https://ireland-dashboard-houses.herokuapp.com/
+
+* Unfortunately the Dash application does not display properly when the screen is too small. This is something that I need to improve in the future.
 
 # Replicate The Project And In-Depth Explanation
+
+To run the project follow the instructions in the [wiki](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/wiki/6.-Run-the-Project)
+
+# Conclusions and Learned Lessons
+
+
+
+
