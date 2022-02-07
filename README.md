@@ -8,17 +8,17 @@ You can find an in-depth explanation of the project in the [Wiki](https://github
 
 The project is structured in three parts and each one correspond with a folder in this repo:
 
-- Data Collection
+- *Data Collection*
   - Advertisements scraped from [daft.ie](https://www.daft.ie/) and complementary data scraped from [Geonames.org](http://www.geonames.org/postalcode-search.html?q=&country=IE) about [eircodes](https://www.eircode.ie/) and cities/towns. 
   - Folder: *data_colection*
-- Potential Investment Opportunities
+- *Potential Investment Opportunities*
   - This part contains most of the work
     - Cleansing and Wrangling tasks 
     - Feature Engineering Geospatial Data
     - Exploratory Data Analysis
     - Data Modeling with Machine Learning Algorithms
    - Folder: *investment-opportunities*
-- Dash Application:
+- *Dash Application*
   - The final application which you can see above
   - Folder: *dashapp*
 
