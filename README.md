@@ -65,6 +65,10 @@ pd.DataFrame({'before': sale['price'],
 
 ![Price Column Before and After](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/price_column_before_and_after.png)
 
+The outliers were handled in the *Data Analysis* notebook. However, when the prokect was relocated to a Kedro, they were handled in the [*data_cleansing*](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/tree/main/investment-opportunities/src/investment_opportunities/pipelines/data_cleansing) pipeline which is between the [*data_processing*](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/tree/main/investment-opportunities/src/investment_opportunities/pipelines/data_processing) pipeline (wrangling tasks) and the [*feature_engineering_geospatial_data*](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/tree/main/investment-opportunities/src/investment_opportunities/pipelines/feature_engineering_geospatial_data) pipeline. You cal easily see the Kedro pipeline structure thanks to the [*Kedro-Viz*](https://kedro.readthedocs.io/en/stable/03_tutorial/06_visualise_pipeline.html) tool.
+
+
+
 ## Feature Engineering Geospatial Data
 
 ## Data Analysis
