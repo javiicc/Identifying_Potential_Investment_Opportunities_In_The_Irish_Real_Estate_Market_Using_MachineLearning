@@ -102,9 +102,22 @@ The column I was interested most in was the `city` one. However, it had a lot of
 
 ![](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/main/investment-opportunities/notebooks/imgs/mv_5.png)
 
-
-
 ## Data Analysis
+
+I did an EDA to try finding some useful insights that would help me with the modeling tasks. Bellow is the structure of my analysis and some insights I obtained.
+
+### Ireland's Real Estate Market Analysis
+
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/number_ads_per_town.png)
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/mean_price_per_city.png)
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/meanpricepercitybytypehouse2.png)
+
+### Dublin's Real Estate Market Analysis
+
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/meanpriceperpostaldistrict2.png)
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/meanpriceperpdandtypehouse2.png)
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/meanfloorarea2.png)
+
 
 ## Prices Prediction - Modeling
 
