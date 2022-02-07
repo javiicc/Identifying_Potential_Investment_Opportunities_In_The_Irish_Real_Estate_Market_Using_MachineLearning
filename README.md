@@ -25,11 +25,44 @@ The project is structured in three parts and each one correspond with a folder i
 # Table of Contents
 - 1. [Data Collection](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/blob/main/README.md#data-collection)
 
-  - 1.1 [Sources](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#sources)
-
-  - 1.2 [Tools](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#tools)
+  - [Sources](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#sources)
+  - [Tools](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#tools)
 
 - 2. [Investment Opportunities](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#investment-opportunities)
+
+  - [Notebooks structure](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#notebooks-structure)
+  - [Kedro Pipeline](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#kedro-pipeline)
+  - [Cleansing and Wrangling](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#cleansing-and-wrangling)
+  - [Feature Engineering Geospatial Data](Feature Engineering Geospatial Data)
+    - [Tools](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#tools-1)
+    - [Post Reverse-Geocoding](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#post-reverse-geocoding)
+    - [Dealing With Missing Values](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#dealing-with-missing-values)
+  - [Data Analysis](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#data-analysis)
+    - [Ireland's Real Estate Market Analysis](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#irelands-real-estate-market-analysis)
+    - [Dublin's Real Estate Market Analysis](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#dublins-real-estate-market-analysis)
+    - [Distributions](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#distributions)
+    - [Realtionships and Feature Selection](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#realtionships-and-feature-selection)
+      - [Scatter Plots](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#scatter-plots)
+      - [Correlations - Pearson & Spearman](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#correlations---pearson--spearman)
+      - [Predictive Power Score](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#predictive-power-score)
+    - [Conclusions](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#conclusions)
+  - [Prices Prediction - Modeling](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#prices-prediction---modeling) 
+    - [Models](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#models)
+    - [Conclusions and Model Selection](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#conclusions-and-model-selection)
+- 3. [Conclusions and Future Stepts](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#conclusions-and-future-stepts)
+  - [Best Models](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#best-models)
+  - [Worst Models](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#worst-models)
+  - [Polynomial Regression Degree 4](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#polynomial-regression-degree-4)
+  - [Price Understimation](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#price-understimation)
+  - [Future Steps](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#future-steps)
+
+- 4. [Dash Application](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#dash-application)
+
+- 5. [Replicate The Project and In-Depth Explanation](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#replicate-the-project-and-in-depth-explanation)
+
+- 6. [Learned Lessons](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#learned-lessons)
+
+- 7. [Go to Wiki](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/wiki) 
 
 # Data Collection
 
@@ -369,7 +402,6 @@ To run the project follow the instructions in the [wiki](https://github.com/javi
 
 # Learned Lessons
 
-# In-Depth Explanation: [Wiki](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/wiki)
 
 
 
