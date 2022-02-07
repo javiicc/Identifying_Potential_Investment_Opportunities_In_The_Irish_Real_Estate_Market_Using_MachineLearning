@@ -28,7 +28,7 @@ The project is structured in three parts and each one correspond with a folder i
 - [daft.ie](https://www.daft.ie/) 
   - House advertisements. Example bellow.
 
-![]()
+![](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/main/investment-opportunities/notebooks/imgs/ad_example.png)
 
 - [Geonames.org](http://www.geonames.org/postalcode-search.html?q=&country=IE)
 
