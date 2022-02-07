@@ -35,7 +35,7 @@ The project is structured in three parts and each one correspond with a folder i
 - [Geonames.org](http://www.geonames.org/postalcode-search.html?q=&country=IE)
   - [*Routing Key*](https://www.eircode.ie/what-is-eircode#:~:text=The%20first%203%20characters%20of,may%20cross%20over%20county%20borders.) from [eircodes](https://www.eircode.ie/) and cities.  
 
-![geonames_example]()
+![geonames_example](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/main/investment-opportunities/notebooks/imgs/geonames_example.png)
 
 ## Tools
 - [Scrapy](https://scrapy.org/)
