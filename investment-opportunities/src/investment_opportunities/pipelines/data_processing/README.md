@@ -5,17 +5,21 @@
 ## Overview
 
 <!---
-Please describe your modular pipeline here.
+This pipeline preprocesses the data.
+
+- Nodes:
+  - get_db
+  - preprocess_ads
 -->
 
 ## Pipeline inputs
 
 <!---
-The list of pipeline inputs.
+- advertisements
 -->
 
 ## Pipeline outputs
 
 <!---
-The list of pipeline outputs.
+- preprocessed_ads
 -->
