@@ -399,10 +399,3 @@ https://ireland-dashboard-houses.herokuapp.com/
 # Replicate The Project and In-Depth Explanation
 
 To run the project follow the instructions in the [wiki](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/wiki/6.-Run-the-Project)
-
-# Learned Lessons
-
-
-
-
-
