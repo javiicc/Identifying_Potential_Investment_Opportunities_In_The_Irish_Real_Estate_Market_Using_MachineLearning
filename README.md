@@ -213,7 +213,47 @@ I conclude that it would be good looking for more data in order to find more var
 
 ![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/pps2.png)
 
+- `city_district`, `code`, `place`, and `postcode` have some predictive power to the `price`. If we pay attention we can realize that all of them are **location** variables, which makes sense. Moreover, `code` and `place` are exactly the same but with different characters as place was extracted from `code` just exchanging the Eircode for the corresponding city or town.
+- `cities` has some predictive power but is the same that `place` without differenciating Dublin postal districts.
+- `psr` has some predictive power and it also makes sense because the psr identify the seller. It is reasonable to think that a particular seller will tend to offer houses in the same area or city or in close cities instead of the same number of houses in each city. So I think we could understand the `psr` as something similar to another location variable.
+
+See the whole analysis in the [Data Analysis](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/blob/main/investment-opportunities/notebooks/Data_Analysis.ipynb) notebook!
+
 #### Wrapper Methods
+
+The bellow methods were used:
+
+- Recursive Feature Elimination
+  - Linear Regression Scores
+  - Decision Tree Regression Scores 
+- Forward Feature Selection
+  - Linear Regression Scores
+  - Decision Tree Regression Scores
+- Backward Feature Elimination
+  - Linear Regression Scores
+  - Decision Tree Regression Scores
+
+**Conclusion**
+
+Having into account the three methods and the fact that `psr` could be similar to `place` or a location feature the five variables I choosed were the following ones:
+
+- `floor_area`
+- `latitude`
+- `longitude`
+- `bedroom`
+- `bathroom`
+
+#### Conclusions
+
+After the full analysis made I selected the following variables as predictors in order to predict the houses prices:
+
+- `floor_area`
+- `latitude`
+- `longitude`
+- `bedroom`
+- `bathroom`
+- `place`
+- `type_house`
 
 ## Prices Prediction - Modeling
 
