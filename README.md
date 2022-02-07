@@ -22,7 +22,7 @@ The project is structured in three parts and each one correspond with a folder i
   - The final application which you can see above
   - Folder: *dashapp*
 
-# Modules
+[Data Collection](# Data Collection)
 
 # Data Collection
 
