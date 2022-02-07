@@ -96,6 +96,14 @@ The result of the feature engineering process was the this:
 
 ![](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/main/investment-opportunities/notebooks/imgs/missing_values4.png)
 
+### Dealing With Missing Values
+
+The column I was interested most in was the `city` one. However, it had a lot of missing values. To solve this I used the `postcode` column to find the names of the cities. I extracted the *Routing Key* from the `postcode` and matched it with the one in the data scraped from the [Geonames.org](http://www.geonames.org/postalcode-search.html?q=&country=IE). As the `Routing Key` in the data scraped from the [Geonames.org](http://www.geonames.org/postalcode-search.html?q=&country=IE) was associated with the place (city/town), it was easy make a new column named `place` containing that information. After this process I had a column named `place` with only 1,243 missing values, instead of 5,644 or 6,551. 
+
+![](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/main/investment-opportunities/notebooks/imgs/mv_5.png)
+
+
+
 ## Data Analysis
 
 ## Prices Prediction - Modeling
