@@ -4,18 +4,22 @@
 
 ## Overview
 
-<!---
-Please describe your modular pipeline here.
--->
+This pipeline prepares the variables needed to train the models and splits the data.
+
+- Nodes:
+  - merge_node
+  - select_variables_to_modelize_node
+  - split_data_node
 
 ## Pipeline inputs
 
-<!---
-The list of pipeline inputs.
--->
+- ads_with_location_features_and_geonames
 
 ## Pipeline outputs
 
-<!---
-The list of pipeline outputs.
--->
+- X_train
+- X_test
+- y_train
+- y_test
+- X
+- y

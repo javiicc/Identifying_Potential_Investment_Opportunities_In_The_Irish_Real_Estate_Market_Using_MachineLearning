@@ -4,18 +4,15 @@
 
 ## Overview
 
-<!---
-Please describe your modular pipeline here.
--->
+This pipeline drops outliers.
+
+- Nodes:
+  - drop_outliers_node
 
 ## Pipeline inputs
 
-<!---
-The list of pipeline inputs.
--->
+- preprocessed_ads
 
 ## Pipeline outputs
 
-<!---
-The list of pipeline outputs.
--->
+- df_no_outliers

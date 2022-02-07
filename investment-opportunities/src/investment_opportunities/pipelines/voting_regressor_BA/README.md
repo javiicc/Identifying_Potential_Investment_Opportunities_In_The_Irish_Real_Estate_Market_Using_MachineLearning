@@ -4,18 +4,19 @@
 
 ## Overview
 
-<!---
-Please describe your modular pipeline here.
--->
+This pipeline evaluates the models.
+
+- Nodes:
+  - voting_regressor_node
 
 ## Pipeline inputs
 
-<!---
-The list of pipeline inputs.
--->
+- X_train
+- y_train
+- polyr
+- knnr
+- dtr
 
 ## Pipeline outputs
 
-<!---
-The list of pipeline outputs.
--->
+- voting_regressor_BA

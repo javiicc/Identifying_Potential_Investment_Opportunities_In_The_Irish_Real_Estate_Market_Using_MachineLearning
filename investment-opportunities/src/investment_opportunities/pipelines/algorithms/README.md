@@ -4,18 +4,27 @@
 
 ## Overview
 
-<!---
-Please describe your modular pipeline here.
--->
+This pipeline does trains several models.
+
+- Nodes:
+  - model_input_variables_node
+  - add_geonames_node
 
 ## Pipeline inputs
 
-<!---
-The list of pipeline inputs.
--->
+- df_no_outliers
+- geonames
+- X_train
+- y_train
 
 ## Pipeline outputs
 
-<!---
-The list of pipeline outputs.
--->
+- polyr
+- knnr
+- dtr
+- xgbr
+- rfr
+- levels_list
+- num_features
+- cat_features
+- estimators_dict

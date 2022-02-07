@@ -1,21 +1,22 @@
-# Pipeline stacking_regressor_trained_with_all_data
+# Pipeline voting_regressor_2_trained_with_all_data
 
 > *Note:* This is a `README.md` boilerplate generated using `Kedro 0.17.5`.
 
 ## Overview
 
-<!---
-Please describe your modular pipeline here.
--->
+This pipeline evaluates the models.
+
+- Nodes:
+  - final_model_node
 
 ## Pipeline inputs
 
-<!---
-The list of pipeline inputs.
--->
+- X
+- y
+- voting_regressor_BA
+- rfr
+- xgbr
 
 ## Pipeline outputs
 
-<!---
-The list of pipeline outputs.
--->
+- final_model

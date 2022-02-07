@@ -4,22 +4,16 @@
 
 ## Overview
 
-<!---
 This pipeline preprocesses the data.
 
 - Nodes:
-  - get_db
-  - preprocess_ads
--->
+  - get_db_node
+  - preprocess_ads_node
 
 ## Pipeline inputs
 
-<!---
 - advertisements
--->
 
 ## Pipeline outputs
 
-<!---
 - preprocessed_ads
--->

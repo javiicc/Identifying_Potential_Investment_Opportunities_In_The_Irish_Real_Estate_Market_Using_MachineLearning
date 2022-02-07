@@ -1,21 +1,22 @@
-# Pipeline stacking_regressor
+# Pipeline voting_regressor_2
 
 > *Note:* This is a `README.md` boilerplate generated using `Kedro 0.17.5`.
 
 ## Overview
 
-<!---
-Please describe your modular pipeline here.
--->
+This pipeline evaluates the models.
+
+- Nodes:
+  - voting_regressor_2_node
 
 ## Pipeline inputs
 
-<!---
-The list of pipeline inputs.
--->
+- X_train
+- y_train
+- voting_regressor_BA
+- rfr
+- xgbr
 
 ## Pipeline outputs
 
-<!---
-The list of pipeline outputs.
--->
+- voting_regressor_2

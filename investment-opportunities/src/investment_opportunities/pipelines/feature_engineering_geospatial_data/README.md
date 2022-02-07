@@ -4,18 +4,17 @@
 
 ## Overview
 
-<!---
-Please describe your modular pipeline here.
--->
+This pipeline does feature engineering.
+
+- Nodes:
+  - location_feature_engineering_node
+  - add_geonames_node
 
 ## Pipeline inputs
 
-<!---
-The list of pipeline inputs.
--->
+- df_no_outliers
+- geonames
 
 ## Pipeline outputs
 
-<!---
-The list of pipeline outputs.
--->
+- ads_with_location_features_and_geonames

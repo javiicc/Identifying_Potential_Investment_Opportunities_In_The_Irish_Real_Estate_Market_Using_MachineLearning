@@ -4,18 +4,19 @@
 
 ## Overview
 
-<!---
-Please describe your modular pipeline here.
--->
+This pipeline predict prices and prepare the data for frontend.
+
+- Nodes:
+  - get_predictions_node
+  - get_residuals_node
+  - add_features_for_frontend_node
 
 ## Pipeline inputs
 
-<!---
-The list of pipeline inputs.
--->
+- final_model
+- X
+- y
 
 ## Pipeline outputs
 
-<!---
-The list of pipeline outputs.
--->
+- data_for_frontend
