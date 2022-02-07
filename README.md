@@ -191,9 +191,23 @@ I also study the relationships between variables and I used some feture selectio
 
 ![](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/main/investment-opportunities/notebooks/imgs/scatterplots.png)
 
+Relationships:
+
+- There is an increasing linear relationships between `price` and `floor_area`.
+`bedroom` and `bathroom` seem to have a mild relationships with `price` and maybe a little stronger one with `floor_area`.
+- `latitude` and `longitude` both show two rare patterns where `price` increases around two differents coordinates values. Actually these patterns have a logical explanation. The longitude with higher prices matches with Dublin and the other one that stands out from the rest matches with Cork and Galway, as both have similar coordinates. Something similar happens in the latitude plot. Dublin and Galway have similar latitudes and Cork is in the south. We can see this if we look a map as the scatter plot between `latitude` and `longitude` and compare it with the other plots.
+
 #### Correlations - Pearson & Spearman
 
 ![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/correlations.png)
+
+Conclusions:
+
+- As I concluded from the scatter plots there is a linear relationships between `price` and `floor_area`. 
+- `longitude`, `bedroom`, and `bathroom` show interesting relationships with the `price`. We can note how `bedroom` and `bathroom` are also correlated with `floor_area`, which makes sense.
+- There are no strong decreasing relationships between variables.
+
+I conclude that it would be good looking for more data in order to find more variables with predictive capabilities.
 
 #### Predictive Power Score
 
