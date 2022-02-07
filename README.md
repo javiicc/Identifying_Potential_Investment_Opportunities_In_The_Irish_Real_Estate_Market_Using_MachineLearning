@@ -51,7 +51,7 @@ This part was developed in notebooks and then it was relocated in a [Kedro](http
 
 ### Notebooks structure
 
-![diagram]()
+![diagram](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/main/investment-opportunities/notebooks/imgs/diagram.png)
 
 ### Kedro Pipeline
 
