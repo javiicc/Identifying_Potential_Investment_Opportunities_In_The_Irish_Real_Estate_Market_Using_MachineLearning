@@ -109,15 +109,97 @@ I did an EDA to try finding some useful insights that would help me with the mod
 ### Ireland's Real Estate Market Analysis
 
 ![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/number_ads_per_town.png)
+
+As expected, Dublin is by far the place with more advertisements in Ireland, followed by Cork and Galway.
+
 ![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/mean_price_per_city.png)
+
+Above I put together a chart representing mean prices per city and another one representing mean m2 prices per city. 
+
+**Insigths**
+- *Places* are very importanta in order to predict prices.
+- *Floor Area* could be a potentian predictor, since places with similar m2 prices have high differences in total price.
+
 ![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/meanpricepercitybytypehouse2.png)
+
+**Insigths**
+- *Type House* could be a potential predictor as well. The difference in house prices and apartment prices are high but they m2 prices are similar.
+- *Type House* could proxy a litle the variable *Floor Area*.
+- Is interesting to see that some places as Cork or Galway have m2 apartment prices higher than house ones but houses have higher total prices.
 
 ### Dublin's Real Estate Market Analysis
 
+I decided to analyse Dublin and Cork individually since they are the bigger cities. I show bellow some insights from the analysis of Dublin.
+
 ![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/meanpriceperpostaldistrict2.png)
+
+**Insigths**
+- *Postal Districts* have a high impact in prices. They are represented in the *routing key*.
+- Some postal districts have m2 prices really high but some of the smaller total prices, which is again a signal of the importance of *floor area* in prices.
+
 ![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/meanpriceperpdandtypehouse2.png)
+
+The insights from the above charts could be simiral to the Ireland's Market ones.
+
 ![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/meanfloorarea2.png)
 
+
+**Insigths**
+- We can easily see visually the possible correlation between:
+  - `type_house` and `price`
+  - `floor_area` and `price`
+
+### Distributions
+
+The distribution shapes were heavy skewed to the right and had a lot of outliers.
+
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/distributions2.png)
+
+To detect outliers I used the following two methods jointly. I considered a value as an outlier only when it was detected as one by the two methods.
+
+- Percentile-Based Method
+- Interquartile Range Method
+
+After dropping the outliers the cutoff levels were the following:
+
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/cutoff_levels.png)
+
+To check the efects of the data cleansing I did several things. One of them was to calculate some statistics before and after dropping the outliers. As it can be seen from the images bellow the process of dropping outliers transformed the feature's metrics much more similar to a Gaussian ones.
+
+- Before:
+
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/statistics_before.png)
+
+- After:
+
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/statistics_after.png)
+
+I ploted the effects of the outliers elimination in charts like the bellow one. 
+- Lines 1 and 2 show the distribution with outliers and without them respectively as well as the probability plots. The red area is that which contains the outliers.
+- Lines 3 and 4 show the same that above ones but with a logarithmic transformation after the detection of outliers.
+- Lines 5 and 6 show a Box-Cox transformation result.
+
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/check_transformations.png)
+
+Some algorithms are built on the assumption of normality in the distribution so the graphs like the above one made me realise the potetial of some transformations could have in them.
+
+### Realtionships and Feature Selection
+
+I also study the relationships between variables and I used some feture selection methods in order to figure out the best variables to predict prices.
+
+#### Scatter Plots
+
+![](https://raw.githubusercontent.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/main/investment-opportunities/notebooks/imgs/scatterplots.png)
+
+#### Correlations - Pearson & Spearman
+
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/correlations.png)
+
+#### Predictive Power Score
+
+![](https://raw.githubusercontent.com/javiicc/Identifyin_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learning/main/investment-opportunities/notebooks/imgs/pps2.png)
+
+#### Wrapper Methods
 
 ## Prices Prediction - Modeling
 
