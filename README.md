@@ -22,7 +22,9 @@ The project is structured in three parts and each one correspond with a folder i
   - The final application which you can see above
   - Folder: *dashapp*
 
-[Data Collection](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/blob/main/README.md#data-collection)
+# Table of Contents
+1. [Data Collection](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning/blob/main/README.md#data-collection)
+1.1 [Sources](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_MachineLearning#sources)
 
 # Data Collection
 
