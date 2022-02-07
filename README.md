@@ -26,6 +26,10 @@ The project is structured in three parts and each one correspond with a folder i
 
 ## Sources
 - [daft.ie](https://www.daft.ie/) 
+  - House advertisements. Example bellow.
+
+![]()
+
 - [Geonames.org](http://www.geonames.org/postalcode-search.html?q=&country=IE)
 
 ## Tools
