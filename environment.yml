@@ -11,6 +11,7 @@ dependencies:
   - scikit-learn==0.24.2
   - py-xgboost==1.5.1
   - jupyterlab
+  - pip=21.2.4
   - pip:
     - kedro-viz==4.2.0
     - kedro==0.17.5
