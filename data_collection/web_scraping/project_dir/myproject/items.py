@@ -1,13 +1,8 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
-from scrapy.item import Field, Item
-from scrapy.loader.processors import MapCompose  # , TakeFirst
-# import re
-from w3lib.html import remove_tags, strip_html5_whitespace
-
+from scrapy.item import Field
 from .daftdata import DaftItem
-
 
 
 class DaftItemBuy(DaftItem):
@@ -28,8 +23,3 @@ class DaftItemRent(DaftItem):
     overview = Field()
     facilities = Field()
     pass
-    
-    
-    
-    
-  

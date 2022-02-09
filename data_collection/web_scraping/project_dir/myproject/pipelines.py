@@ -7,11 +7,12 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
-from datetime import date, datetime
+from datetime import date
 
 import sqlite3
 from .items import DaftItemBuy, DaftItemRent
 import os.path as path
+
 
 class DuplicatesPipeline:
     """Class to filter duplicate items.
@@ -23,7 +24,7 @@ class DuplicatesPipeline:
     """
 
     def __init__(self):
-        self.item_urls_seen_daft = []  #set()
+        self.item_urls_seen_daft = []  # set()
 
     def process_item(self, item, spider):
         """Filter items.
@@ -56,10 +57,8 @@ class DatabasePipeline(object):
     
     Attributes
     ----------
-    create_connection : 
-        
-    create_table :
-        
+    create_connection
+    create_table
     """
     def __init__(self):  
         self.create_connection()

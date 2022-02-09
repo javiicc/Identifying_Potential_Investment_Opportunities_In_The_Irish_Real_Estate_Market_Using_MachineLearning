@@ -14,11 +14,10 @@ import re
 
 from ..items import DaftItemBuy, DaftItemRent
 
-from ..daftdata import (DaftLoader, get_name, get_price, get_info, get_ber,
-                             get_entered_renewed_views, get_contact_phone, 
-                             get_psr, get_energy, get_coordinates, 
-                             get_desc, get_overview, get_facilities, 
-                             get_description)
+from ..daftdata import (DaftLoader, get_name, get_price, get_info, get_ber, get_entered_renewed_views,
+                        get_contact_phone, get_psr, get_energy, get_coordinates, get_desc,
+                        get_overview, get_facilities,
+                        get_description)
 
 from datetime import date
 import os.path as path
@@ -86,7 +85,7 @@ class DaftSpider(CrawlSpider, ABC):
                                  response=response)
         
         ############################################################################
-        # Xpaths:   iWkymm
+        # Xpaths:
         xpath_id = '//p[@class="DaftIDText__StyledDaftIDParagraph-vbn7aa-0 dcUjaz"]/text()'
         xpath_name = '//h1[@data-testid="address"]/text()'
         xpath_price = '//div[@data-testid="title-block"]/div/p/span/text()'
@@ -241,9 +240,6 @@ class DaftSpider(CrawlSpider, ABC):
         # of `response.selector.xpath()`
         # `add_value` adds the given value for the given field after being passed through 
         # the field input processor from `item_loader`
-        
-        #self.html_file.write(response.body)
-        #self.html_file.close()
         
         # Extract daft id
         daft_id = response.xpath(xpath_id).getall()[-1]

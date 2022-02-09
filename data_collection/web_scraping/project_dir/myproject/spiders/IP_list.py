@@ -35,4 +35,3 @@ ip_list_path = path.abspath(path.join('IP_list.py', '../proxies.txt'))
 with open(ip_list_path, 'w') as file:
     for proxy in get_ip_list():
         file.write(proxy + '\n')
-

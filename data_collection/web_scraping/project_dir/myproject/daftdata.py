@@ -1,20 +1,6 @@
-import sqlite3
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
-import re
-from os import listdir
-from os.path import isfile, join
-
-from datetime import timedelta
-
 from scrapy.item import Field, Item
-from scrapy.loader.processors import MapCompose  # , TakeFirst
-# import re
 from w3lib.html import remove_tags, strip_html5_whitespace
-from itemloaders.processors import TakeFirst, MapCompose, Join
+from itemloaders.processors import MapCompose
 from scrapy.loader import ItemLoader
 from scrapy.http import TextResponse
 
@@ -48,35 +34,6 @@ class DaftItem(Item):
     type = Field()
     scraping_date = Field()
     description = Field()
-'''
-    def __init__(self, daft_id=None, item_id=None, url=None, name=None,
-                 price=None, info=None, sale_type=None, floor_area=None,
-                 contact=None,
-                 phone=None, psr_license_number=None, ber=None,
-                 entered_renewed=None, views=None,
-                 type_house=None, energy=None, coordinates=None,
-                 type=None, scraping_date=None):
-
-        self.daft_id = daft_id
-        self.item_id = item_id
-        self.url = url
-        self.name = name
-        self.price = price
-        self.info = info
-        self.sale_type = sale_type
-        self.floor_area = floor_area
-        self.contact = contact  # [1]
-        self.phone = phone
-        self.psr_license_number = psr_license_number
-        self.ber = ber
-        self.entered_renewed = entered_renewed
-        self.views = views
-        self.type_house = type_house
-        self.energy = energy
-        self.coordinates = coordinates
-        self.type = type
-        self.scraping_date = scraping_date
-'''
 
 
 class DaftLoader(ItemLoader):
@@ -440,40 +397,3 @@ def get_description(xpath: str, response: TextResponse, loader):
             loader.add_value('description', 'none')
     except:
         loader.add_value('description', 'none')
-
-
-
-'''
-########################################################################
-# DATA CLEANSING AND WRANGLING
-########################################################################
-
-def get_db(dbname: str,): ##############
-    """Stablishes a connection to the database, queries it and drops 
-    the advertiser'private information before return the dataframe.
-    
-    Parameters
-    ----------
-    dbname : 
-        The database name to addmto `database_path`.
-    query :
-        The query to the database.
-    
-    Returns
-    -------
-    The data obtained from the database as a dataframe.
-    """
-    database_path = f'data/{dbname}'
-    connection = sqlite3.connect(database_path)
-    #cursor = connection.cursor()
-
-    daft = pd.read_sql_query(query, connection)
-    connection.close()
-    
-    daft.drop(['contact', 'phone'], axis=1, inplace=True)
-    sale = daft.copy()
-
-    return sale
-'''
-
-

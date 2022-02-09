@@ -15,7 +15,7 @@ import os.path as path
 import numpy as np
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.LUX],
-               # meta_tags=[{'name': 'viewport',
+                # meta_tags=[{'name': 'viewport',
                 #            'content': 'width=device-width, initial-scale=1.0'}]
                 )
 
@@ -36,23 +36,23 @@ app.layout = dbc.Container(
         dbc.Row(
             className="",
             children=[
-            # Column (total width 12)
-            # Title
-            dbc.Col(html.H1("Ireland's Real Estate Market Opportunities",
-                            className='pt-4 text-center',
-                            style={'color': 'rgb(132,11,11)'}
-                            ),
-                    width=12,
-                    ),
-            # Explanation bellow the title
-            dcc.Markdown('''
-            Welcome to Javier Castaño's final project from the Master in Data Science at
-            KSchool. You can interact with the map through the controls bellow.
-            ''',
-                         className="text-center",
-                         style={'color': 'rgb(216,173,173)'}
-                         ),
-        ],
+                # Column (total width 12)
+                # Title
+                dbc.Col(html.H1("Ireland's Real Estate Market Opportunities",
+                                className='pt-4 text-center',
+                                style={'color': 'rgb(132,11,11)'}
+                                ),
+                        width=12,
+                        ),
+                # Explanation bellow the title
+                dcc.Markdown('''
+                Welcome to Javier Castaño's final project from the Master in Data Science at
+                KSchool. You can interact with the map through the controls bellow.
+                ''',
+                             className="text-center",
+                             style={'color': 'rgb(216,173,173)'}
+                             ),
+            ],
             style={"height": "15vh", "backgroundColor": "#100508"}
         ),
 
@@ -65,13 +65,13 @@ app.layout = dbc.Container(
                 dbc.Col(
                     className="",
                     children=[
-                    # Map graph
-                    dcc.Graph(
-                        id='map',
-                        responsive=True,
-                        style={'height': '100%'},
-                    ),
-                ],
+                        # Map graph
+                        dcc.Graph(
+                            id='map',
+                            responsive=True,
+                            style={'height': '100%'},
+                        ),
+                    ],
                     width={'size': 8},
                     style={'backgroundColor': '#100508'}
                 ),
@@ -104,7 +104,7 @@ app.layout = dbc.Container(
                                     'label': f'{int(df.actual_price.min())}€',
                                     'style': {'color': '#f50'}},
                                 int((df.actual_price.max() + df.actual_price.min()) / 2): {
-                                    'label': f'{int((df.actual_price.max() + df.actual_price.min())/ 2)}€',
+                                    'label': f'{int((df.actual_price.max() + df.actual_price.min()) / 2)}€',
                                     'style': {'color': '#f50'}},
                                 int(df.actual_price.max()): {
                                     'label': f'{int(df.actual_price.max())}€',
@@ -179,7 +179,7 @@ app.layout = dbc.Container(
                             id='bedroom_range_slider',
                             className='my-1',
                             marks={i: '{}'.format(i) for i in range(df.bedroom.min(),
-                                                                    df.bedroom.max()+1)},
+                                                                    df.bedroom.max() + 1)},
                             min=df.bedroom.min(),
                             max=df.bedroom.max(),
                             value=[df.bedroom.min(), df.bedroom.max()],
@@ -207,8 +207,8 @@ app.layout = dbc.Container(
                                 value=['Dublin 6', 'Dun Laoghaire', 'Dublin 4',
                                        'Blackrock', 'Kinsale'],
                                 className='my-1',
-                            #    optionHeight=25,
-                            #    style={'height': '9vh'},
+                                # optionHeight=25,
+                                # style={'height': '9vh'},
                             ),
                         ]),
                     dbc.Row(
@@ -284,20 +284,20 @@ app.layout = dbc.Container(
                                 id='submit-button-state',
                                 n_clicks=0,
                                 children='Submit',
-                                #className='w-75 mx-auto btn btn-dark px-2'
+                                # className='w-75 mx-auto btn btn-dark px-2'
                                 className='w-50 my-1 mx-auto btn btn-outline-success px-2'
                             ),
                             # This markdown returns the predicted price
                             dcc.Markdown(
                                 id='markdown_price',
-                                className="text-center",   #text-white-50
-                            #    style={'color': 'rgb(103,214,140)'}
+                                className="text-center",  # text-white-50
+                                #    style={'color': 'rgb(103,214,140)'}
 
                             ),
                         ]),
                     dcc.Markdown(
                         'CLICK ON A HOUSE AND GO TO ITS AD!!',
-                        className="text-center",  #  pt-3    text-white-50
+                        className="text-center",  # pt-3    text-white-50
                         style={'color': 'rgb(216,173,173)', 'height': '5%'}
                     ),
                     # Link to the clicked house advertisement
@@ -307,7 +307,7 @@ app.layout = dbc.Container(
                         )])
 
                 ],
-                 #   className='pr-4',
+                    #   className='pr-4',
                     width={'size': 2},
                     # style={"backgroundColor": "#100508"}
                 )
@@ -318,9 +318,9 @@ app.layout = dbc.Container(
         dbc.Row([
             # Empty column (width 8 of 12)
             dbc.Col(
-                    width=8,
-                    style={"backgroundColor": "#100508"}
-                    ),
+                width=8,
+                style={"backgroundColor": "#100508"}
+            ),
             # Second column (width 4 of 12)
             dbc.Col(
                 # Link to my LinkedIn ;)
@@ -340,8 +340,9 @@ app.layout = dbc.Container(
     ],
     fluid=True,
     style={"height": "100vh",
-           "background-color": "#03182D"}  #E3E3DC
+           "background-color": "#03182D"}  # E3E3DC
 )
+
 
 # Callback section: Boostrap
 # ------------------------------------------------------------------
@@ -421,7 +422,7 @@ def display_click_data(clickData):
         style = {'color': '#77C6FB'}
     else:
         url = url.group().split('"')[0]
-        className = "text-center font-weight-bold"  #text-white-50
+        className = "text-center font-weight-bold"  # text-white-50
         href = url
         style = {'color': '#77C6FB'}
     return url, className, href, style
@@ -472,7 +473,6 @@ def display_click_data(places_list):
     State('input_longitude', 'value'))
 def display_click_data(n_clicks, place, type_house, bedrooms, bathrooms, floor_area,
                        latitude, longitude):
-
     # In case the user decide not enter the latitude or longitude
     if (latitude is None or longitude is None) and (place is not None):
         return 'Enter all the attributes please', {'color': 'rgb(190,10,10)'}
