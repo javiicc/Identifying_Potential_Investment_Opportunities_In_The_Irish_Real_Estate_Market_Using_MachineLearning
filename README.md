@@ -1,5 +1,8 @@
 # Identifying Potential Investment Opportunities In The Irish Real Estate Market Using Machine Learning
 
+This project has been developed by [Javier Castaño Candela](https://www.linkedin.com/in/javier-casta%C3%B1o-candela-b89039208/).
+Final Project - Master in Data Science - [KSchool](https://kschool.com/).
+
 This is my final project of the Master in Data Science from KSchool. It consists of a machine learning app that predicts housing prices in the Ireland’s Real Estate Market. Once the prices are predicted they are compared with the actual prices in order to find potential investment opportunities. Bellow you can see the Dash application.  
 
 ![](https://github.com/javiicc/Identifying_Potential_Investment_Opportunities_In_The_Irish_Real_Estate_Market_Using_Machine_Learnin/blob/main/investment-opportunities/notebooks/imgs/thefinalgif.gif)
